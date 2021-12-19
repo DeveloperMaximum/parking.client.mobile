@@ -1,0 +1,17 @@
+{
+  "esversion":11,
+  "browser": true,
+  "curly": true,
+  "eqeqeq": true,
+  "latedef": true,
+  "noarg": true,
+  "unused": true,
+  "undef": true,
+  "globals": {
+    "import": true,
+    "cordova": true,
+    "module": true,
+    "require": true,
+    "Promise": true
+  }
+}

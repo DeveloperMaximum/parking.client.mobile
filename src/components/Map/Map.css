@@ -1,0 +1,71 @@
+
+#MAP {
+    height: 100vh;
+    position: relative;
+}
+
+#MAP svg {
+    display: inline-block;
+    vertical-align: middle;
+    min-height: 100%;
+}
+
+#MAP svg path {
+    fill: #FFC72C;
+    border-color: red;
+}
+
+#MAP svg path:hover {
+    fill: #39CC62;
+}
+
+#MAP .controls {
+    display: flex;
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    margin: 1.25rem 0;
+    text-align: center;
+    transform: translateX(-50%);
+}
+
+#MAP .controls > button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    height: 2rem;
+    width: 2rem;
+    background: #ff5533;
+    color: #fff;
+    border-radius: 100%;
+    border: 0;
+}
+
+#MAP .controls > button:first-child {
+    margin-right: 0.25rem;
+}
+
+#MAP g {
+    pointer-events: bounding-box;
+}
+
+#MAP svg * {
+    pointer-events: bounding-box;
+}
+
+#MAP svg .place.active {
+    fill: red;
+}
+
+#MAP svg .place.green {
+    fill: red;
+}
+
+#MAP svg .place.yellow {
+    fill: red;
+}
+
+#MAP svg .place.red {
+    fill: red;
+}
