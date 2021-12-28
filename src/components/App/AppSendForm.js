@@ -1,5 +1,5 @@
 import React from 'react';
-import AppRequest from "./AppRequest";
+import { Request } from "../utils/Request";
 
 
 async function AppSendForm(props) {
@@ -12,10 +12,10 @@ async function AppSendForm(props) {
     for (let i = 0; i < form.elements.length; i++) {
         let field = form.elements[i];
         if(field.name === '') continue;
-        if(field.required === true){
+        if(field.min){
             let type = field.type;
-            if(textsFields.indexOf(type) !== -1){
-                if(field.value === ''){
+            if(textsFields.indexOf(type) > -1){
+                if(field.value.length < field.min){
                     errors = true;
                     field.classList.add('is-invalid');
                     field.classList.remove('border-primary');
@@ -30,7 +30,7 @@ async function AppSendForm(props) {
 
     if(errors === true) return props.callback(false);
 
-    await AppRequest({
+    Request({
         URL: form.getAttribute('action'),
         BODY: fieldsValues,
         callback: (result) => props.callback(result)

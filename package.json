@@ -1,34 +1,33 @@
 {
-  "name": "com.example.parking",
-  "version": "0.0.1",
+  "name": "ru.mxmit.parking",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "@testing-library/jest-dom": "^5.14.1",
-    "@testing-library/react": "^11.2.7",
-    "@testing-library/user-event": "^12.8.3",
-    "bootstrap": "^5.1.3",
-    "cordova_script": "^1.0.0",
-    "prop-types": "^15.7.2",
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0",
+    "cordova_script": "^1.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "react-router-dom": "^5.3.0",
-    "react-scripts": "4.0.3",
-    "react-spring": "^9.3.0",
-    "react-svg-pan-zoom": "^3.10.0",
-    "react-svg-pan-zoom-loader": "^1.4.1"
+    "react-scripts": "5.0.0",
+    "react.cordova-navigation_controller": "^3.0.2",
+    "web-vitals": "^2.1.2",
+    "react-browser-notifications": "^1.0.14",
+    "react-router-dom": "^6.2.1",
+    "typescript": "^4.5.4"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "eject": "react-scripts eject",
-    "reactstart": "react-scripts start",
-    "initialize": "reco checkversion && react-scripts build && reco copy && cordova platform add browser",
+    "initialize": "reco checkversion && react-scripts build && reco copy",
     "before": "node before/browser.js",
     "start": "reco checkversion && react-scripts build && reco copy && reco serve",
-    "build": "reco checkversion && react-scripts build && reco copy && cordova build browser",
+    "build": "reco checkversion && react-scripts build && reco copy && cordova build",
     "start-android": "reco checkversion && react-scripts build -- --profile && reco copy && cordova run android",
     "build-android": "reco checkversion && react-scripts build -- --profile && reco copy && cordova build android",
     "start-ios": "reco checkversion && react-scripts build -- --profile && reco copy && cordova run ios",
-    "build-ios": "reco checkversion && react-scripts build -- --profile && reco copy && cordova build ios"
+    "build-ios": "reco checkversion && react-scripts build -- --profile && reco copy && cordova build ios",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "eject": "react-scripts eject",
+    "reactstart": "react-scripts start"
   },
   "eslintConfig": {
     "extends": [
@@ -49,18 +48,19 @@
     ]
   },
   "homepage": "./",
-  "displayName": "Parking",
-  "description": "Приложение для поиска данных автомобиля на парковке по QR коду. Cordova + React",
+  "displayName": "cparking",
+  "description": "A sample Apache Cordova application that responds to the deviceready event.",
   "main": "index.js",
   "keywords": [
     "ecosystem:cordova"
   ],
-  "author": "Maximum",
+  "author": "DataCyber-OrChuban, react.cordova: Apache Cordova Team and React.js",
   "license": "Apache-2.0",
   "devDependencies": {
-    "cordova-android": "^9.1.0",
     "cordova-browser": "^6.0.0",
-    "cordova-plugin-dialogs": "^2.0.2",
+    "cordova-plugin-badge": "^0.8.8",
+    "cordova-plugin-device": "^2.0.3",
+    "cordova-plugin-local-notification": "^0.9.0-beta.2",
     "cordova-plugin-qrscanner": "^3.0.1",
     "cordova-plugin-splashscreen": "^6.0.0",
     "cordova-plugin-whitelist": "^1.3.5"
@@ -68,13 +68,13 @@
   "cordova": {
     "plugins": {
       "cordova-plugin-whitelist": {},
-      "cordova-plugin-dialogs": {},
+      "cordova-plugin-local-notification": {},
       "cordova-plugin-qrscanner": {},
-      "cordova-plugin-splashscreen": {}
+      "cordova-plugin-splashscreen": {},
+      "cordova-plugin-device": {}
     },
     "platforms": [
-      "browser",
-      "android"
+      "browser"
     ]
   }
 }
