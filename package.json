@@ -8,13 +8,14 @@
     "@testing-library/user-event": "^13.5.0",
     "cordova_script": "^1.0.1",
     "react": "^17.0.2",
+    "react-browser-notifications": "^1.0.14",
     "react-dom": "^17.0.2",
+    "react-router": "^6.2.1",
+    "react-router-dom": "^6.2.1",
     "react-scripts": "5.0.0",
     "react.cordova-navigation_controller": "^3.0.2",
-    "web-vitals": "^2.1.2",
-    "react-browser-notifications": "^1.0.14",
-    "react-router-dom": "^6.2.1",
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.4",
+    "web-vitals": "^2.1.2"
   },
   "scripts": {
     "initialize": "reco checkversion && react-scripts build && reco copy",
@@ -57,7 +58,10 @@
   "author": "DataCyber-OrChuban, react.cordova: Apache Cordova Team and React.js",
   "license": "Apache-2.0",
   "devDependencies": {
+    "cordova-android": "^9.1.0",
     "cordova-browser": "^6.0.0",
+    "cordova-ios": "^6.2.0",
+    "cordova-plugin-add-swift-support": "^2.0.2",
     "cordova-plugin-badge": "^0.8.8",
     "cordova-plugin-device": "^2.0.3",
     "cordova-plugin-local-notification": "^0.9.0-beta.2",
@@ -74,7 +78,9 @@
       "cordova-plugin-device": {}
     },
     "platforms": [
-      "browser"
+      "browser",
+      "android",
+      "ios"
     ]
   }
 }

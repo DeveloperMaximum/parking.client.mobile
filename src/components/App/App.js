@@ -12,6 +12,7 @@ export class App extends Component {
     constructor(props){
         super(props);
 
+        this.setUser = this.setUser.bind(this);
         this.onAlert = this.onAlert.bind(this);
         this.offAlert = this.offAlert.bind(this);
 
@@ -22,7 +23,8 @@ export class App extends Component {
                 button: "Хорошо",
                 onClose: this.offAlert,
                 display: false
-            }
+            },
+            USER: new User()
         };
     }
 
@@ -40,8 +42,15 @@ export class App extends Component {
         }));
     }
 
+    setUser(USER){
+        let tmpUser = new User();
+        tmpUser.login(USER);
+        this.setState((prevState) => ({
+            ...{ USER: tmpUser },
+        }));
+    }
+
     render(){
-        const USER = new User();
 
         // тут мы загрузили данные и вырубили заставку
         navigator.splashscreen.hide();
@@ -53,10 +62,10 @@ export class App extends Component {
                 </AppContext.Provider>
                 <HashRouter>
                     <Routes>
-                        <Route exact path='/' element={<PrivateRoute USER={USER} />}>
-                            <Route exact path="/" element={<Home />} />
+                        <Route exact path='/' element={<PrivateRoute USER={this.state.USER} />}>
+                            <Route exact path="/" element={<Home USER={this.state.USER} />} />
                         </Route>
-                        <Route exact path="/auth" element={<Auth USER={USER} onAlert={this.onAlert} />} />
+                        <Route exact path="/auth" element={<Auth USER={this.state.USER} onAlert={this.onAlert} setUser={this.setUser} />} />
                         <Route exact path="/forbidden" element={<Forbidden />} />
                         <Route path="*" element={<NotFound />} />
                     </Routes>

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Request } from "../utils/Request";
 
 
@@ -28,12 +27,11 @@ async function AppSendForm(props) {
         fieldsValues[field.name] = field.value;
     }
 
-    if(errors === true) return props.callback(false);
+    if(errors === true) return;
 
-    Request({
+    return Request({
         URL: form.getAttribute('action'),
-        BODY: fieldsValues,
-        callback: (result) => props.callback(result)
+        BODY: fieldsValues
     });
 }
 

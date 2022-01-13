@@ -33,3 +33,42 @@
     padding-top: 24px;
     padding-bottom: 24px;
 }
+
+#APP .root-component {
+    background-color: #fff;
+}
+
+#APP .root-component header {
+    height: 21vh;
+}
+
+#APP .root-component main {
+    height: 69vh;
+    margin-top: 21vh;
+    padding-top: 0;
+    padding-bottom: 0;
+    transition: .5s;
+}
+
+#APP .root-component footer {
+    height: 10vh;
+}
+
+#APP .root-component header h1 {
+    font-size: 18px;
+}
+
+body,
+body #APP,
+body #APP #HOME.root-component {
+    background-color: transparent;
+}
+
+body #APP #HOME.root-component main {
+    background-color: #fff;
+}
+
+body.SCANNED #APP main {
+    margin-top: -100vh !important;
+}
+

@@ -24,12 +24,11 @@ export class User extends React.Component {
 
     login = (userArray) => {
         this.save(userArray);
-        window.location.hash = '/';
     };
 
     logout = () => {
         this.delete();
-        window.location.hash = '/auth';
+        window.location.replace = '#/auth';
     };
 
     componentDidMount() {
