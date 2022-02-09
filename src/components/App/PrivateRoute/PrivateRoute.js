@@ -1,11 +1,16 @@
 import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
 
 
-export const PrivateRoute = ({USER}) => {
-    const jsonUser = USER.get();
-    if(!jsonUser?.UF_TOKEN || jsonUser.UF_TOKEN === ''){
-        return <Navigate to="/auth" />;
-    }
-    return <Outlet />;
+export const PrivateRoute = ({ component: Component, APP, ...rest }) => {
+    return (<Route {...rest} render={props => (
+        (APP.auth === false) ? (
+            <Redirect to={{
+                pathname: '/auth',
+                state: { from: props.location }
+            }} />
+        ) : (
+            <Component {...rest} {...props} APP={APP} />
+        )
+    )}/>)
 };

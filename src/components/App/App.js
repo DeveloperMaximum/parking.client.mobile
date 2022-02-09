@@ -1,18 +1,22 @@
 import React, { Component } from 'react';
-import { HashRouter, Routes, Route, Link } from "react-router-dom"
+import { HashRouter, Switch, Route } from "react-router-dom"
 
-import { AppContext, PrivateRoute, User } from './';
-import { Auth, Home, Forbidden, NotFound } from "../../views";
+import {AppContext, PrivateRoute, User} from './';
+import { Auth, Home, Profile, Map, Car, About, Default, Forbidden, NotFound } from "../../views";
 
 import "./App.css";
 import { Alert } from "../ui";
+import { Scanner } from "./Scanner";
+import { Storage } from "./Storage";
+import {Redirect} from "react-router";
 
 export class App extends Component {
 
     constructor(props){
         super(props);
 
-        this.setUser = this.setUser.bind(this);
+        this.login = this.login.bind(this);
+        this.logout = this.logout.bind(this);
         this.onAlert = this.onAlert.bind(this);
         this.offAlert = this.offAlert.bind(this);
 
@@ -24,53 +28,90 @@ export class App extends Component {
                 onClose: this.offAlert,
                 display: false
             },
-            USER: new User()
+            storage: new Storage(),
+            scanner: new Scanner(),
+            auth: !!((new Storage()).get('USER')?.UF_TOKEN),
         };
+    }
+
+    componentDidMount() {
+        let user = this.state.storage.get('USER');
+        this.setState((prevState) => ({
+            ...prevState,
+            auth: !!(user?.UF_TOKEN)
+        }));
+    }
+
+    componentWillUnmount() {
+        // todo: закрытие компонента
+        this.setState = (state, callback) => {
+            return false;
+        }
     }
 
     onAlert(params){
         this.setState((prevState) => ({
-            ...prevState.alert,
-            ...params,
+            ...prevState,
+            alert: params,
         }));
     }
 
     offAlert(){
         this.setState((prevState) => ({
-            ...prevState.alert,
-            ...{display: false},
+            ...prevState,
+            alert: {
+                display: false
+            },
         }));
     }
 
-    setUser(USER){
-        let tmpUser = new User();
-        tmpUser.login(USER);
+    login = (user) => {
+        this.state.storage.set('USER', user);
         this.setState((prevState) => ({
-            ...{ USER: tmpUser },
+            ...prevState,
+            auth: !!(user?.UF_TOKEN)
         }));
-    }
+    };
+
+    logout = () => {
+        this.state.storage.set('USER', {});
+        this.setState((prevState) => ({
+            ...prevState,
+            auth: false
+        }));
+    };
 
     render(){
-
         // тут мы загрузили данные и вырубили заставку
         navigator.splashscreen.hide();
 
         return (
-            <>
-                <AppContext.Provider value={this.state}>
-                    <Alert onClose={this.offAlert}/>
+
+            <HashRouter>
+                <AppContext.Provider value={this.state.alert}>
+                    <Alert onClose={this.offAlert} />
                 </AppContext.Provider>
-                <HashRouter>
-                    <Routes>
-                        <Route exact path='/' element={<PrivateRoute USER={this.state.USER} />}>
-                            <Route exact path="/" element={<Home USER={this.state.USER} />} />
-                        </Route>
-                        <Route exact path="/auth" element={<Auth USER={this.state.USER} onAlert={this.onAlert} setUser={this.setUser} />} />
-                        <Route exact path="/forbidden" element={<Forbidden />} />
-                        <Route path="*" element={<NotFound />} />
-                    </Routes>
-                </HashRouter>
-            </>
+
+                <Switch>
+                    <PrivateRoute exact path="/" APP={this.state} component={Default} />
+                    <PrivateRoute exact path="/home" APP={this.state} component={Home} />
+
+                    <PrivateRoute exact path="/profile" APP={this.state} logout={this.logout} component={Profile} />
+
+                    <PrivateRoute exact path="/map" APP={this.state} component={Map} />
+
+                    <PrivateRoute path="/car/:id" APP={this.state} component={Car} />
+
+                    <Route exact path="/auth" render={ () => <Auth login={this.login} onAlert={this.onAlert} offAlert={this.offAlert} APP={this.state} />} />
+                    <Route exact path="/forbidden" component={Forbidden} />
+
+                    <Route exact path="/pages/about" APP={this.state} component={About} />
+
+                    <Route exact path="*" component={NotFound}/>
+                </Switch>
+
+                <div id={"scanner-opacity"} className={"scanner-opacity"} />
+            </HashRouter>
         );
     }
 }

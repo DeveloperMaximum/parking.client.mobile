@@ -3,22 +3,42 @@
 export function Request (props) {
     let method = (props?.METHOD) ? props.METHOD : 'PUT';
     let domain = (props?.DOMAIN) ? props.DOMAIN : 'https://parking.mxmit.ru/api/';
-    let headers = (props?.HEADERS) ? props.HEADERS : { 'Accept': 'application/json', 'Content-Type': 'application/json' , 'LOGIN': '123' };
-    let body = (props?.BODY) ? props.BODY : false;
+
+    let headers = {};
+    if(props.USER && props.USER?.UF_TOKEN){
+        headers = (props?.HEADERS) ? props.HEADERS : {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'UF-TOKEN': props.USER.UF_TOKEN
+        };
+    }else{
+        headers = (props?.HEADERS) ? props.HEADERS : {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        };
+    }
 
     let url =  domain + props.URL;
-    if(props.USER && props.USER.UF_TOKEN) body.HTTP_UF_TOKEN = props.USER.UF_TOKEN;
 
-    return fetch(url, {
+    let settings = {
         method: method,
         headers: new Headers(headers),
-        body: (body) ? JSON.stringify(body) : null,
-    }).then(function(result){
+    };
+
+    if(props?.CONTROLLER){
+        settings.signal = props.CONTROLLER.signal;
+    }
+
+    if(props?.BODY){
+        settings.body = JSON.stringify(props.BODY);
+    }
+
+    return fetch(url, settings).then(function(result){
         if(result.status !== 200){
             return {
                 status: result.status,
                 success: false,
-                data: result
+                data: result.data
             };
         }
         return result.json();

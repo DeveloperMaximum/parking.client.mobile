@@ -27,11 +27,20 @@ async function AppSendForm(props) {
         fieldsValues[field.name] = field.value;
     }
 
-    if(errors === true) return;
+    if(errors === true){
+        return new Promise(resolve => {
+            setTimeout(() => {
+                // переведёт промис в состояние fulfilled с результатом "result"
+                resolve(false);
+            }, 0);
+        })
+    }
 
     return Request({
         URL: form.getAttribute('action'),
-        BODY: fieldsValues
+        BODY: fieldsValues,
+        METHOD: (form?.method) ? form.method : 'GET',
+        HEADERS: (!props?.HEADERS) ? null : props?.HEADERS
     });
 }
 

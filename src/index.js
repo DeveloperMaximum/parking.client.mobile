@@ -4,14 +4,16 @@ import "cordova_script";
 
 import { App } from "./components/App";
 
+function onBackKeyDown(e) {
+    e.preventDefault();
+}
 
 document.addEventListener(
     "deviceready",
     () => {
-        ReactDOM.render(
-            <App />,
-            document.getElementById("APP")
-        );
+
+        document.addEventListener("backbutton", onBackKeyDown, false);
+        ReactDOM.render(<App />,  document.getElementById("APP"));
     },
     false
 );

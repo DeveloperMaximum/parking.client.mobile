@@ -1,5 +1,5 @@
 import React, { Component} from 'react';
-import { Navigate } from "react-router";
+import { Redirect } from "react-router-dom";
 
 import { Form, Input, InputPassword, Button } from "../../components/ui";
 import AppSendForm from "../../components/App/AppSendForm";
@@ -36,7 +36,7 @@ export class Auth extends Component {
 
     componentWillUnmount() {
         this.setState = (state, callback) => {
-            return;
+            return false;
         }
     }
 
@@ -53,16 +53,33 @@ export class Auth extends Component {
         }));
     }
 
-    handleSubmit(e) {
+    handleSubmit = async (e) => {
         e.preventDefault();
         this.loadingToggle(true);
 
-        AppSendForm({
-            form: e.target
+        return AppSendForm({
+            form: e.target,
+            onError: () => {
+                this.props.onAlert({
+                    display: true,
+                    header: "Не удалось авторизоваться",
+                    content: "Логин или пароль не верны. Обратитесь в техническую поддержку",
+                });
+            },
+            HEADERS: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                LOGIN: this.state.data.HTTP_LOGIN.value,
+                PASSWORD: this.state.data.HTTP_PASSWORD.value,
+            }
         }).then(result => {
             if(result === false){
-                // todo: Ошибки в форме
-            }else if (result.status === 401) {
+                this.props.onAlert({
+                    display: true,
+                    header: "Не удалось авторизоваться",
+                    content: "Логин или пароль не верны. Обратитесь в техническую поддержку",
+                });
+            }else if (result.status === 401 || result.status === 400) {
                 this.props.onAlert({
                     display: true,
                     header: "Не удалось авторизоваться",
@@ -71,10 +88,8 @@ export class Auth extends Component {
             } else if (result?.data) {
                 if (result.data?.USER) {
                     let userArray = result.data.USER;
-                    this.props.setUser(userArray);
                     if(userArray?.UF_TOKEN){
-                        console.log(userArray)
-                        this.props.setUser(userArray);
+                        this.props.login(userArray);
                         this.setState((prevState) => ({
                             ...prevState,
                             toHome: true
@@ -96,17 +111,23 @@ export class Auth extends Component {
     }
 
     render(){
-        if (this.state.toHome) {
+        if (this.props.APP.auth !== false) {
             return (
                 <>
-                    <Navigate to="/" />
+                    <Redirect to={{pathname: "/"}} />
                 </>
             );
         }
         return(
             <>
                 <div id="AUTH" className="root-component">
-                    <Form method={"POST"} action="" id="AUTH-FORM" className="container" onSubmit={this.handleSubmit}>
+                    <div className="logos-container container d-inline-block">
+                        <div className="logotype position-relative">
+                            <object type="image/svg+xml" data="img/parking-logo-auth.svg" className="parking-logo position-absolute" />
+                            <object type="image/svg+xml" data="img/carmart-logo-auth.svg" className="carmart-logo" />
+                        </div>
+                    </div>
+                    <Form method={"POST"} action="token" id="AUTH-FORM" className="container" onSubmit={this.handleSubmit}>
                         <Input autoComplete={"off"} min={1} placeholder="Введите логин" type={"text"} name={"HTTP_LOGIN"} value={this.state.data.HTTP_LOGIN.value || ''} onChange={this.handleChangeInput} />
                         <InputPassword autoComplete={"off"} min={1} placeholder="Введите пароль" name={"HTTP_PASSWORD"} value={this.state.data.HTTP_PASSWORD.value || ''} onChange={this.handleChangeInput} />
                         <Button type={"submit"} text={"Войдите в систему"} form={"AUTH-FORM"} variant={this.state.button.variant}/>

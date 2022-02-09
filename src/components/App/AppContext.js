@@ -6,7 +6,9 @@ export const AppContext = React.createContext({
         header: "Внимание",
         content: "",
         button: "Хорошо",
-        onClose: (props) => {},
+        onClose: (props) => {
+
+        },
         display: false
     },
 });

@@ -1,3 +1,4 @@
 import { Home } from './Home'
+import { Default } from './Default'
 
-export { Home }
+export { Home, Default }
