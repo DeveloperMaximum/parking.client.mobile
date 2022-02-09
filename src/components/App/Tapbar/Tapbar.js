@@ -1,7 +1,6 @@
 import React from 'react';
-import {Redirect, NavLink, HashRouter} from 'react-router-dom';
+import {NavLink} from 'react-router-dom';
 import {Request} from "../../utils/Request";
-import {AppContext} from "../AppContext";
 
 
 export class Tapbar extends React.Component {
@@ -15,48 +14,101 @@ export class Tapbar extends React.Component {
         };
     }
 
-    onHandleScanned = async () => {
-        if(this.state.wmenu === true){
-            this.toggleWMenu();
+    setPrevActiveLink = async (elem = false) => {
+        if(elem && elem.classList.contains('active')){
+            elem.classList.remove('active');
+            let elem_id = elem.getAttribute('id');
+            await this.setState((prevState) => ({
+                ...prevState,
+                prev: elem_id,
+            }));
+        }else{
+            document.getElementById(this.state.prev).classList.add('active');
+            await this.setState((prevState) => ({
+                ...prevState,
+                prev: false,
+            }));
         }
-        await this.props.APP.scanner.toggle(this.onSearched);
+
+        return this.state.prev;
     };
 
-    toggleScanned = async () => {
+    openShutter = async () => {
+        await this.setState((prevState) => ({...prevState, scanned: true}));
+        await this.setPrevActiveLink(document.querySelector('footer menu .active'));
+        document.getElementsByTagName('body')[0].classList.add('SCANNED');
+        await window.QRScanner.prepare(() => {
+            return window.QRScanner.show();
+        });
+    };
+
+    closeShutter = async () => {
+        await window.QRScanner.getStatus(status => {
+            if(status.scanned === true){
+                window.QRScanner.cancelScan();
+            }
+
+            if(status.showing === true){
+                window.QRScanner.hide();
+            }
+
+            window.QRScanner.destroy();
+
+            this.setPrevActiveLink();
+            this.setState((prevState) => ({...prevState, scanned: false}));
+            document.getElementsByTagName('body')[0].classList.remove('SCANNED');
+        });
+    };
+
+    onNavLink = async () => {
         if(this.state.wmenu === true){
-            this.toggleWMenu();
+            await this.toggleWMenu();
         }
+
+        if(this.state.scanned === true){
+            await this.toggleScanned();
+        }
+    };
+
+    toggleScanned = async (e) => {
+        if(this.state.wmenu === true){
+            await this.toggleWMenu();
+        }
+
+        if(this.state.scanned === false){
+            this.openShutter();
+            window.QRScanner.scan((err, content) => {
+                if(err && err.code !== 6){
+                    this.closeShutter();
+                }else if(content){
+                    let urlArray = content.split('/');
+                    return this.onSearched(urlArray[urlArray.length - 1]);
+                }
+            });
+        }else{
+            await this.closeShutter();
+        }
+
+        return this.state.scanned;
     };
 
     toggleWMenu = async () => {
+        if(this.state.scanned === true){
+            await this.toggleScanned();
+        }
+
         await this.setState((prevState) => ({
             ...prevState,
             wmenu: (!this.state.wmenu),
         }));
 
         if(this.state.wmenu === true){
-            let elements = document.querySelectorAll('footer menu .menu-item');
-            for (let elem of elements) {
-                let elem_id = elem.getAttribute('id');
-                if(elem.classList.contains('active') && elem_id !== "more"){
-                    await this.setState((prevState) => ({
-                        ...prevState,
-                        prev: elem_id,
-                    }));
-                    elem.classList.remove('active');
-                }
-            }
+            await this.setPrevActiveLink(document.querySelector('footer menu .active'));
         }else{
-            document.getElementById(this.state.prev).classList.add('active');
+            await this.setPrevActiveLink();
         }
 
         return this.state.wmenu;
-    };
-
-    onNavLink = async () => {
-        if(this.state.wmenu === true){
-            this.toggleWMenu();
-        }
     };
 
     onSearched = async (ref_key) => {
@@ -66,6 +118,7 @@ export class Tapbar extends React.Component {
             USER: this.props.APP.storage.get('USER'),
         }).then((result) => {
             if(result.success === true){
+                this.closeShutter();
                 return this.props.history.push(`/car/${result.data[0].ID}`);
             }
         });
@@ -131,7 +184,7 @@ export class Tapbar extends React.Component {
                             <i className={"icon-directions_car"} />
                             <div>Парковка</div>
                         </NavLink>
-                        <span onClick={this.onHandleScanned} id={"qr"} className={"menu-item flex-fill"}>
+                        <span onClick={this.toggleScanned} id={"qr"} className={(this.state.scanned === true) ? "menu-item flex-fill active" : "menu-item flex-fill"}>
                             <i className={"icon-qr_code"} />
                             <div>QR-код</div>
                         </span>

@@ -1,5 +1,4 @@
 import React from 'react';
-//document.getElementsByClassName('scanner-opacity')[0].style('border-top-width', (document.getElementsByTagName('body')[0].clientHeight - 230) / 2)
 
 export class User extends React.Component {
 

@@ -8,9 +8,7 @@ export class Scanner extends React.Component {
         super(props);
         this.toggle = this.toggle.bind(this);
         this.state = {
-            rect: {
-
-            }
+            scanned: false
         };
     }
 
@@ -64,14 +62,5 @@ export class Scanner extends React.Component {
         });
         return false;
     };
-
-    render() {
-
-        return {
-            open: this.open,
-            scanned: this.scanned,
-            close: this.close,
-        }
-    }
 }
 
