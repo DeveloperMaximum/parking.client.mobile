@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from "react-router";
 
 import { Request } from "../../components/utils/Request";
+import { AppContext } from "../../components/App/AppContext";
 import {CarItem, Tapbar} from "../../components/App";
 
 export class Car extends React.Component {
 
-    APP;
+    static contextType = AppContext;
 
     constructor(props){
         super(props);
@@ -20,7 +21,7 @@ export class Car extends React.Component {
         return Request({
             METHOD: 'GET',
             URL: 'car/' + this.props.match.params.id,
-            USER: this.props.APP.storage.get('USER'),
+            USER: this.context.user.profile(),
         }).then((result) => {
             if(result.success === true){
                 this.onSetCar(result.data)
@@ -38,7 +39,7 @@ export class Car extends React.Component {
         return Request({
             METHOD: 'GET',
             URL: 'car/' + this.props.match.params.id,
-            USER: this.props.APP.storage.get('USER'),
+            USER: this.context.user.profile(),
         }).then((result) => {
             if(result.success === true){
                 this.onSetCar(result.data)

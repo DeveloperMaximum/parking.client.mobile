@@ -14,76 +14,72 @@ export class Tapbar extends React.Component {
         };
     }
 
-    setPrevActiveLink = async (elem = false) => {
-        if(elem && elem.classList.contains('active')){
-            elem.classList.remove('active');
-            let elem_id = elem.getAttribute('id');
-            await this.setState((prevState) => ({
-                ...prevState,
-                prev: elem_id,
-            }));
-        }else{
-            document.getElementById(this.state.prev).classList.add('active');
-            await this.setState((prevState) => ({
-                ...prevState,
-                prev: false,
-            }));
+    componentWillUnmount() {
+        this.setState = (state, callback) => {
+            return false;
+        }
+    }
+
+    onNavLink = async () => {
+        if(this.state.wmenu === true){
+            await this.closeWMenu();
         }
 
-        return this.state.prev;
+        if(this.state.scanned === true){
+            await this.closeShutter();
+        }
+
+        await this.setState((prevState) => ({...prevState, scanned: false}));
+        await this.setState((prevState) => ({...prevState, wmenu: false}));
+        await this.setState((prevState) => ({...prevState, prev: false}));
+    };
+
+    toggleLinkActive = async (restore = false) => {
+        let elem = document.querySelector('footer menu .active');
+        if(elem && elem.nodeName === 'A'){
+            await this.setState((prevState) => ({...prevState, prev: elem}));
+            this.state.prev.classList.remove('active');
+        }else if(restore === true && this.state.prev !== false){
+            this.state.prev.classList.add('active');
+            await this.setState((prevState) => ({...prevState, prev: false}));
+        }
+        return elem;
     };
 
     openShutter = async () => {
+        await this.toggleLinkActive();
         await this.setState((prevState) => ({...prevState, scanned: true}));
-        await this.setPrevActiveLink(document.querySelector('footer menu .active'));
         document.getElementsByTagName('body')[0].classList.add('SCANNED');
-        await window.QRScanner.prepare(() => {
-            return window.QRScanner.show();
-        });
     };
 
     closeShutter = async () => {
+        await this.toggleLinkActive(true);
         await window.QRScanner.getStatus(status => {
-            if(status.scanned === true){
-                window.QRScanner.cancelScan();
-            }
-
-            if(status.showing === true){
-                window.QRScanner.hide();
-            }
-
+            if(status.scanned === true) window.QRScanner.cancelScan();
+            if(status.showing === true) window.QRScanner.hide();
             window.QRScanner.destroy();
 
-            this.setPrevActiveLink();
             this.setState((prevState) => ({...prevState, scanned: false}));
             document.getElementsByTagName('body')[0].classList.remove('SCANNED');
         });
     };
 
-    onNavLink = async () => {
-        if(this.state.wmenu === true){
-            await this.toggleWMenu();
-        }
-
-        if(this.state.scanned === true){
-            await this.toggleScanned();
-        }
-    };
-
     toggleScanned = async (e) => {
-        if(this.state.wmenu === true){
-            await this.toggleWMenu();
-        }
+        if(this.state.wmenu === true) await this.closeWMenu();
 
         if(this.state.scanned === false){
-            this.openShutter();
-            window.QRScanner.scan((err, content) => {
-                if(err && err.code !== 6){
-                    this.closeShutter();
-                }else if(content){
-                    let urlArray = content.split('/');
-                    return this.onSearched(urlArray[urlArray.length - 1]);
-                }
+            await this.openShutter();
+            await window.QRScanner.prepare(() => {
+                window.QRScanner.show();
+                window.QRScanner.scan((err, content) => {
+                    if(err){
+                        this.closeShutter();
+                        return false;
+                    }else if(content){
+                        let urlArray = content.split('/');
+                        return this.onSearched(urlArray[urlArray.length - 1]);
+                    }
+                });
             });
         }else{
             await this.closeShutter();
@@ -92,22 +88,19 @@ export class Tapbar extends React.Component {
         return this.state.scanned;
     };
 
+    openWMenu = async () => {
+        await this.toggleLinkActive();
+        this.setState((prevState) => ({...prevState, wmenu: true}));
+    };
+
+    closeWMenu = async () => {
+        await this.toggleLinkActive(true);
+        this.setState((prevState) => ({...prevState, wmenu: false}));
+    };
+
     toggleWMenu = async () => {
-        if(this.state.scanned === true){
-            await this.toggleScanned();
-        }
-
-        await this.setState((prevState) => ({
-            ...prevState,
-            wmenu: (!this.state.wmenu),
-        }));
-
-        if(this.state.wmenu === true){
-            await this.setPrevActiveLink(document.querySelector('footer menu .active'));
-        }else{
-            await this.setPrevActiveLink();
-        }
-
+        if(this.state.scanned === true) await this.closeShutter();
+        (this.state.wmenu === false) ? await this.openWMenu() : await this.closeWMenu();
         return this.state.wmenu;
     };
 
@@ -162,18 +155,18 @@ export class Tapbar extends React.Component {
                                 Заявки по автомобилям
                                 <span className="after">2</span>
                             </a>
-                            <a href="#" className="menu-item">
+                            <NavLink activeclassname={'active'} to={"/settings"} className={"menu-item flex-fill"}>
                                 <span className="before">
                                     <i className="icon-settings" />
                                 </span>
                                 Настройки
-                            </a>
-                            <a href={"/pages/about"} className="menu-item">
+                            </NavLink>
+                            <NavLink activeclassname={'active'} to={"/pages/about"} className={"menu-item flex-fill"}>
                                 <span className="before">
                                     <i className="icon-error_outline" />
                                 </span>
                                 О приложении
-                            </a>
+                            </NavLink>
                         </div>
                     </div>
                 </menu>

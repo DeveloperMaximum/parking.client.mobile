@@ -1,12 +1,13 @@
 import React from 'react';
 
-import {SectorList, CarList, Search, Tapbar} from "../../components/App";
-import {Request} from "../../components/utils/Request";
+import { SectorList, CarList, Search, Tapbar } from "../../components/App";
+import { AppContext } from "../../components/App/AppContext";
+import { Request } from "../../components/utils/Request";
 
 
 export class Home extends React.Component {
 
-    APP;
+    static contextType = AppContext;
 
     constructor(props){
         super(props);
@@ -47,7 +48,7 @@ export class Home extends React.Component {
         return Request({
             URL: 'sector',
             METHOD: 'GET',
-            USER: this.props.APP.storage.get('USER'),
+            USER: this.context.user.profile(),
         }).then(result => {
             if(result.success === true){
                 this.onSetSectors(result.data);
@@ -69,11 +70,11 @@ export class Home extends React.Component {
                 <div id={"HOME"} className="root-component">
                     <header>
                         <div className="d-flex pb-2" onClick={() => this.props.history.push(`/profile`)}>
-                            <h1 className="d-inline-block">{this.props.APP.storage.get('USER').NAME}</h1>
+                            <h1 className="d-inline-block">{this.context.user.profile().NAME}</h1>
                             <i className="icon-chevron_right d-inline-block" />
                         </div>
 
-                        <Search onChange={this.onSetCars} APP={this.props.APP}/>
+                        <Search onChange={this.onSetCars} />
                     </header>
 
                     <main>

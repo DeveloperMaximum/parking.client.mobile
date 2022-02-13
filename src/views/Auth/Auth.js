@@ -1,11 +1,15 @@
-import React, { Component} from 'react';
+import React from 'react';
 import { Redirect } from "react-router-dom";
 
-import { Form, Input, InputPassword, Button } from "../../components/ui";
 import AppSendForm from "../../components/App/AppSendForm";
+import { AppContext } from "../../components/App/AppContext";
+
+import { Form, Input, InputPassword, Button } from "../../components/ui";
 
 
-export class Auth extends Component {
+export class Auth extends React.Component {
+
+    static contextType = AppContext;
 
     constructor(props){
         super(props);
@@ -22,15 +26,13 @@ export class Auth extends Component {
             },
             button: {
                 variant: 'primary'
-            },
-            toHome: false
+            }
         };
         this.handleChangeInput = this.handleChangeInput.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     componentDidMount() {
-        // todo: монтирование компонента
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -55,17 +57,13 @@ export class Auth extends Component {
 
     handleSubmit = async (e) => {
         e.preventDefault();
+
+        const { alert, user } = this.context;
+
         this.loadingToggle(true);
 
         return AppSendForm({
             form: e.target,
-            onError: () => {
-                this.props.onAlert({
-                    display: true,
-                    header: "Не удалось авторизоваться",
-                    content: "Логин или пароль не верны. Обратитесь в техническую поддержку",
-                });
-            },
             HEADERS: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json',
@@ -74,33 +72,20 @@ export class Auth extends Component {
             }
         }).then(result => {
             if(result === false){
-                this.props.onAlert({
-                    display: true,
-                    header: "Не удалось авторизоваться",
-                    content: "Логин или пароль не верны. Обратитесь в техническую поддержку",
-                });
+                alert.show({display: true, header: "Ошибка", content: "Проверьте правильность заполнения формы"});
             }else if (result.status === 401 || result.status === 400) {
-                this.props.onAlert({
-                    display: true,
-                    header: "Не удалось авторизоваться",
-                    content: "Логин или пароль не верны. Обратитесь в техническую поддержку",
-                });
+                alert.show({display: true, header: "Не удалось авторизоваться", content: "Логин или пароль не верны. Обратитесь в техническую поддержку"});
             } else if (result?.data) {
                 if (result.data?.USER) {
-                    let userArray = result.data.USER;
-                    if(userArray?.UF_TOKEN){
-                        this.props.login(userArray);
-                        this.setState((prevState) => ({
-                            ...prevState,
-                            toHome: true
-                        }));
+                    if(result.data.USER?.UF_TOKEN){
+                        user.login(result.data.USER);
                     }
                 }
             }
 
             this.loadingToggle(false);
         });
-    }
+    };
 
     loadingToggle(loading){
         this.setState({
@@ -111,15 +96,15 @@ export class Auth extends Component {
     }
 
     render(){
-        if (this.props.APP.auth !== false) {
+
+        if (this.context.user.isAuth()) {
             return (
                 <>
-                    <Redirect to={{pathname: "/"}} />
+                    <Redirect to={{pathname: "/home"}} />
                 </>
             );
-        }
-        return(
-            <>
+        }else{
+            return(
                 <div id="AUTH" className="root-component">
                     <div className="logos-container container d-inline-block">
                         <div className="logotype position-relative">
@@ -137,7 +122,7 @@ export class Auth extends Component {
                         <div>06053</div>
                     </div>
                 </div>
-            </>
-        );
+            );
+        }
     }
 }

@@ -1,36 +1,39 @@
-import React, { Component } from 'react';
-import { AppContext } from '../../App/AppContext';
+import React from 'react';
+import { AppConsumer } from "../../App/AppContext";
 
 
-export class Alert extends Component {
+export class Alert extends React.Component {
+
+    constructor(props){
+        super(props);
+    }
 
     render(){
-
         return (
-            <AppContext.Consumer>
-                {alert => (
+            <AppConsumer>
+                {({ alert }) => (
                     <>
-                        <div className={alert.display ? "modal-backdrop fade show" : 'modal-backdrop fade d-none'} />
-                        <div className={alert.display ? "modal fade show d-block" : 'modal fade show'}>
+                        <div className={alert._data.display ? "modal-backdrop fade show" : 'modal-backdrop fade d-none'} />
+                        <div className={alert._data.display ? "modal fade show d-block" : 'modal fade show'}>
                             <div className={"modal-dialog container"}>
                                 <div className={"modal-content"}>
                                     <div className={"modal-header border-white"}>
                                         <h5 className={"modal-title"}>
-                                            {alert.header}
+                                            {alert._data.header}
                                         </h5>
                                     </div>
                                     <div className={"modal-body"}>
-                                        {alert.content}
+                                        {alert._data.content}
                                     </div>
                                     <div className={"modal-footer border-white"}>
-                                        <button className={"btn btn-primary w-100 m-auto"} onClick={this.props.onClose}>Хорошо</button>
+                                        <button className={"btn btn-primary w-100 m-auto"} onClick={() => alert.hide()}>Хорошо</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </>
                 )}
-            </AppContext.Consumer>
+            </AppConsumer>
         );
     }
 }

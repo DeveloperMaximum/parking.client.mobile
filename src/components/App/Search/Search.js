@@ -1,11 +1,12 @@
 import React from 'react';
-import { Form, Input } from "../../ui";
+import { Form } from "../../ui";
 import { Request } from "../../utils/Request";
+import { AppContext } from "../AppContext";
 
 
 export class Search extends React.Component {
 
-    APP;
+    static contextType = AppContext;
 
     constructor(props) {
         super(props);
@@ -42,21 +43,15 @@ export class Search extends React.Component {
         }
     }
 
-    handleAbortSearch() {
-        // todo
-    }
-
     search = async val => {
+        const controller = new AbortController();
+
         let url = 'car/?LOGIC=SEARCH';
         let keys = ['VIN', 'VIN2', 'G_NUMBER', 'BRAND', 'MODEL'];
         for (let i = 0; i < keys.length; i++) {
             url += '&' + keys[i] + '=' + val;
         }
 
-        const user = this.props.APP.storage.get('USER');
-        const controller = new AbortController();
-        const signal = controller.signal;
-        signal.addEventListener('abort', this.handleAbortSearch);
         this.setState((prevState) => ({
             ...prevState,
             controller: controller,
@@ -68,7 +63,7 @@ export class Search extends React.Component {
                 URL: url,
                 METHOD: 'GET',
                 CONTROLLER: controller,
-                USER: user,
+                USER: this.context.user.profile(),
             });
         } catch(error) {
             console.log('Запрос прерван:', error.message);

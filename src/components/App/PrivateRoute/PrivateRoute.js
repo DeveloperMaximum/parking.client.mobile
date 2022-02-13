@@ -1,16 +1,21 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { Route, Redirect } from 'react-router-dom';
 
+import { AppContext } from "../index";
 
-export const PrivateRoute = ({ component: Component, APP, ...rest }) => {
+
+export const PrivateRoute = ({ component: Component, ...rest }) => {
+
+    const { user } = useContext(AppContext);
+
     return (<Route {...rest} render={props => (
-        (APP.auth === false) ? (
+        (!user.isAuth()) ? (
             <Redirect to={{
                 pathname: '/auth',
                 state: { from: props.location }
             }} />
         ) : (
-            <Component {...rest} {...props} APP={APP} />
+            <Component {...rest} {...props} />
         )
     )}/>)
 };

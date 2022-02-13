@@ -8,6 +8,8 @@ import { Car } from './Car/index'
 import { Profile } from './Profile/index'
 import { About } from './About/index'
 import { Auth } from './Auth/index'
+import { Settings } from './Settings/index'
+import { Location } from './Location/index'
 
 
-export { Auth, Forbidden, NotFound, Home, Profile, Map, More, Car, About, Default }
+export { Auth, Forbidden, NotFound, Home, Profile, Map, More, Car, Settings, Location, About, Default }
