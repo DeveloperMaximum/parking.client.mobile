@@ -1,5 +1,6 @@
 import React from "react";
 import {Alert} from "../ui/Alert";
+import {Confirm} from "../ui/Alert";
 import {Storage} from "./Storage";
 
 export const AppContext = React.createContext({});
@@ -20,7 +21,16 @@ export class AppProvider extends React.Component {
                 _data: {
                     header: "Внимание",
                     content: "",
-                    button: "Хорошо",
+                    display: false
+                }
+            },
+
+            confirm: {
+                show: this.toggleConfirm,
+                hide: this.toggleConfirm,
+                _data: {
+                    header: "Внимание",
+                    content: "",
                     display: false
                 }
             },
@@ -37,6 +47,7 @@ export class AppProvider extends React.Component {
 
     _user = () => this.state.user._data;
     _alert = () => this.state.alert._data;
+    _confirm = () => this.state.confirm._data;
 
     login = async (user = {}) => {
         this.storage.save('USER', user);
@@ -80,6 +91,20 @@ export class AppProvider extends React.Component {
         }));
     };
 
+    toggleConfirm = async (props) => {
+        await this.setState((prevState) => ({
+            ...prevState,
+            confirm: {
+                ...prevState.confirm,
+                _data: {
+                    ...prevState._data,
+                    display: !(this.state.confirm._data.display),
+                    ...props,
+                },
+            },
+        }));
+    };
+
     render() {
 
         return (
@@ -88,6 +113,7 @@ export class AppProvider extends React.Component {
                 {this.props.children}
 
                 <Alert />
+                <Confirm />
 
             </AppContext.Provider>
         );

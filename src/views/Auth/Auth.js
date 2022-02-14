@@ -15,11 +15,11 @@ export class Auth extends React.Component {
         super(props);
         this.state = {
             data: {
-                HTTP_LOGIN: {
+                LOGIN: {
                     value: '',
                     required: true,
                 },
-                HTTP_PASSWORD: {
+                PASSWORD: {
                     value: '',
                     required: true,
                 }
@@ -63,13 +63,7 @@ export class Auth extends React.Component {
         this.loadingToggle(true);
 
         return AppSendForm({
-            form: e.target,
-            HEADERS: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-                LOGIN: this.state.data.HTTP_LOGIN.value,
-                PASSWORD: this.state.data.HTTP_PASSWORD.value,
-            }
+            form: e.target
         }).then(result => {
             if(result === false){
                 alert.show({display: true, header: "Ошибка", content: "Проверьте правильность заполнения формы"});
@@ -97,6 +91,8 @@ export class Auth extends React.Component {
 
     render(){
 
+        const { confirm } = this.context;
+
         if (this.context.user.isAuth()) {
             return (
                 <>
@@ -113,13 +109,13 @@ export class Auth extends React.Component {
                         </div>
                     </div>
                     <Form method={"POST"} action="token" id="AUTH-FORM" className="container" onSubmit={this.handleSubmit}>
-                        <Input autoComplete={"off"} min={1} placeholder="Введите логин" type={"text"} name={"HTTP_LOGIN"} value={this.state.data.HTTP_LOGIN.value || ''} onChange={this.handleChangeInput} />
-                        <InputPassword autoComplete={"off"} min={1} placeholder="Введите пароль" name={"HTTP_PASSWORD"} value={this.state.data.HTTP_PASSWORD.value || ''} onChange={this.handleChangeInput} />
+                        <Input autoComplete={"off"} min={1} placeholder="Введите логин" type={"text"} name={"LOGIN"} value={this.state.data.LOGIN.value || ''} onChange={this.handleChangeInput} />
+                        <InputPassword autoComplete={"off"} min={1} placeholder="Введите пароль" name={"PASSWORD"} value={this.state.data.PASSWORD.value || ''} onChange={this.handleChangeInput} />
                         <Button type={"submit"} text={"Войдите в систему"} form={"AUTH-FORM"} variant={this.state.button.variant}/>
                     </Form>
                     <div className="contact-info">
                         <div>При возникновении ошибок свяжитесь с нами по номеру телефона</div>
-                        <div>06053</div>
+                        <div onClick={() =>confirm.show({display: true})}>06053</div>
                     </div>
                 </div>
             );
