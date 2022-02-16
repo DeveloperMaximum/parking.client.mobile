@@ -6,7 +6,28 @@ export class Confirm extends React.Component {
 
     constructor(props){
         super(props);
+
+        this.callback = this.callback.bind(this);
     }
+
+    componentDidMount() {
+        this.setState((prevState) => ({
+            ...prevState,
+        }));
+    }
+
+    componentWillUnmount() {
+        this.setState = (state, callback) => {
+            return false;
+        }
+    }
+
+    callback = async (callback = false) => {
+        if(callback !== false){
+            await callback();
+        }
+        this.context.confirm.hide();
+    };
 
     render(){
         return (
@@ -26,8 +47,11 @@ export class Confirm extends React.Component {
                                         {confirm._data.content}
                                     </div>
                                     <div className={"modal-footer border-white"}>
-                                        <button className={"btn btn-primary w-50 m-auto"} onClick={() => confirm.hide()}>Хорошо</button>
-                                        <button className={"btn btn-blue w-50 m-auto"} onClick={() => confirm.hide()}>Отменить</button>
+                                        <button className={"btn btn-primary"} onClick={async () => {
+                                            await confirm._data.callback();
+                                            confirm.hide();
+                                        }}>{confirm._data.success}</button>
+                                        <button className={"btn btn-info"} onClick={() => confirm.hide()}>{confirm._data.cancel}</button>
                                     </div>
                                 </div>
                             </div>

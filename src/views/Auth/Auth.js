@@ -115,7 +115,10 @@ export class Auth extends React.Component {
                     </Form>
                     <div className="contact-info">
                         <div>При возникновении ошибок свяжитесь с нами по номеру телефона</div>
-                        <div onClick={() =>confirm.show({display: true})}>06053</div>
+                        <div onClick={() =>confirm.show({
+                            header: 'Вы уверены?',
+                            content: 'true'
+                        })}>06053</div>
                     </div>
                 </div>
             );

@@ -14,7 +14,8 @@ export const Map = (props) => {
 
     const [map, setMap] = useState('https://parking.mxmit.ru/demo/maps/map.svg');
     const maps = [
-        'https://parking.mxmit.ru/demo/maps/map.svg'
+        'https://parking.mxmit.ru/demo/maps/map.svg',
+        'https://parking.mxmit.ru/demo/maps/sector-1.svg'
     ];
 
     const options = maps.map((text, index) => {
@@ -22,22 +23,6 @@ export const Map = (props) => {
     });
 
     const [tile, setTile] = useState(null);
-
-    function handleChangeMap(event) {
-        setMap(maps[event.target.value]);
-    }
-
-    function getSVG(url, fileName) {
-        return ''
-    }
-
-    const handlePan = (e) => {
-        console.log('handlePan');
-    };
-
-    const handleMouseDown = (e) => {
-        console.log('handleMouseDown');
-    };
 
     const handleTouchEnd = (e) => {
         if(typeof e.value !== 'undefined' && (e.value.startX === e.value.endX && e.value.startY === e.value.endY)){
@@ -90,11 +75,9 @@ export const Map = (props) => {
                                 ref={Viewer}
                                 tool={tool} onChangeTool={setTool}
                                 value={value} onChangeValue={setValue}
-                                onPan={event => handlePan(event)}
                                 onTouchEnd={event => handleTouchEnd(event)}
-                                onMouseDown={event => handleMouseDown(event)}
-                                width={window.innerWidth} height={window.innerHeight}>
-                                <svg width={500} height={500} >
+                                width={window.innerWidth} height={window.innerHeight - 54}>
+                                <svg width={1292} height={806} >
                                     {content}
                                 </svg>
                             </ReactSVGPanZoom>

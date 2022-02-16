@@ -12,6 +12,17 @@ export class Settings extends React.Component {
         super(props);
     }
 
+    clearCache = async () => {
+        const { confirm } = this.context;
+        await confirm.show({
+            header: "Сбросить кеш?",
+            content: "Вы действительно хотите очистить кеш приложения?",
+            success: "Сбросить",
+            cancel: "Нет",
+            callback: () => this.context.user.logout()
+        });
+    };
+
     render() {
 
         return (
@@ -27,7 +38,7 @@ export class Settings extends React.Component {
 
                         <div className="content-wrapper">
                             <div className="settings-wrapper">
-                                <div className="item" onClick={this.context.user.logout}>
+                                <div className="item" onClick={this.clearCache}>
                                     <div className="name">Сбросить кеш</div>
                                     <div className="description">Очистка приложения от кешируемых данных. После очистки необходимо заново пройти авторизацию</div>
                                     <div className="link">Очистить кеш</div>

@@ -11,6 +11,17 @@ export class Profile extends React.Component {
         super(props);
     }
 
+    logout = async () => {
+        const { confirm } = this.context;
+        await confirm.show({
+            header: "Выйти из приложения",
+            content: "Вы действительно хотите покинуть приложение?",
+            success: "Да, выйти",
+            cancel: "Нет",
+            callback: () => this.context.user.logout()
+        });
+    };
+
     render() {
         const profile = this.context.user.profile();
 
@@ -27,13 +38,13 @@ export class Profile extends React.Component {
                     <main>
                         <div className="profile-info d-flex bg-info">
                             <div className="thumb">
-                                <img src="img/avatar.png"/>
+                                <img src={profile.PERSONAL_PHOTO}/>
                             </div>
                             <div className="fullname">
                                 <div>{profile.LAST_NAME}</div>
                                 <div>{profile.NAME}</div>
                                 <div>{profile.SECOND_NAME}</div>
-                                <span className="exit d-block" onClick={this.context.user.logout}>Выйти из приложения</span>
+                                <span className="exit d-block" onClick={this.logout}>Выйти из приложения</span>
                             </div>
                         </div>
                     </main>

@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from "react-router-dom";
 
 
 export class List extends React.Component {
@@ -66,7 +67,7 @@ export class List extends React.Component {
             <div className="sectors-wrapper">
                 <div className="sectors-list">
                     {items.map((item, index) => (
-                        <div className={"sector-item " + this.typeNotice(item.CAR_NECESSITATE_TOTAL)} key={index}>
+                        <Link to={"/sector/" + item.ID} className={"d-block sector-item " + this.typeNotice(item.CAR_NECESSITATE_TOTAL)} key={index}>
                             <div className="d-flex">
                                 <div className="sector-name ">{item.NAME}</div>
                             </div>
@@ -75,7 +76,7 @@ export class List extends React.Component {
                                 {this.carTotal(item.CAR_TOTAL)}
                                 {this.carNecessitateTotal(item.CAR_NECESSITATE_TOTAL)}
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
             </div>

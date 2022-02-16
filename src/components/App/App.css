@@ -1,3 +1,20 @@
 video {
     z-index: 15 !important;
 }
+
+.profile-info .thumb img {
+    width: 100%;
+    border-radius: 50%;
+}
+
+.modal .modal-dialog {
+    margin-top: 30%;
+}
+
+.modal .modal-footer button {
+    width: 45%;
+}
+
+#LOCATION main .location-wrapper .items .item .checkbox {
+    z-index: -1;
+}

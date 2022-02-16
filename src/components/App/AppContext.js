@@ -1,7 +1,7 @@
 import React from "react";
-import {Alert} from "../ui/Alert";
-import {Confirm} from "../ui/Alert";
-import {Storage} from "./Storage";
+import { Storage } from "./Storage";
+import { Alert, Confirm } from "../ui/Alert";
+import {Request} from "../utils/Request";
 
 export const AppContext = React.createContext({});
 
@@ -19,7 +19,7 @@ export class AppProvider extends React.Component {
                 show: this.toggleAlert,
                 hide: this.toggleAlert,
                 _data: {
-                    header: "Внимание",
+                    header: "Внимание!",
                     content: "",
                     display: false
                 }
@@ -29,7 +29,8 @@ export class AppProvider extends React.Component {
                 show: this.toggleConfirm,
                 hide: this.toggleConfirm,
                 _data: {
-                    header: "Внимание",
+                    callback: false,
+                    header: "Вы уверены?",
                     content: "",
                     display: false
                 }
@@ -40,6 +41,7 @@ export class AppProvider extends React.Component {
                 logout: this.logout,
                 isAuth: this.isAuth,
                 profile: this.profile,
+                setLocation: this.setLocation,
                 _data: this.storage.get('USER')
             },
         };
@@ -76,6 +78,33 @@ export class AppProvider extends React.Component {
     };
 
     profile = () => this.state.user._data;
+
+    setLocation = async (location_id) => {
+        await Request({
+            METHOD: 'PUT',
+            URL: `user/${this.state.user._data.ID}/location`,
+            USER: this.state.user._data,
+            BODY: {
+                UF_LOCATION: location_id
+            }
+        }).then((result) => {
+            if(result.success === true){
+                this.setState((prevState) => ({
+                    ...prevState,
+                    user: {
+                        ...prevState.user,
+                        _data: {
+                            ...prevState.user._data,
+                            UF_LOCATION: result.data.UF_LOCATION,
+                        },
+                    },
+                }));
+                let user = this.storage.get('USER');
+                user.UF_LOCATION = result.data.UF_LOCATION;
+                this.storage.save('USER', user);
+            }
+        });
+    };
 
     toggleAlert = async (props) => {
         await this.setState((prevState) => ({
