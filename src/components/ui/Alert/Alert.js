@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { AppConsumer } from "../../App/AppContext";
 
 
@@ -11,7 +12,7 @@ export class Alert extends React.Component {
     render(){
         return (
             <AppConsumer>
-                {({ alert }) => (
+                {({ confirm, alert }) => (
                     <>
                         <div className={alert._data.display ? "modal-backdrop fade show" : 'modal-backdrop fade d-none'} />
                         <div className={alert._data.display ? "modal fade show d-block" : 'modal fade show'}>

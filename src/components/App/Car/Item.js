@@ -3,14 +3,22 @@ import React from 'react';
 
 export const Item = (props) => {
 
+    let icon = 'mood';
+    let textStatus = 'Готов к просмотру';
+    if(props.item?.NECESSITATE_TOTAL > 0){
+        icon = 'build';
+        textStatus = 'Нуждается в ремонте';
+    }
+
     return (
+
         <>
-            <div className="car-info danger">
+            <div className={"car-info"}>
                 <div className="status-wrapper bg-info">
-                    <i className="icon icon-build" />
+                    <i className={`icon icon-${icon}`} />
                     <span>Статус</span>
                     <div className="status-text">
-                        &mdash;
+                        {textStatus}
                     </div>
                 </div>
 
@@ -23,7 +31,7 @@ export const Item = (props) => {
 
                 <div className="prop">
                     <span>Парковочное место</span>
-                    <div>{props.item.SECTOR_NAME} , место {props.item.PLACE_ID}</div>
+                    <div>{props.item.SECTOR_NAME}, место {props.item.PLACE_ID}</div>
                 </div>
 
                 <div className="d-flex justify-content-between">

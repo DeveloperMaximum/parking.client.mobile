@@ -1,9 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from "react-router";
+import React from 'react';
 
-import { Request } from "../../components/utils/Request";
 import { AppContext } from "../../components/App/AppContext";
-import {CarItem, Tapbar} from "../../components/App";
+import { Request } from "../../components/utils/Request";
+import { Header } from "../../components/base/Header";
+import { Footer } from "../../components/base/Footer";
+import { View } from "../../components/base/View";
+
+import { CarItem } from "../../components/App";
+
 
 export class Car extends React.Component {
 
@@ -57,24 +61,25 @@ export class Car extends React.Component {
     render() {
 
         return (
-            <>
-                <div id="CAR" className="root-component">
-                    <header>
-                        <div className="d-flex">
-                            <h1 className="d-inline-block">Карточка автомобиля</h1>
-                        </div>
-                    </header>
+            <View
+                viewId={"CAR"}
+            >
+                <Header>
+                    <div className="d-flex">
+                        <h1 className="d-inline-block">Карточка автомобиля</h1>
+                    </div>
+                </Header>
 
-                    <main>
-                        {this.state.car === null ? (
-                            <div>Готовим автомоибль к осмотру ...</div>
-                        ) : (
-                            <CarItem item={this.state.car}/>
-                        )}
-                    </main>
-                </div>
-                <Tapbar history={this.props.history} APP={this.props.APP}/>
-            </>
+                <main>
+                    {this.state.car === null ? (
+                        <div>Готовим автомоибль к осмотру ...</div>
+                    ) : (
+                        <CarItem item={this.state.car}/>
+                    )}
+                </main>
+
+                <Footer history={this.props.history} />
+            </View>
         );
     }
 }

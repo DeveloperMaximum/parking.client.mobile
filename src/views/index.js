@@ -1,15 +1,12 @@
 import { Default } from './Home/index'
-import { Forbidden } from './Forbidden/index'
-import { NotFound } from './NotFound/index'
 import { Home } from './Home/index'
-import { Map } from './Map/index'
-import { More } from './More/index'
-import { Car } from './Car/index'
 import { Profile } from './Profile/index'
 import { About } from './About/index'
 import { Auth } from './Auth/index'
-import { Settings } from './Settings/index'
-import { Location } from './Location/index'
+import { NotFound, Forbidden } from './Errors/index'
+import { Car } from './Catalog/index'
+import { Map, Sector } from './Map/index'
+import { Settings, Location, Manager } from './Settings/index'
 
 
-export { Auth, Forbidden, NotFound, Home, Profile, Map, More, Car, Settings, Location, About, Default }
+export { Auth, Forbidden, NotFound, Home, Profile, Map, Car, Settings, Manager, Location, About, Default, Sector }

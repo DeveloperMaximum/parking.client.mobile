@@ -1,7 +1,7 @@
 
 
 export function Request (props) {
-    let method = (props?.METHOD) ? props.METHOD : 'PUT';
+    let method = (props?.METHOD) ? props.METHOD : 'GET';
     let domain = (props?.DOMAIN) ? props.DOMAIN : 'https://parking.mxmit.ru/api/';
 
     let headers = {};

@@ -1,6 +1,5 @@
 import React from 'react';
 import {Link} from "react-router-dom";
-import {CarItem} from "../index";
 
 
 export class List extends React.Component {
@@ -29,7 +28,7 @@ export class List extends React.Component {
             <div className="cars-wrapper">
                 <div className="cars-list">
                     {this.props.items.map((item, index) => (
-                        <Link to={"/car/" + item.ID} className={"d-block car-item " + this.typeNotice(item.NECESSITATE_TOTAL)} key={index}>
+                        <Link to={"/catalog/car/" + item.ID} className={"d-block car-item " + this.typeNotice(item.NECESSITATE_TOTAL)} key={index}>
                             <div className="d-flex">
                                 <div className="car-notice">{this.titleNotice(item.NECESSITATE_TOTAL)}</div>
                             </div>

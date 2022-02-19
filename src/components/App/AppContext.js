@@ -1,9 +1,10 @@
 import React from "react";
 import { Storage } from "./Storage";
 import { Alert, Confirm } from "../ui/Alert";
-import {Request} from "../utils/Request";
+import { Request } from "../utils/Request";
 
 export const AppContext = React.createContext({});
+
 
 export class AppProvider extends React.Component {
 
@@ -62,9 +63,9 @@ export class AppProvider extends React.Component {
         }));
     };
 
-    logout = async () => {
+    logout = () => {
         this.storage.remove('USER');
-        await this.setState((prevState) => ({
+        this.setState((prevState) => ({
             ...prevState,
             user: {
                 ...prevState.user,
@@ -80,7 +81,7 @@ export class AppProvider extends React.Component {
     profile = () => this.state.user._data;
 
     setLocation = async (location_id) => {
-        await Request({
+        return await Request({
             METHOD: 'PUT',
             URL: `user/${this.state.user._data.ID}/location`,
             USER: this.state.user._data,
@@ -102,6 +103,7 @@ export class AppProvider extends React.Component {
                 let user = this.storage.get('USER');
                 user.UF_LOCATION = result.data.UF_LOCATION;
                 this.storage.save('USER', user);
+                return true;
             }
         });
     };

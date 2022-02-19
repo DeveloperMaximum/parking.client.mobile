@@ -1,9 +1,10 @@
 import React from 'react';
-import {NavLink} from 'react-router-dom';
-import {Request} from "../../utils/Request";
+import { NavLink } from "react-router-dom";
+
+import  {Request } from "../utils/Request";
 
 
-export class Tapbar extends React.Component {
+export class Footer extends React.Component {
 
     constructor(props) {
         super(props);

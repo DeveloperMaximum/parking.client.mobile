@@ -13,7 +13,9 @@ document.addEventListener(
     () => {
 
         document.addEventListener("backbutton", onBackKeyDown, false);
-        ReactDOM.render(<App />,  document.getElementById("APP"));
+        ReactDOM.render(
+            <App />,  document.getElementById("APP")
+        );
     },
     false
 );

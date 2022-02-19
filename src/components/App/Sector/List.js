@@ -67,7 +67,7 @@ export class List extends React.Component {
             <div className="sectors-wrapper">
                 <div className="sectors-list">
                     {items.map((item, index) => (
-                        <Link to={"/sector/" + item.ID} className={"d-block sector-item " + this.typeNotice(item.CAR_NECESSITATE_TOTAL)} key={index}>
+                        <Link to={"/map/sector/" + item.ID} className={"d-block sector-item " + this.typeNotice(item.CAR_NECESSITATE_TOTAL)} key={index}>
                             <div className="d-flex">
                                 <div className="sector-name ">{item.NAME}</div>
                             </div>
