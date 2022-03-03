@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect} from "react";
 
-import { View } from "../../components/base/View";
-import { Header } from "../../components/base/Header";
-import { Footer } from "../../components/base/Footer";
+import { Root } from "../../components/ui/Root/Root";
+import { Header } from "../../components/ui/Header/Header";
+import { Footer } from "../../components/ui/Footer/Footer";
 
 import { ReactSvgPanZoomLoader } from 'react-svg-pan-zoom-loader'
 import { INITIAL_VALUE, TOOL_AUTO, ReactSVGPanZoom } from 'react-svg-pan-zoom';
@@ -34,7 +34,7 @@ export const Map = (props) => {
     }, []);
 
     return (
-        <View
+        <Root
             h1={"Карта локации"}
             viewId={"MAP"}
         >
@@ -62,6 +62,6 @@ export const Map = (props) => {
             </main>
 
             <Footer history={props.history} />
-        </View>
+        </Root>
     );
 }

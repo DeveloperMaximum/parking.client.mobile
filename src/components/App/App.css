@@ -1,12 +1,117 @@
-video {
-    z-index: 15 !important;
+html body #APP #AUTH.root-component {
+    position: relative;
+    z-index: 25;
 }
 
-.profile-info .thumb img {
+#APP .camera {
+
+}
+
+#APP .camera .spinner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 20;
+    width: 150px;
+    height: 150px;
+    margin-top: -75px;
+    margin-left: -75px;
+}
+
+#APP .camera.active .spinner {
+    width: 0;
+    height: 0;
+    border: 0;
+    transition: .5s;
+}
+
+#APP .camera .tools {
+
+}
+
+#APP .camera .opacity {
+    position: absolute;
+    z-index: 20;
+    top: 0;
+    left: 0;
     width: 100%;
-    border-radius: 50%;
+    height: 100vh;
+    margin: 0 auto;
+    overflow: hidden;
 }
 
-#LOCATION main .location-wrapper .items .item .checkbox {
-    z-index: -1;
+#APP .camera .opacity:after {
+    content: "";
+    position: absolute;
+    z-index: 20;
+    left: 50%;
+    top: 50%;
+    width: 0;
+    height: 0;
+    transition: .7s;
+    border-radius: 16px;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 2000px rgba(0, 0, 0, 0.3);
+}
+
+#APP .camera.active.scanned .opacity:after {
+    width: 35vh;
+    height: 35vh;
+    max-width: 250px;
+    max-height: 250px;
+}
+
+#APP .widget-high .content {
+    min-height: 98vh;
+    max-height: 98vh;
+    overflow-y: scroll;
+}
+
+#APP .widget-high .car .car-props {
+    box-shadow: none;
+}
+
+@keyframes text-loading {
+    0% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0 50%;
+    }
+}
+
+.text-loading {
+    color: transparent;
+    background: linear-gradient(100deg, #eceff1 0%, #f6f7f8 50%, #eceff1 100%);
+    animation: text-loading 1.2s ease-in-out infinite;
+    background-size: 500%;
+}
+
+.cars .item .bg-info {
+    font-size: 11px;
+    border-radius: 8px;
+}
+
+.cars .item .bg-info i {
+    position: relative;
+    top: 2px;
+    font-size: 16px;
+}
+
+html body #APP .root-component#PARKING {
+    position: absolute !important;
+    z-index: 50;
+    top: 0;
+    right: -100vh;
+    height: 100vh;
+    transition: .3s;
+    background-color: #fff !important;
+}
+
+html body #APP .root-component#PARKING.active {
+    right: 0;
+}
+
+html body #APP .root-component#PARKING main {
+    padding-bottom: 0;
 }

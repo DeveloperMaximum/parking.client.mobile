@@ -1,58 +1,57 @@
 import React from 'react';
 
-import { AppContext } from "../../components/App/AppContext";
-import { View } from "../../components/base/View";
-import { Header } from "../../components/base/Header";
-import { Footer } from "../../components/base/Footer";
+import { Context } from "../../components/base/Context";
+import { Root } from "../../components/ui/Root/Root";
+import { Header } from "../../components/ui/Header/Header";
+import { Footer } from "../../components/ui/Footer/Footer";
+import {DB as ApiDB} from "../../components/App/Api/DB";
 
 export class Manager extends React.Component {
 
-    static contextType = AppContext;
+    static contextType = Context;
 
     constructor(props){
         super(props);
     }
 
     render() {
+        const { confirm, alert } = this.context;
 
         return (
-            <View
+            <Root
                 viewId={"MANAGER"}
             >
                 <Header>
                     <div className="d-flex" onClick={() => this.props.history.push(`/settings`)}>
                         <i className="icon icon-chevron_left d-inline-block" />
-                        <h1 className="d-inline-block d-inline-block">Смена локации</h1>
+                        <h1 className="d-inline-block d-inline-block">Интерфейс администратора</h1>
                     </div>
                 </Header>
 
                 <main>
                     <div className="content-wrapper">
-                        <div className="settings-wrapper">
 
-                            <div className="item" onClick={() => this.props.history.push(`/location`)}>
-                                <div className="name">Управление локациями</div>
-                                <div className="description">
-
-                                </div>
-                                <div className="link">Перейти</div>
-
-                            </div>
-
-                            <div className="item" onClick={() => this.props.history.push(`/location`)}>
-                                <div className="name">Управление секторами</div>
-                                <div className="description">
-
-                                </div>
-                                <div className="link">Перейти</div>
-
+                        <div className="card">
+                            <div className="card-body" onClick={() => this.props.history.push(`/settings/manager/tech`)}>
+                                <div className="card-title">Техническая информация</div>
+                                <div className="card-text">Инструмент для отладки frontend'a</div>
+                                <div className="card-link">Запустить</div>
                             </div>
                         </div>
+
+                        <div className="card">
+                            <div className="card-body">
+                                <div className="card-title">Обновить базу данных</div>
+                                <div className="card-text">Обновление данных путем получения и замены (без удаления) актуальной версии БД. ПОтребуется перезагрузка прилоежния</div>
+                                <div className="card-link">Обновить</div>
+                            </div>
+                        </div>
+
                     </div>
                 </main>
 
                 <Footer history={this.props.history} />
-            </View>
+            </Root>
         );
     }
 }

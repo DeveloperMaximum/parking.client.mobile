@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { View } from "../../components/base/View";
-import { Header } from "../../components/base/Header";
-import { Footer } from "../../components/base/Footer";
+import { Root } from "../../components/ui/Root/Root";
+import { Header } from "../../components/ui/Header/Header";
+import { Footer } from "../../components/ui/Footer/Footer";
 
 
 export class About extends React.Component {
@@ -10,7 +10,7 @@ export class About extends React.Component {
     render(){
 
         return (
-            <View
+            <Root
                 viewId={"ABOUT"}
             >
                 <Header>
@@ -43,7 +43,7 @@ export class About extends React.Component {
                 </main>
 
                 <Footer history={this.props.history} />
-            </View>
+            </Root>
         );
     }
 }

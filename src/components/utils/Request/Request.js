@@ -1,26 +1,33 @@
+import * as Storage from "../../base/Storage";
+import { DB } from "../../App/Api";
 
+export async function Request (props) {
 
-export function Request (props) {
-    let method = (props?.METHOD) ? props.METHOD : 'GET';
-    let domain = (props?.DOMAIN) ? props.DOMAIN : 'https://parking.mxmit.ru/api/';
+    let settings, domain, method, headers;
 
-    let headers = {};
-    if(props.USER && props.USER?.UF_TOKEN){
-        headers = (props?.HEADERS) ? props.HEADERS : {
+    if(props?.DOMAIN) {
+        domain = props.DOMAIN;
+    }else{
+        domain = 'https://parking.mxmit.ru/api/';
+        headers = {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
-            'UF-TOKEN': props.USER.UF_TOKEN
-        };
-    }else{
-        headers = (props?.HEADERS) ? props.HEADERS : {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'DB-VER': Storage.get('DB_VER'),
+            'OPERATOR-VER': Storage.get('OPERATOR_VER'),
+            'UF-TOKEN': Storage.get('UF_TOKEN')
+        }
+    }
+
+    method = (props?.METHOD) ? props.METHOD : 'GET';
+
+    if(props?.HEADERS) {
+        headers = {
+            ...headers,
+            ...props.HEADERS,
         };
     }
 
-    let url =  domain + props.URL;
-
-    let settings = {
+    settings = {
         method: method,
         headers: new Headers(headers),
     };
@@ -33,14 +40,33 @@ export function Request (props) {
         settings.body = JSON.stringify(props.BODY);
     }
 
-    return fetch(url, settings).then(function(result){
-        if(result.status !== 200){
-            return {
-                status: result.status,
-                success: false,
-                data: result.data
-            };
+    const response = async (result) => {
+        if(result.status === 426){
+            await DB.get().then((result) => {
+                if(result !== false){
+                    Object.keys(result).forEach((key) => {
+                        Storage.save(key, result[key]);
+                    });
+                    alert('База данных сервиса была обновлена, приложение будет перезапущено!');
+                    document.location.reload();
+                }
+                return result;
+            });
+            return false;
         }
+
+        if(result.status === 204){
+            return { status: result.status, success: true, data: [] };
+        }
+
         return result.json();
-    });
+    };
+
+    const request = async () => {
+        return fetch(domain + props.URL, settings).then(function(result){
+            return response(result);
+        });
+    };
+
+    return request();
 }

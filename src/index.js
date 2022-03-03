@@ -8,14 +8,11 @@ function onBackKeyDown(e) {
     e.preventDefault();
 }
 
-document.addEventListener(
-    "deviceready",
-    () => {
+function onDeviceReady(e) {
+    ReactDOM.render(
+        <App />,  document.getElementById("APP")
+    );
+    document.addEventListener("backbutton", onBackKeyDown, false);
+}
 
-        document.addEventListener("backbutton", onBackKeyDown, false);
-        ReactDOM.render(
-            <App />,  document.getElementById("APP")
-        );
-    },
-    false
-);
+document.addEventListener("deviceready", onDeviceReady, false);

@@ -1,6 +1,6 @@
 import React from 'react';
-import { AppConsumer } from "../../App/AppContext";
-import {CarList, SectorList} from "../../App";
+
+import { Consumer } from "../../base/Context";
 
 
 export class Confirm extends React.Component {
@@ -34,8 +34,8 @@ export class Confirm extends React.Component {
     };
 
     callback = async (callback) => {
+        this.loading(true);
         return new Promise((resolve, reject) => {
-            this.loading(true);
             callback().then((result) => {
                 this.loading(false);
                 resolve(result);
@@ -45,7 +45,7 @@ export class Confirm extends React.Component {
 
     render(){
         return (
-            <AppConsumer>
+            <Consumer>
                 {({ confirm, alert }) => (
                     <>
                         <div className={confirm._data.display ? "modal-backdrop fade show" : 'modal-backdrop fade d-none'} />
@@ -59,7 +59,7 @@ export class Confirm extends React.Component {
                                     </div>
                                     {this.state.loading === true ? (
                                         <div className={"modal-body"}>
-                                            <div className={"loading"} />
+                                            <div className={"spinner"} />
                                         </div>
                                     ) : (
                                         <>
@@ -77,11 +77,9 @@ export class Confirm extends React.Component {
                                                                 display: true
                                                             });
                                                         }
-                                                    }).catch((error) => {
-                                                        console.log(error)
                                                     });
                                                 }}>{confirm._data.success}</button>
-                                                <button className={"btn btn-info"} onClick={() => confirm.hide()}>{confirm._data.cancel}</button>
+                                                <button className={"btn btn-secondary"} onClick={() => confirm.hide()}>{confirm._data.cancel}</button>
                                             </div>
                                         </>
                                     )}
@@ -90,7 +88,7 @@ export class Confirm extends React.Component {
                         </div>
                     </>
                 )}
-            </AppConsumer>
+            </Consumer>
         );
     }
 }

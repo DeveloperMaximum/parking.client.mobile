@@ -1,97 +1,63 @@
 import React from 'react';
 
-import { AppContext } from "../../components/App/AppContext";
-import { View } from "../../components/base/View";
-import { Header } from "../../components/base/Header";
-import { Footer } from "../../components/base/Footer";
+import { Context } from "../../components/base";
+import * as Storage from "../../components/base/Storage";
+import { Root, Header, Footer } from "../../components/ui";
 
 export class Location extends React.Component {
 
-    static contextType = AppContext;
+    static contextType = Context;
 
-    constructor(props){
-        super(props);
-        this.state = {
-            active: false,
-            locations: [],
-        };
-    }
-
-    componentDidMount = async () => {
-        this.setState((prevState) => ({
-            ...prevState,
-            locations: this.context.user.profile().OPERATOR.LOCATIONS
-        }));
-    };
-
-    componentWillUnmount() {
-        this.setState = (state, callback) => {
-            return false;
-        }
-    }
-
-    setLocation = async (e, id = false) => {
+    handleClick = async (e, id = false) => {
         e.persist();
-
-        const target = e.target;
-        const { confirm } = this.context;
-        await confirm.show({
+        await this.context.confirm.show({
             header: "Смена локации",
             content: `Вы хотите изменить выбранную локацию на ${e.target.innerText} ?`,
-            success: "Да, изменить",
+            success: "Да",
             cancel: "Нет",
             callback: async () => {
-                return this.context.user.setLocation(id).then((result) => {
-                    if(result === true){
-                        document.querySelector('.checkbox.active')?.classList.remove('active');
-                        target.nextSibling?.classList.add('active');
-                        this.setState((prevState) => ({
-                            ...prevState,
-                            active: target.nextSibling
-                        }));
-                        return "Локация сменена";
-                    }
-                    return "Не удалось сменить локацию";
-                });
+                this.context.user.setLocation(id);
+                return "Локация сменена";
             }
         });
     };
 
     render() {
 
-        const profile = this.context.user.profile();
+        const locations = Storage.get('MAP');
 
         return (
-            <View
-                viewId={"LOCATION"}
-            >
+            <Root viewId={"LOCATION"}>
                 <Header>
                     <div className="d-flex" onClick={() => this.props.history.push(`/settings`)}>
                         <i className="icon icon-chevron_left d-inline-block" />
-                        <h1 className="d-inline-block d-inline-block">Смена локации</h1>
+                        <h1 className="d-inline-block d-inline-block">Выберите локацию</h1>
                     </div>
                 </Header>
 
                 <main>
-                    <div className="location-wrapper">
-                        <div className="title">Выберите локацию</div>
-                        <div className="items">
-                            {this.state.locations.map((item, index) => (
-                                <div className="item" key={index} onClick={(e) => this.setLocation(e, item.ID)}>
+                    <div className="content-wrapper">
+                        {locations === false ? (
+                            <div className={"alert alert-warning"}>
+                                Локации не найдены
+                            </div>
+                        ) : (
+                            locations.map((item, index) => (
+                                <div className="card-checkbox" key={index} onClick={(e) => this.handleClick(e, item.ID)}>
                                     <div className="name">
                                         {item.NAME}
                                     </div>
-                                    <div className={(profile.UF_LOCATION === item.ID) ? 'checkbox active' : 'checkbox'}>
+                                    <div className={(this.context.user.UF_LOCATION === item.ID) ? 'checkbox active' : 'checkbox'}>
 
                                     </div>
                                 </div>
-                            ))}
-                        </div>
+                            ))
+                        )}
                     </div>
                 </main>
 
                 <Footer history={this.props.history} />
-            </View>
+            </Root>
         );
     }
 }

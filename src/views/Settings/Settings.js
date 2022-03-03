@@ -1,21 +1,20 @@
 import React from 'react';
 
-import { AppContext } from "../../components/App/AppContext";
-import { View } from "../../components/base/View";
-import { Header } from "../../components/base/Header";
-import { Footer } from "../../components/base/Footer";
+import { Context } from "../../components/base/Context";
+import { Root } from "../../components/ui/Root/Root";
+import { Header } from "../../components/ui/Header/Header";
+import { Footer } from "../../components/ui/Footer/Footer";
 
 export class Settings extends React.Component {
 
-    static contextType = AppContext;
+    static contextType = Context;
 
     constructor(props){
         super(props);
     }
 
     clearCache = () => {
-        const { confirm } = this.context;
-        confirm.show({
+        this.context.confirm.show({
             header: "Сбросить кеш?",
             content: "Вы действительно хотите очистить кеш приложения?",
             success: "Сбросить",
@@ -32,9 +31,7 @@ export class Settings extends React.Component {
     render() {
 
         return (
-            <View
-                viewId={"SETTINGS"}
-            >
+            <Root viewId={"SETTINGS"}>
                 <Header>
                     <div className="d-flex" onClick={() => this.props.history.push(`/`)}>
                         <i className="icon icon-chevron_left d-inline-block" />
@@ -44,36 +41,36 @@ export class Settings extends React.Component {
 
                 <main>
                     <div className="content-wrapper">
-                        <div className="settings-wrapper">
 
-                            <div className="item" onClick={this.clearCache}>
-                                <div className="name">Сбросить кеш</div>
-                                <div className="description">Очистка приложения от кешируемых данных. После очистки необходимо заново пройти авторизацию</div>
-                                <div className="link">Очистить кеш</div>
+                        <div className="card" onClick={this.clearCache}>
+                            <div className="card-body">
+                                <div className="card-title">Сбросить кеш</div>
+                                <div className="card-text">Очистка приложения от кешируемых данных. После очистки необходимо заново пройти авторизацию</div>
+                                <div className="card-link">Очистить кеш</div>
                             </div>
-
-                            <div className="item" onClick={() => this.props.history.push(`/settings/location`)}>
-                                <div className="name">Сменить локацию</div>
-                                <div className="description">Текст-подсказка о том, что это такое. Например, когда
-                                    вы поменете локацию, то произойдет смена карты или авто
-                                </div>
-                                <div className="link">Сменить локацию</div>
-                            </div>
-
-                            <div className="item" onClick={() => this.props.history.push(`/settings/manager`)}>
-                                <div className="name">Интерфейс администратора</div>
-                                <div className="description">
-                                    интерфейс для управления сущностями системы
-                                </div>
-                                <div className="link">Перейти</div>
-                            </div>
-
                         </div>
+
+                        <div className="card" onClick={() => this.props.history.push(`/settings/location`)}>
+                            <div className="card-body">
+                                <div className="card-title">Сменить локацию</div>
+                                <div className="card-text">Смена текущей локации.</div>
+                                <div className="card-link">Сменить</div>
+                            </div>
+                        </div>
+
+                        <div className="card" onClick={() => this.props.history.push(`/settings/manager`)}>
+                            <div className="card-body">
+                                <div className="card-title">Интерфейс менеджера</div>
+                                <div className="card-text">Административный интерфейс</div>
+                                <div className="card-link">Перейти</div>
+                            </div>
+                        </div>
+
                     </div>
                 </main>
 
                 <Footer history={this.props.history} />
-            </View>
+            </Root>
         );
     }
 }

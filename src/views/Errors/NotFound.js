@@ -1,14 +1,14 @@
 import React from 'react';
 
-import { View } from "../../components/base/View";
-import { Header } from "../../components/base/Header";
-import { Footer } from "../../components/base/Footer";
+import { Root } from "../../components/ui/Root/Root";
+import { Header } from "../../components/ui/Header/Header";
+import { Footer } from "../../components/ui/Footer/Footer";
 
 export class NotFound extends React.Component {
 
     render() {
         return (
-            <View
+            <Root
                 viewId={"NOT-FOUND"}
             >
                 <Header>
@@ -25,7 +25,7 @@ export class NotFound extends React.Component {
                 </main>
 
                 <Footer history={this.props.history} />
-            </View>
+            </Root>
         );
     }
 }
