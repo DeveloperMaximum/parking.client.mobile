@@ -36,6 +36,7 @@ export class Tech extends React.Component {
 
     render() {
 
+	    const device = window.device;
         const info = this.localStorageInfo();
 
         return (
@@ -51,6 +52,43 @@ export class Tech extends React.Component {
 
                 <main>
                     <div className="content-wrapper">
+                        <table className="table table-bordered w-100">
+                            <thead>
+                                <tr>
+                                    <th colSpan={"2"}>Device info</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th>Name</th>
+                                    <td className={"text-right"}>{`${device.model}`}</td>
+                                </tr>
+                                <tr>
+                                    <th>Platform</th>
+                                    <td className={"text-right"}>{`${device.platform}`}</td>
+                                </tr>
+                                <tr>
+                                    <th>UUID</th>
+                                    <td className={"text-right"}>{`${device.uuid}`}</td>
+                                </tr>
+                                <tr>
+                                    <th>Version</th>
+                                    <td className={"text-right"}>{`${device.version}`}</td>
+                                </tr>
+                                <tr>
+                                    <th>Manufacturer</th>
+                                    <td className={"text-right"}>{`${device.manufacturer}`}</td>
+                                </tr>
+                                <tr>
+                                    <th>Serial</th>
+                                    <td className={"text-right"}>{`${device.serial}`}</td>
+                                </tr>
+                                <tr>
+	                                <th>Cordova</th>
+	                                <td className={"text-right"}>{`${device.cordova}`}</td>
+                                </tr>
+                            </tbody>
+                        </table>
                         <table className="table table-bordered w-100">
                             <thead>
                                 <tr>

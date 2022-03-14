@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Consumer } from "../../base/Context";
+import { ParkingConsumer } from "../../base/Context/Parking";
 import { Header } from "../../ui/Header";
 import { List } from "../../App/Sector/Parking"
 import { Root } from "../../ui/Root";
@@ -11,21 +11,27 @@ export class Parking extends React.Component {
 	render() {
 
 		return (
-			<Consumer>
-				{({ car }) => (
-					<Root viewId={"PARKING"} active={car._data.parking}>
+			<ParkingConsumer>
+				{({ data }) => (
+					<Root viewId={"PARKING"} active={data.process}>
 						<Header>
 							<div className="d-flex">
-								<h1 className="d-inline-block">Выберите сектор</h1>
+								<h1 className="d-inline-block">
+									{data.sector_id > 0 ? (
+										<>Выберите место</>
+									) : (
+										<>Выберите сектор</>
+									)}
+								</h1>
 							</div>
 						</Header>
 						<main>
-							{car._data.parking === true && car._data.sectors ? (
+							{data.process === true ? (
 								<div className={"content-wrapper"}>
-									{car._data.sector_id > 0 ? (
-										<Table id={car._data.sector_id} />
+									{data.sector_id > 0 ? (
+										<Table id={data.sector_id} />
 									) : (
-										<List items={car._data.sectors}  car={car} />
+										<List items={data.sectors} />
 									)}
 								</div>
 							) : (
@@ -34,7 +40,7 @@ export class Parking extends React.Component {
 						</main>
 					</Root>
 				)}
-			</Consumer>
+			</ParkingConsumer>
 		);
 	}
 }

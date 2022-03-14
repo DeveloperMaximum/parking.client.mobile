@@ -6,10 +6,10 @@ import { Context } from "../../base/Context";
 
 export const PrivateRoute = ({ component: Component, ...rest }) => {
 
-    const { user } = useContext(Context);
+    const { isAuth } = useContext(Context);
 
     return (<Route {...rest} render={props => (
-        (!user.isAuth()) ? (
+        (!isAuth()) ? (
             <Redirect to={{
                 pathname: '/auth',
                 state: { from: props.location }

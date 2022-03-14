@@ -46,15 +46,15 @@ export class Alert extends React.Component {
     render(){
         return (
             <Consumer>
-                {({ alert }) => (
+                {({ data, alert }) => (
                     <>
-                        <div className={alert._data.display ? "modal-backdrop fade show" : 'modal-backdrop fade d-none'} />
-                        <div className={alert._data.display ? "modal fade show d-block" : 'modal fade show'}>
+                        <div className={data.alert.display ? "modal-backdrop fade show" : 'modal-backdrop fade d-none'} />
+                        <div className={data.alert.display ? "modal fade show d-block" : 'modal fade show'}>
                             <div className={"modal-dialog container"}>
                                 <div className={"modal-content"}>
                                     <div className={"modal-header border-white"}>
                                         <h5 className={"modal-title"}>
-                                            {alert._data.header}
+                                            {data.alert.header}
                                         </h5>
                                     </div>
                                     {this.state.loading === true ? (
@@ -64,19 +64,19 @@ export class Alert extends React.Component {
                                     ) : (
                                         <>
                                             <div className={"modal-body"}>
-                                                {alert._data.content}
+                                                {data.alert.content}
                                             </div>
                                             <div className={"modal-footer border-white"}>
                                                 <button className={"btn btn-primary w-100 m-auto"} onClick={async () => {
-                                                    if(alert._data.callback === false){
-                                                        alert.hide();
+                                                    if(data.alert.callback === false){
+	                                                    alert();
                                                         return true;
                                                     }
-                                                    this.callback(alert._data.callback).then((result) => {
-                                                        alert.hide();
+                                                    this.callback(data.alert.callback).then((result) => {
+	                                                    alert();
                                                         if(result !== true){
-                                                            alert.show({
-                                                                header: alert._data.header,
+	                                                        data.alert.show({
+                                                                header: data.alert.header,
                                                                 content: result,
                                                                 display: true
                                                             });

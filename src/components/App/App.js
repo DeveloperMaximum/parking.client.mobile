@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { HashRouter, Switch, Route } from "react-router-dom"
 
 import { Provider } from "../base/Context";
+import { ParkingProvider } from "../base/Context/Parking";
 import { PrivateRoute } from "../base/PrivateRoute";
 import * as View from "../../views";
 
@@ -29,14 +30,16 @@ export class App extends Component {
 
                         <PrivateRoute exact path="/pages/about" component={View.About} />
 
-                        <PrivateRoute exact path="/map" component={View.Map} />
-                        <PrivateRoute path="/map/sector/:id" component={View.Sector} />
-
-	                    <PrivateRoute path="/catalog/tdrive" component={View.Tdrive} />
-                        <PrivateRoute path="/catalog/car/:id" component={View.Car} />
-
                         <Route exact path="/auth" component={View.Auth} />
                         <Route exact path="/forbidden" component={View.Forbidden} />
+
+	                    <ParkingProvider>
+		                    <PrivateRoute exact path="/map" component={View.Map} />
+		                    <PrivateRoute exact path="/map/sector/:id" component={View.Sector} />
+		                    <PrivateRoute exact path="/catalog/car/:id" component={View.Car} />
+		                    <PrivateRoute exact path="/catalog/tdrive" component={View.Tdrive} />
+	                    </ParkingProvider>
+
                         <Route exact path="*" component={View.NotFound} />
                     </Switch>
 

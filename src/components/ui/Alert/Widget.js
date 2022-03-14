@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Consumer } from "../../base/Context";
+import {Header} from "../Header";
 
 
 export class Widget extends React.Component {
@@ -24,14 +25,19 @@ export class Widget extends React.Component {
 	render(){
 		return (
 			<Consumer>
-				{({ widget }) => (
+				{({ data, widget }) => (
 					<>
-						<div className={widget._data.display ? "widget widget-high display" : "widget widget-high"}>
+						<div className={data.widget.child !== false ? "widget widget-high display" : "widget widget-high"}>
 
-							<div className="modal-backdrop fade show footer-widget" onClick={() => widget.hide()} />
+							<div className="modal-backdrop fade show footer-widget" onClick={() => widget(false)} />
 
 							<div className="content">
-								{ widget._data.child && widget._data.child() }
+								<div className="d-flex justify-content-end widget-close" onClick={() => widget(false)}>
+									<div className={"d-flex"}>
+										<span className={"d-inline-block"}>Закрыть</span>
+									</div>
+								</div>
+								{ data.widget.child && data.widget.child() }
 							</div>
 						</div>
 					</>

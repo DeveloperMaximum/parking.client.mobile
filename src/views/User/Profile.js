@@ -10,33 +10,12 @@ export class Profile extends React.Component {
 
     static contextType = Context;
 
-    constructor(props){
-        super(props);
-    }
-
-    logout = async () => {
-        this.context.confirm.show({
-            header: "Выйти из приложения",
-            content: "Вы действительно хотите покинуть приложение?",
-            success: "Да, выйти",
-            cancel: "Нет",
-            callback: async () => {
-                return new Promise((resolve, reject) => {
-                    this.context.user.logout();
-                    resolve(true);
-                });
-            },
-        });
-    };
-
     render() {
 
         const profile = Storage.get('USER');
 
         return (
-            <Root
-                viewId={"PROFILE"}
-            >
+            <Root viewId={"PROFILE"}>
                 <Header>
                     <div className="d-flex" onClick={() => this.props.history.push(`/`)}>
                         <i className="icon icon-chevron_left d-inline-block" />
@@ -53,7 +32,20 @@ export class Profile extends React.Component {
                             <div>{profile.LAST_NAME}</div>
                             <div>{profile.NAME}</div>
                             <div>{profile.SECOND_NAME}</div>
-                            <span className="exit d-block" onClick={this.logout}>Выйти из приложения</span>
+                            <span className="exit d-block" onClick={async () => {
+	                            await this.context.confirm({
+		                            header: "Выйти из приложения",
+		                            content: "Вы действительно хотите покинуть приложение?",
+		                            success: "Да, выйти",
+		                            cancel: "Нет",
+		                            callback: async () => {
+			                            return new Promise((resolve, reject) => {
+				                            this.context.logout();
+				                            resolve(true);
+			                            });
+		                            },
+	                            });
+                            }}>Выйти из приложения</span>
                         </div>
                     </div>
                 </main>

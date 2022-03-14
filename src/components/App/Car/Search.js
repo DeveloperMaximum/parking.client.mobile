@@ -53,7 +53,7 @@ export class Search extends React.Component {
     render() {
 
         return (
-            <form method={"GET"} id="SEARCH-FORM" className="d-block d-flex">
+            <form method={"GET"} id="SEARCH-FORM" className="search-form d-block d-flex">
                 <div className="input-group">
                     <div className="group-inner-left-icon">
                         <i className="icon icon-search" />

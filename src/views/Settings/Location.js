@@ -10,13 +10,13 @@ export class Location extends React.Component {
 
     handleClick = async (e, id = false) => {
         e.persist();
-        await this.context.confirm.show({
+        await this.context.confirm({
             header: "Смена локации",
             content: `Вы хотите изменить выбранную локацию на ${e.target.innerText} ?`,
             success: "Да",
             cancel: "Нет",
             callback: async () => {
-                this.context.user.setLocation(id);
+                this.context.location(id);
                 return "Локация сменена";
             }
         });
@@ -47,7 +47,7 @@ export class Location extends React.Component {
                                     <div className="name">
                                         {item.NAME}
                                     </div>
-                                    <div className={(this.context.user.UF_LOCATION === item.ID) ? 'checkbox active' : 'checkbox'}>
+                                    <div className={(this.context.data.user.UF_LOCATION === item.ID) ? 'checkbox active' : 'checkbox'}>
 
                                     </div>
                                 </div>

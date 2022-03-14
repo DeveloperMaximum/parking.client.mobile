@@ -50,10 +50,10 @@ export class Auth extends React.Component {
         if(validate === false) return false;
         return await Token.get({body: this.state.data}).then(result => {
             if(result?.USER && result.USER?.UF_TOKEN){
-                this.context.user.login(result.USER);
+                this.context.login(result.USER);
                 return true;
             }
-            this.context.alert.show({
+            this.context.alert({
                 display: true,
                 header: "Не удалось авторизоваться",
                 content: "Логин или пароль не верны. Обратитесь в техническую поддержку"
@@ -64,14 +64,14 @@ export class Auth extends React.Component {
 
     render(){
 
-        if (this.context.user.isAuth()) {
+        if (this.context.isAuth()) {
             return (
                 <>
                     <Redirect to={{pathname: "/home"}} />
                 </>
             );
         }else{
-                return(
+            return(
                 <div id="AUTH" className="root-component">
                     <div className="container d-inline-block mb-4 text-center">
                         <img src="img/auth-logo.png" className="d-block m-auto"/>

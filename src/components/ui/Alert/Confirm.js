@@ -46,15 +46,15 @@ export class Confirm extends React.Component {
     render(){
         return (
             <Consumer>
-                {({ confirm, alert }) => (
+                {({ data, confirm, alert }) => (
                     <>
-                        <div className={confirm._data.display ? "modal-backdrop fade show" : 'modal-backdrop fade d-none'} />
-                        <div className={confirm._data.display ? "modal fade show d-block" : 'modal fade show'}>
+                        <div className={data.confirm.display ? "modal-backdrop fade show" : 'modal-backdrop fade d-none'} />
+                        <div className={data.confirm.display ? "modal fade show d-block" : 'modal fade show'}>
                             <div className={"modal-dialog container"}>
                                 <div className={"modal-content"}>
                                     <div className={"modal-header border-white"}>
                                         <h5 className={"modal-title"}>
-                                            {confirm._data.header}
+                                            {data.confirm.header}
                                         </h5>
                                     </div>
                                     {this.state.loading === true ? (
@@ -64,22 +64,22 @@ export class Confirm extends React.Component {
                                     ) : (
                                         <>
                                             <div className={"modal-body"}>
-                                                {confirm._data.content}
+                                                {data.confirm.content}
                                             </div>
                                             <div className={"modal-footer border-white"}>
                                                 <button className={"btn btn-primary"} onClick={async () => {
-                                                    this.callback(confirm._data.callback).then((result) => {
-                                                        confirm.hide();
+                                                    this.callback(data.confirm.callback).then((result) => {
+                                                        confirm();
                                                         if(result !== true){
-                                                            alert.show({
-                                                                header: confirm._data.header,
+	                                                        alert({
+                                                                header: data.confirm.header,
                                                                 content: result,
                                                                 display: true
                                                             });
                                                         }
                                                     });
-                                                }}>{confirm._data.success}</button>
-                                                <button className={"btn btn-secondary"} onClick={() => confirm.hide()}>{confirm._data.cancel}</button>
+                                                }}>{data.confirm.success}</button>
+                                                <button className={"btn btn-secondary"} onClick={() => confirm()}>{data.confirm.cancel}</button>
                                             </div>
                                         </>
                                     )}

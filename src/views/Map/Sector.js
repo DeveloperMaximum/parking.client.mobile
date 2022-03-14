@@ -23,7 +23,7 @@ export class Sector extends React.Component {
                 </Header>
 
                 <main>
-                    <SectorItem id={this.props.match.params.id} />
+                    <SectorItem id={this.props.match.params.id} history={this.props.history} />
                 </main>
 
                 <Footer history={this.props.history} />

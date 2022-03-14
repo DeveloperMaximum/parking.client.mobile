@@ -25,14 +25,17 @@ export class Wmenu extends React.Component {
 	render(){
 		return (
 			<Consumer>
-				{({ wmenu }) => (
+				{({ data, wmenu, widget }) => (
 					<>
-						<div className={wmenu._data.display ? "widget display" : "widget"}>
+						<div className={data.wmenu.display ? "widget display" : "widget"}>
 
-							<div className="modal-backdrop fade show footer-widget" onClick={() => wmenu.hide()} />
+							<div className="modal-backdrop fade show footer-widget" onClick={() => wmenu(false)} />
 
 							<div className="content">
-								<menu onClick={() => wmenu.hide()}>
+								<menu onClick={() => {
+									wmenu(false);
+									widget(false);
+								}}>
 									<NavLink activeclassname={'active'} to={"/catalog/tdrive"} className={"item flex-fill"}>
 		                                <span className="before">
 		                                    <i className="icon-directions_car" />

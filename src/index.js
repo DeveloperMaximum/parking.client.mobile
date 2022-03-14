@@ -9,6 +9,7 @@ function onBackKeyDown(e) {
 }
 
 function onDeviceReady(e) {
+
     ReactDOM.render(
         <App />,  document.getElementById("APP")
     );

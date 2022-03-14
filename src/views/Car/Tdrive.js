@@ -44,7 +44,7 @@ export class Tdrive extends React.Component {
             <Root viewId={"CAR"}>
                 <Header>
                     <div className="d-flex">
-	                    <i className="icon icon-chevron_left d-inline-block" onClick={() => this.props.history.push(`/`, {a: "b"})} />
+	                    <i className="icon icon-chevron_left d-inline-block" onClick={() => this.props.history.push(`/`)} />
                         <h1 className="d-inline-block">Авто в тест-драйве</h1>
                     </div>
                 </Header>

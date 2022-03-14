@@ -1,77 +1,13 @@
 import React from 'react';
 
-import { Sector, Place } from "../../Api";
-import { Place as CellPlace } from './../Parking/Place';
+import { Table as BaseTable } from "../../../base/Sector";
+import { Place as CellPlace } from './Place';
 
 
-export class Table extends React.Component {
-
-    constructor(props){
-        super(props);
-        this.state = {
-	        temp: null,
-            id: props.id,
-            sector: null,
-            places: null,
-            car_id: null,
-        };
-    }
-
-    componentDidMount = async () => {
-    	// todo: надо выпилить запрос к серверу о секторе
-        await Sector.get({'ID': this.props.id, "DETAILED": "Y"}).then((result) => {
-            let sector = result[0];
-            this.setState((prevState) => ({
-                ...prevState,
-                sector: sector
-            }));
-            return Place.get({
-                ALL: 'Y',
-                DETAILED: 'Y',
-                SECTOR_ID: this.props.id,
-            }).then((result) => {
-                this.setState((prevState) => ({
-                    ...prevState,
-                    places: result
-                }));
-            });
-        });
-        this.renderSchema();
-    };
-
-	componentWillUnmount() {
-		this.setState = (state, callback) => {
-			return false;
-		}
-	}
-
-    renderSchema = () => {
-        this.schema = [];
-
-        let i = 0;
-        let row = [];
-        let data = this.state.places;
-	    data.forEach(obj => {
-		    if(i === 50){
-			    this.schema.push(row);
-			    row = [];
-			    i = 0;
-		    }
-		    row.push(obj);
-		    i = i + 1;
-	    });
-	    this.schema.push(row);
-
-        this.setState((prevState) => ({
-            ...prevState,
-            temp: this.schema
-        }));
-    };
+export class Table extends BaseTable {
 
     render() {
-
         return (
-
             <>
                 {this.state.temp === null ? (
                     <div className="spinner" />
