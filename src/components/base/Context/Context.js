@@ -25,7 +25,12 @@ export class Provider extends React.Component {
             },
 
 	        widget: {
-		        child: false
+		        child: false,
+		        header: false,
+		        right: {
+			        text: false,
+			        callback: false
+		        }
             },
 
 	        wmenu: {
@@ -170,10 +175,14 @@ export class Provider extends React.Component {
     widget = async (props = false) => {
 	    if(props === false){
 	    	props = {
-			    child: false
+			    child: false,
+			    header: false,
+			    right: {
+				    text: false,
+				    callback: false
+			    }
 		    };
 	    }
-	    if(props === false) props = {};
 	    await this.setState((prevState) => ({
 		    ...prevState,
 		    widget: {

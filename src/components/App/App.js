@@ -21,6 +21,7 @@ export class App extends Component {
                     <Switch>
                         <PrivateRoute exact path="/" component={View.Default} />
                         <PrivateRoute exact path="/home" component={View.Home} />
+                        <PrivateRoute exact path="/filter" component={View.Filter} />
                         <PrivateRoute exact path="/profile" component={View.Profile} />
 
                         <PrivateRoute exact path="/settings" component={View.Settings} />

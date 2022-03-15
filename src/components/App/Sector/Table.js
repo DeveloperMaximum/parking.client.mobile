@@ -20,7 +20,7 @@ export class Table extends BaseTable {
                                         <div className="sector-row" key={ri}>
                                             {row.map((cell, ci) => {
                                                 return (
-                                                    <CellPlace data={cell} onClick={this.handleCell} key={ci} history={this.props.history} />
+                                                    <CellPlace data={cell} key={ci} history={this.props.history} />
                                                 );
                                             })}
                                         </div>
