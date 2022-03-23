@@ -26,7 +26,7 @@ export class About extends React.Component {
                             <img src={"img/carmart-logo-content.png"} />
                         </div>
                         <div className="slogan w-100 text-center">
-                            <div>Проверека и подготовка</div>
+                            <div>Проверка и подготовка</div>
                             <div>с гарантией!</div>
                         </div>
                         <div className="version w-100 text-center">

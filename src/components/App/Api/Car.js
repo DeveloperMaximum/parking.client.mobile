@@ -8,7 +8,7 @@ const search = async (props) => {
     for (let i = 0; i < keys.length; i++) {
         url += '&' + keys[i] + '=' + props.search;
     }
-    url += '&MAP_ID=' + Storage.get('UF_LOCATION') + '&LAST_EVENT_HISTORY=Y';
+    url += '&MAP_ID=' + Storage.get('UF_LOCATION') + '&LAST_EVENT_HISTORY=Y&NEED_NECESSITATE_TOTAL=Y';
 
     return await Request({
         URL: url,
@@ -74,7 +74,7 @@ const filter = async (props) => {
 const getById = async (id) => {
 
     return await Request({
-        URL: `car/${id}?&LAST_EVENT_HISTORY=Y`,
+        URL: `car/${id}?&LAST_EVENT_HISTORY=Y&NEED_NECESSITATE_TOTAL=Y`,
         UF_TOKEN: Storage.get('UF_TOKEN')
     }).then((result) => {
         if (result.success === true) {
@@ -101,4 +101,35 @@ const get = async (props) => {
     });
 };
 
-export { search, getById, get, filter }
+const necessitates = async (props) => {
+    let url = `car/${props.CAR_ID}/necessitate?`;
+    return await Request({
+        URL: url,
+        UF_TOKEN: Storage.get('UF_TOKEN')
+    }).then((result) => {
+        if (result.success === true) {
+            return result.data;
+        }
+        return false;
+    });
+};
+
+const addNecessitates = async (props) => {
+	console.log(props)
+    let url = `car/${props.CAR_ID}/necessitate?`;
+    return await Request({
+        URL: url,
+        METHOD: 'POST',
+        BODY: {
+        	NECESSITATES: props.NECESSITATES
+        },
+        UF_TOKEN: Storage.get('UF_TOKEN')
+    }).then((result) => {
+        if (result.success === true) {
+            return result.data;
+        }
+        return false;
+    });
+};
+
+export { search, getById, get, filter, necessitates, addNecessitates }

@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import { HashRouter, Switch, Route } from "react-router-dom"
 
 import { Provider } from "../base/Context";
-import { ParkingProvider } from "../base/Context/Parking";
 import { PrivateRoute } from "../base/PrivateRoute";
+import { ParkingProvider } from "../base/Context/Parking";
+import { SellerProvider } from "../base/Context/Necessitate";
 import * as View from "../../views";
 
 import "./App.css";
@@ -34,12 +35,11 @@ export class App extends Component {
                         <Route exact path="/auth" component={View.Auth} />
                         <Route exact path="/forbidden" component={View.Forbidden} />
 
-	                    <ParkingProvider>
-		                    <PrivateRoute exact path="/map" component={View.Map} />
-		                    <PrivateRoute exact path="/map/sector/:id" component={View.Sector} />
-		                    <PrivateRoute exact path="/catalog/car/:id" component={View.Car} />
-		                    <PrivateRoute exact path="/catalog/tdrive" component={View.Tdrive} />
-	                    </ParkingProvider>
+	                    <PrivateRoute exact path="/map" component={View.Map} />
+	                    <PrivateRoute exact path="/map/sector/:id" component={View.Sector} />
+	                    <PrivateRoute exact path="/catalog/car/:id" component={View.Car} />
+	                    <PrivateRoute exact path="/catalog/tdrive" component={View.Tdrive} />
+	                    <PrivateRoute exact path="/catalog/Demo" component={View.Demo} />
 
                         <Route exact path="*" component={View.NotFound} />
                     </Switch>

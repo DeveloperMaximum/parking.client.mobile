@@ -92,7 +92,7 @@ export class Footer extends React.Component {
 		                        if(result.success === true){
 			                        this.toggleLinkActive(true);
 			                        this.closeShutter(camera);
-			                        return this.props.history.push(`/car/${result.data[0].ID}`);
+			                        return this.props.history.push(`/catalog/car/${result.data[0].ID}`);
 		                        }
 	                        });
                         }

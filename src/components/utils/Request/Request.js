@@ -36,6 +36,7 @@ export async function Request (props) {
         settings.signal = props.CONTROLLER.signal;
     }
 
+    console.log(props)
     if(props?.BODY){
         settings.body = JSON.stringify(props.BODY);
     }

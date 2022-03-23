@@ -1,20 +1,3 @@
-.life-search i {
-    display: none;
-}
-
-.life-search .active i {
-    display: block;
-}
-
-.life-search span {
-    position: relative;
-    z-index: -1;
-}
-
-.life-search .btn {
-
-}
-
 #APP menu .item span.before {
     position: relative;
 }
@@ -25,4 +8,13 @@
     top: 50%;
     margin-top: -7px;
     margin-left: -7px;
+}
+
+#APP .tabs .tab-content {
+    margin-top: 0;
+}
+
+#APP .widget .root-component main {
+    max-height: initial;
+    height: initial;
 }

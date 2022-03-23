@@ -50,7 +50,7 @@ export class List extends React.Component {
     typeNotice = (car_necessitate_total) => {
         car_necessitate_total = Number(car_necessitate_total);
         if(car_necessitate_total === 0) return 'success';
-        if(car_necessitate_total > 10) return 'danger';
+        if(car_necessitate_total > 5) return 'danger';
         return 'warning';
     };
 }

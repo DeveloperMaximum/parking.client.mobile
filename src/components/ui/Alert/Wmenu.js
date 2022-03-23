@@ -43,6 +43,13 @@ export class Wmenu extends React.Component {
 										Автомобили в тест-драйве
 										<span className="badge badge-primary">3</span>
 									</NavLink>
+									<NavLink activeclassname={'active'} to={"/catalog/demo"} className={"item flex-fill"}>
+		                                <span className="before">
+		                                    <i className="icon-directions_car" />
+		                                </span>
+										Автомобили на демонстрации
+										<span className="badge badge-primary">3</span>
+									</NavLink>
 									<NavLink activeclassname={'active'} to={"/filter"} className={"item flex-fill"}>
 		                                <span className="before">
 		                                    <i className="icon-directions_car" />

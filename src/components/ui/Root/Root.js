@@ -12,7 +12,7 @@ export class Root extends React.Component {
     }
 
     render() {
-		let className = this.props?.active === true ? `root-component active` : `root-component`;
+		let className = this.props?.active === true ? `root-component active ${this.props.className}` : `root-component ${this.props.className}`;
         return (
             <>
                 <div id={this.props?.viewId} className={className}>

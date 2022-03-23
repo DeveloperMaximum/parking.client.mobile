@@ -70,7 +70,7 @@ export class Filter extends React.Component {
 
 				<main>
 					<div className="search-filter">
-						<h1>Найти автомрбиль</h1>
+						<h1>Найти автомобиль</h1>
 
 						<div className="filter-wrapper">
 

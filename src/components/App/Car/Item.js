@@ -2,7 +2,8 @@ import React from 'react';
 
 import { Request } from "../../utils/Request";
 import { Context } from "../../base/Context";
-import { ParkingConsumer } from "../../base/Context/Parking";
+import {ParkingConsumer, ParkingProvider} from "../../base/Context/Parking";
+import {SellerConsumer, SellerProvider} from "../../base/Context/Necessitate";
 import * as Storage from "../../base/Storage";
 
 import { Car } from "../Api";
@@ -159,6 +160,10 @@ export class Item extends React.Component {
 	    let hours = Math.floor(diff / 60 / 60);
 	    let minutes = Math.floor(diff / 60) - (hours * 60);
 	    let seconds =  Math.floor(diff % 60);
+	    if(seconds < 60){
+		    hours = 0;
+		    minutes = 0;
+	    }
 
 	    if(hours > 0) out += `${hours} ч `;
 	    if(minutes > 0) out += `${minutes} мин `;
@@ -279,6 +284,23 @@ export class Item extends React.Component {
 	    }
     }
 
+    renderNecessitateButton(){
+	    return (
+		    <SellerConsumer>
+			    {({ start }) => (
+				    <div className="btn btn-primary" onClick={async (e) => {
+					    start({
+						    car: this.state.car
+					    })
+				    }}>
+					    <i className="icon icon-build" />
+					    Потребности
+				    </div>
+			    )}
+		    </SellerConsumer>
+	    )
+    }
+
     render(){
 
 	    let allowDemo = false;
@@ -316,7 +338,7 @@ export class Item extends React.Component {
                         <>
                             <div className={"car-props"}>
                                 <div className="status-wrapper bg-info">
-                                    <i className={`icon icon-${iconStatus}`} />
+                                    <i className={`text-center icon icon-${iconStatus}`} />
                                     <span>Статус</span>
                                     <div className="status-text">
                                         {textStatus}
@@ -359,10 +381,9 @@ export class Item extends React.Component {
 				                            <i className="icon icon-sync_alt" />
 				                            Перемещение
 			                            </button>
-			                            <div className="btn btn-primary">
-				                            <i className="icon icon-build" />
-				                            Потребности
-			                            </div>
+
+			                            { this.renderNecessitateButton() }
+
 			                            <button className={`btn btn-primary`} onClick={this.onTDrive} disabled={(!allowTdrive)}>
 				                            Тест-драйв
 			                            </button>

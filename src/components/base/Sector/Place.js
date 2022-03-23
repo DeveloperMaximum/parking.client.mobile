@@ -2,6 +2,10 @@ import React from 'react';
 
 import { Context } from "../../base/Context";
 import { CarItem } from "../../App";
+import {ParkingProvider} from "../Context/Parking";
+import {SellerProvider} from "../Context/Necessitate";
+import {Switch} from "react-router";
+import {PrivateRoute} from "../PrivateRoute";
 
 
 export class Place extends React.Component {
@@ -19,7 +23,11 @@ export class Place extends React.Component {
     	if(this.state.data.place?.info?.CAR_ID){
 		    this.context.widget({
 			    child: () => (
-			    	<CarItem id={this.state.data.place.info.CAR_ID} history={this.props.history} />
+			    	<>
+					    <SellerProvider>
+				            <CarItem id={this.state.data.place.info.CAR_ID} history={this.props.history} />
+					    </SellerProvider>
+				    </>
 		        )
 		    })
 	    }
