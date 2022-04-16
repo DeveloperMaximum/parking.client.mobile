@@ -1,8 +1,6 @@
 import React from 'react';
 
-import {Brand, Car} from "../../App/Api";
 import {Context} from "../../base/Context";
-import {LifeSearch} from "../index";
 
 
 export class Life extends React.Component {
@@ -44,7 +42,9 @@ export class Life extends React.Component {
 			...prevState,
 			items: null
 		}));
-		this.props.onSearch(this.state).then(result => {
+
+		let params = this.state.searchParams;
+		this.props.onSearch(params).then(result => {
 			this.setState((prevState) => ({
 				...prevState,
 				items: result
@@ -67,6 +67,7 @@ export class Life extends React.Component {
 		if(this.state.controller?.abort){
 			this.state.controller.abort();
 		}
+
 		const controller = new AbortController();
 		await this.setState((prevState) => ({
 			...prevState,
@@ -74,7 +75,10 @@ export class Life extends React.Component {
 			search: e.target.value,
 			controller: controller,
 		}));
-		await this.props.onSearch(this.state).then(result => {
+
+		let params = this.state.searchParams;
+		params.NAME = e.target.value;
+		await this.props.onSearch(params).then(result => {
 			this.setState((prevState) => ({
 				...prevState,
 				items: result
@@ -82,7 +86,7 @@ export class Life extends React.Component {
 		});
 	};
 
-	handlePick = async (e) => {
+	handlePick = async (e = false) => {
 		let el = e.target;
 		let picked = this.state.picked.data;
 		let text = (this.state.picked.text?.length) ? this.state.picked.text.split(', ') : [];
@@ -166,7 +170,7 @@ export class Life extends React.Component {
 										key={index}
 										data-id={item.ID}
 										onClick={this.handlePick}
-										className={(this.state.picked.data.includes(item.ID) ? `item d-flex justify-content-between active` : `item d-flex justify-content-between`)}>
+										className={this.state.picked.data.includes(item.ID) ? `item d-flex justify-content-between active` : `item d-flex justify-content-between`}>
 										<span>{item.NAME}</span>
 										<i className="icon icon-done" />
 									</div>

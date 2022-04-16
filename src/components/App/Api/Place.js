@@ -19,4 +19,21 @@ const get = async (props) => {
     });
 };
 
-export { get }
+const parking = async (props) => {
+
+    return await Request({
+        URL: `place/${props.ID}/parking`,
+	    METHOD: 'PUT',
+	    BODY: {
+            CAR_ID: props.CAR_ID
+	    },
+        UF_TOKEN: Storage.get('UF_TOKEN')
+    }).then((result) => {
+        if (result.success === true) {
+            return result.data;
+        }
+        return false;
+    });
+};
+
+export { get, parking }

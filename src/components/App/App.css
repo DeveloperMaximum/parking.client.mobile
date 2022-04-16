@@ -18,3 +18,41 @@
     max-height: initial;
     height: initial;
 }
+
+#APP .root-component.inner-root-component header + header + main {
+    padding-top: 150px;
+}
+
+#APP #DCARD table p {
+    margin-bottom: 0;
+}
+
+#APP #SIDER main {
+    padding-bottom: 0;
+}
+
+#APP .root-component.active.d-none {
+    display: flex !important;
+    z-index: 45 !important;
+}
+
+#APP #SIDER.root-component.active.d-none + .root-component {
+    display: none;
+}
+
+#APP #SIDER main .sticker {
+    bottom: -100vh;
+    transition: .3s;
+}
+
+#APP #SIDER main .sticker.active {
+    bottom: 15px;
+}
+
+#APP #SIDER main .sticker > div.btn {
+    box-shadow: 0 30px 30px 30px rgba(255, 255, 255, 1);
+}
+
+#APP .widget {
+    bottom: -150vh;
+}

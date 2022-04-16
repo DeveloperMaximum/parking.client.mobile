@@ -16,7 +16,7 @@ export class Location extends React.Component {
             success: "Да",
             cancel: "Нет",
             callback: async () => {
-                this.context.location(id);
+                await this.context.location(id);
                 return "Локация сменена";
             }
         });

@@ -114,7 +114,6 @@ export class NecessitateSeller extends React.Component {
 					<SellerConsumer>
 						{({ data, stop }) => (
 							<div className="btn btn-primary d-block w-100" onClick={() => {
-								console.log(this.state.necessitates)
 								Car.addNecessitates({
 									CAR_ID: data.car.ID,
 									NECESSITATES: this.state.necessitates
@@ -148,14 +147,14 @@ export class NecessitateSeller extends React.Component {
 
 						<header className="d-flex align-items-center" onClick={async (e) => stop()}>
 							<div className="thumb">
-								<img src="tiles/car.png" />
+								<img src="tiles/car.png"/>
 							</div>
 							<div>
 								<>
 									<div>
 										<b>{data.car?.BRAND_NAME} {data.car?.MODEL_NAME}</b>
 									</div>
-									<div>Сектор В , подсектор 2</div>
+									<div>{(data.car?.INNER_ID) ? `${data.car.SECTOR_NAME}, место ${data.car.INNER_ID}` : '-'}</div>
 								</>
 							</div>
 						</header>
@@ -167,7 +166,7 @@ export class NecessitateSeller extends React.Component {
 								</div>
 							</main>
 						) : (
-							<main class="vh-100">
+							<main className="vh-100">
 								<div className={"spinner"} />
 							</main>
 						)}

@@ -3,9 +3,8 @@ import { Redirect } from "react-router-dom";
 
 import { Context } from "../../components/base/Context";
 
-import { Form, Input, InputPassword, Button } from "../../components/ui";
+import { Form, Input, InputPassword } from "../../components/ui";
 import { Token } from "../../components/App/Api";
-import * as Storage from "../../components/base/Storage";
 
 export class Auth extends React.Component {
 
@@ -49,12 +48,11 @@ export class Auth extends React.Component {
     handleSubmit = async (validate) => {
         if(validate === false) return false;
         return await Token.get({body: this.state.data}).then(result => {
-            if(result?.USER && result.USER?.UF_TOKEN){
-                this.context.login(result.USER);
+            if(result?.UF_TOKEN){
+                this.context.login(result);
                 return true;
             }
-            this.context.alert({
-                display: true,
+            this.context.dialog({
                 header: "Не удалось авторизоваться",
                 content: "Логин или пароль не верны. Обратитесь в техническую поддержку"
             });

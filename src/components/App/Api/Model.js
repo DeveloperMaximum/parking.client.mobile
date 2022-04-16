@@ -3,10 +3,20 @@ import * as Storage from "../../base/Storage";
 
 const search = async (props) => {
 
-	let url = 'model/?LOGIC=SEARCH';
-	let keys = ['NAME'];
+	let user = Storage.get('USER');
+
+	let url = `operator/${user.OPERATOR.ID}/model/?LOGIC=FILTER`;
+	let keys = ['NAME', 'BRAND_ID', 'BODY_ID', 'TRANSMISSION_ID'];
 	for (let i = 0; i < keys.length; i++) {
-		url += '&' + keys[i] + '=' + props.search;
+		if(props[keys[i]] && props[keys[i]] !== ''){
+			if(Array.isArray(props[keys[i]]) && props[keys[i]].length === 0){
+				if(props[keys[i]].length > 0){
+					url += '&' + keys[i] + '=' + props[keys[i]];
+				}
+			}else{
+				url += '&' + keys[i] + '=' + props[keys[i]];
+			}
+		}
 	}
 
 	return await Request({
@@ -24,30 +34,4 @@ const search = async (props) => {
 	});
 };
 
-const searchWithBrandId = async (props) => {
-
-	let url = `model/?LOGIC=SEARCH`;
-	if(props?.searchParams?.BRAND_ID){
-		url += '&BRAND_ID=' + props?.searchParams.BRAND_ID;
-	}
-	let keys = ['NAME'];
-	for (let i = 0; i < keys.length; i++) {
-		url += '&' + keys[i] + '=' + props.search;
-	}
-
-	return await Request({
-		URL: url,
-		CONTROLLER: props.controller,
-		UF_TOKEN: Storage.get('UF_TOKEN')
-	}).then((result) => {
-		if (result.status === 204) {
-			return [];
-		}
-		if (result.success === true) {
-			return result.data;
-		}
-		return false;
-	});
-};
-
-export { search, searchWithBrandId }
+export { search }

@@ -1,8 +1,8 @@
 
 const get = (key, def = false) => {
     let value = localStorage.getItem(key);
-    if(value === 'undefined'){
-        return false;
+    if(value === 'undefined' || !value){
+        return def;
     }
     return JSON.parse(value);
 };

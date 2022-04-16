@@ -36,7 +36,6 @@ export async function Request (props) {
         settings.signal = props.CONTROLLER.signal;
     }
 
-    console.log(props)
     if(props?.BODY){
         settings.body = JSON.stringify(props.BODY);
     }
@@ -58,6 +57,10 @@ export async function Request (props) {
 
         if(result.status === 204){
             return { status: result.status, success: true, data: [] };
+        }
+
+        if(result.status === 401 || result.status === 403){
+            return { status: result.status, success: false, data: [] };
         }
 
         return result.json();

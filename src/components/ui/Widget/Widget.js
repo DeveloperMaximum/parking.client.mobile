@@ -5,22 +5,6 @@ import { Consumer } from "../../base/Context";
 
 export class Widget extends React.Component {
 
-	constructor(props){
-		super(props);
-	}
-
-	componentDidMount() {
-		this.setState((prevState) => ({
-			...prevState,
-		}));
-	}
-
-	componentWillUnmount() {
-		this.setState = (state, callback) => {
-			return false;
-		}
-	}
-
 	render(){
 		return (
 			<Consumer>
@@ -46,7 +30,7 @@ export class Widget extends React.Component {
 											await data.widget.right.callback();
 										}
 									}}>
-										<span className="d-inline-block">{data.widget.right.text}</span>
+										<span className="d-inline-block mr-3">{data.widget.right.text}</span>
 									</div>
 								</div>
 

@@ -52,7 +52,10 @@ export class Tdrive extends React.Component {
                 <main>
 	                <div className={"content-wrapper"}>
 		                {this.state.cars !== null ? (
-		                    <CarList items={this.state.cars}  />
+			                <CarList
+				                history={this.props.history}
+				                items={this.state.cars}
+			                />
 		                ) : (
 			                <div className="spinner" />
 		                )}

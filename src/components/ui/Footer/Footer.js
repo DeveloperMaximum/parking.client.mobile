@@ -3,11 +3,8 @@ import { NavLink } from "react-router-dom";
 
 import { Request } from "../../utils/Request";
 import { Consumer } from "../../base/Context";
-import { ParkingConsumer } from "../../base/Context/Parking";
 
 export class Footer extends React.Component {
-
-    static ParkingConsumer = ParkingConsumer;
 
     constructor(props) {
         super(props);

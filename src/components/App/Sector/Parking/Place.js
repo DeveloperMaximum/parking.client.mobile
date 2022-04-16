@@ -13,21 +13,24 @@ export class Place extends BasePlace {
 	            <ParkingConsumer>
 		            {({ place, callback }) => (
 			            <Consumer>
-				            {({ confirm }) => (
-				                <div className={this.state.data.className} {...this.props} onClick={async () => {
-					                await confirm({
+				            {({ dialog }) => (
+				                <div className={this.props.data.className} {...this.props} onClick={async () => {
+					                await dialog({
 						                header: "Вы уверены?",
 						                content: `Вы уверены, что хотите припарковать автомобиль на парковочном месте ${this.props.data.place.info.INNER_ID}?`,
-						                success: "Да",
-						                cancel: "Нет",
-						                callback: async () => {
-							                return await place(this.state.data.place.info.ID).then(callback);
-						                },
+						                buttons: {
+							                moved: {
+								                text: 'Да',
+								                callback: async () => {
+									                return await place(this.props.data.place.info.ID).then(callback);
+								                },
+							                }
+						                }
 					                });
 				                }}>
-				                    {this.state.data.place.icon ? (
+				                    {this.props.data.place.icon ? (
 				                        <div className={"status"}>
-				                            <i className={`icon ${this.state.data.place.icon}`} />
+				                            <i className={`icon ${this.props.data.place.icon}`} />
 				                        </div>
 				                    ) : ( <div />)}
 				                </div>

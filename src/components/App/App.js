@@ -3,8 +3,6 @@ import { HashRouter, Switch, Route } from "react-router-dom"
 
 import { Provider } from "../base/Context";
 import { PrivateRoute } from "../base/PrivateRoute";
-import { ParkingProvider } from "../base/Context/Parking";
-import { SellerProvider } from "../base/Context/Necessitate";
 import * as View from "../../views";
 
 import "./App.css";

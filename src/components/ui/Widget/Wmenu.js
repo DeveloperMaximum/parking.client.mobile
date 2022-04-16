@@ -6,22 +6,6 @@ import { NavLink } from "react-router-dom";
 
 export class Wmenu extends React.Component {
 
-	constructor(props){
-		super(props);
-	}
-
-	componentDidMount() {
-		this.setState((prevState) => ({
-			...prevState,
-		}));
-	}
-
-	componentWillUnmount() {
-		this.setState = (state, callback) => {
-			return false;
-		}
-	}
-
 	render(){
 		return (
 			<Consumer>

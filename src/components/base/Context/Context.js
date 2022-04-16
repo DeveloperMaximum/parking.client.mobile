@@ -1,10 +1,10 @@
 import React from "react";
 
-import { DB } from "../../App/Api";
 import * as Storage from "../Storage";
+import { DB, User} from "../../App/Api";
 import { Camera } from "../../App/Camera";
-import { Wmenu } from "../../ui/Alert/Wmenu";
-import { Alert, Confirm, Widget } from "../../ui/Alert";
+import { Widget, Sider, Wmenu } from "../../ui/Widget";
+import { Dialog } from "../../ui/Dialog";
 
 export const Context = React.createContext({});
 
@@ -15,7 +15,7 @@ export class Provider extends React.Component {
 
         this.state = {
             app: {
-                update: this.appUpdate,
+
             },
 
             camera: {
@@ -33,20 +33,20 @@ export class Provider extends React.Component {
 		        }
             },
 
+	        sider: {
+		        title: false,
+		        child: false,
+		        display: false,
+		        template: true,
+            },
+
 	        wmenu: {
 		        display: false
             },
 
-            alert: {
-	            callback: false,
+	        dialog: {
+		        buttons: {},
 	            header: "Внимание!",
-	            content: "",
-	            display: false
-            },
-
-            confirm: {
-	            callback: false,
-	            header: "Вы уверены?",
 	            content: "",
 	            display: false
             },
@@ -83,57 +83,52 @@ export class Provider extends React.Component {
 
     camera = (status = -1) => {
         if(status < 0) return this.state.camera;
+
+        let camera = { active: false, loading: false, scanned: false };
         if(status === 1){
-	        this.state.camera.active    = true;
-	        this.state.camera.loading   = false;
-	        this.state.camera.scanned   = false;
+	        camera.active    = true;
+	        camera.loading   = false;
+	        camera.scanned   = false;
         }else if(status === 2){
-	        this.state.camera.active    = true;
-	        this.state.camera.loading   = true;
-	        this.state.camera.scanned   = false;
+	        camera.active    = true;
+	        camera.loading   = true;
+	        camera.scanned   = false;
         }else if(status === 3){
-	        this.state.camera.active    = true;
-	        this.state.camera.loading   = false;
-	        this.state.camera.scanned   = true;
-        }else{
-	        this.state.camera.active    = false;
-	        this.state.camera.loading   = false;
-	        this.state.camera.scanned   = false;
+	        camera.active    = true;
+	        camera.loading   = false;
+	        camera.scanned   = true;
         }
         this.setState((prevState) => ({
             ...prevState,
-            camera: {
-                ...prevState.camera
-            }
+	        camera
         }));
     };
 
     login = async (user = {}) => {
-        Storage.save('USER', user);
-        Storage.save('USER_ID', user.ID);
-        Storage.save('UF_TOKEN', user.UF_TOKEN);
+	    Storage.save('UF_TOKEN', user.UF_TOKEN);
 
-        let uf_location = Storage.get('UF_LOCATION');
-        if(!uf_location){
-            await this.state.app.update().then((r) => {
-                return true;
-            });
-        }
-        await this.state.app.update().then((db) => {
-            if(db.MAP.length > 0){
-                Storage.save('UF_LOCATION', db.MAP[0].ID)
-            }
+	    return DB.get().then((result) => {
+		    if(result !== false){
+			    Object.keys(result).forEach((key) => {
+				    Storage.save(key, result[key]);
+			    });
+		    }
 
-            this.setState((prevState) => ({
-                ...prevState,
-                user: {
-                    ...prevState.user,
-                    USER_ID: Storage.get('USER_ID'),
-                    UF_TOKEN: Storage.get('UF_TOKEN'),
-                    UF_LOCATION: Storage.get('UF_LOCATION')
-                }
-            }));
-        });
+		    Storage.save('USER', user);
+		    Storage.save('USER_ID', user.ID);
+		    Storage.save('UF_LOCATION', user.UF_LOCATION);
+
+		    this.setState((prevState) => ({
+			    ...prevState,
+			    user: {
+				    ...prevState.user,
+				    USER_ID: Storage.get('USER_ID'),
+				    UF_TOKEN: Storage.get('UF_TOKEN'),
+				    UF_LOCATION: Storage.get('UF_LOCATION')
+			    }
+		    }));
+		    return result;
+	    });
     };
 
     logout = () => {
@@ -149,17 +144,19 @@ export class Provider extends React.Component {
         }));
     };
 
-    isAuth = () => (typeof this.state.user.UF_TOKEN === "string");
+    isAuth = () => ((typeof this.state.user.UF_TOKEN === "string") && (typeof this.state.user.USER_ID === "string") && (typeof this.state.user.UF_LOCATION === "string"));
 
-	location = (id) => {
-        Storage.save('UF_LOCATION', id);
-        this.setState((prevState) => ({
-            ...prevState,
-            user: {
-                ...prevState.user,
-                UF_LOCATION: Storage.get('UF_LOCATION')
-            }
-        }));
+	location = async (id) => {
+		return await User.location({ID: id}).then(async result => {
+			Storage.save('UF_LOCATION', result.UF_LOCATION);
+			await this.setState((prevState) => ({
+				...prevState,
+				user: {
+					...prevState.user,
+					UF_LOCATION: Storage.get('UF_LOCATION')
+				}
+			}));
+		});
     };
 
 	wmenu = async () => {
@@ -193,26 +190,33 @@ export class Provider extends React.Component {
 	    }));
     };
 
-    alert = async (props = false) => {
+    dialog = async (props = false) => {
 	    if(props === false) props = {};
         await this.setState((prevState) => ({
             ...prevState,
-            alert: {
-                ...prevState.alert,
-                display: !(this.state.alert.display),
+	        dialog: {
+                ...prevState.dialog,
+                display: !(this.state.dialog.display),
                 ...props
             }
         }));
     };
 
-    confirm = async (props = false) => {
-	    if(props === false) props = {};
+	sider = async (props = false) => {
+		if(props === false){
+			props = {
+				title: false,
+				child: false,
+				display: false,
+				template: true,
+			};
+		}
         await this.setState((prevState) => ({
             ...prevState,
-            confirm: {
-	            ...prevState.confirm,
-	            display: !(this.state.confirm.display),
-	            ...props
+	        sider: {
+                ...prevState.sider,
+		        display: true,
+                ...props
             }
         }));
     };
@@ -221,27 +225,26 @@ export class Provider extends React.Component {
 
         return (
             <Context.Provider value={{
-            	    data: this.state,
-	                appUpdate: this.appUpdate,
-	                login: this.login,
-		            logout: this.logout,
-		            isAuth: this.isAuth,
-	                camera: this.camera,
-		            location: this.location,
-		            wmenu: this.wmenu,
-		            widget: this.widget,
-		            alert: this.alert,
-		            confirm: this.confirm,
-	                accessStatus: this.accessStatus,
-                }}>
+                data: this.state,
+                login: this.login,
+	            logout: this.logout,
+	            isAuth: this.isAuth,
+                camera: this.camera,
+	            location: this.location,
+	            wmenu: this.wmenu,
+	            sider: this.sider,
+	            widget: this.widget,
+	            dialog: this.dialog,
+                accessStatus: this.accessStatus,
+            }}>
 
+	            <Sider />
                 {this.props.children}
 
 	            <Widget />
+	            <Dialog />
 
 	            <Camera />
-	            <Confirm />
-                <Alert />
                 <Wmenu />
 
 

@@ -9,46 +9,50 @@ import { Footer } from "../../components/ui/Footer/Footer";
 import { LifeSearch } from "../../components/ui/";
 
 import { Car, Brand, Model, Body, Transmission } from "../../components/App/Api";
-import {Place as CellPlace} from "../../components/App/Sector";
-import {CarList} from "../../components/App";
+import { CarItem, CarList } from "../../components/App";
+import { ParkingProvider } from "../../components/base/Context/Parking";
 
 
 export class Filter extends React.Component {
 
 	static contextType = Context;
 
+	default = {
+		filter: {
+			MIN_PRICE: null,
+			MAX_PRICE: null,
+			MIN_YEAR: null,
+			MAX_YEAR: null,
+			brand: {
+				text: '',
+				data: []
+			},
+			model: {
+				text: '',
+				data: []
+			},
+			body: {
+				text: '',
+				data: []
+			},
+			transmission: {
+				text: '',
+				data: []
+			},
+		},
+		items: false
+	};
+
 	constructor(props){
 		super(props);
-		this.state = {
-			filter: {
-				MIN_PRICE: null,
-				MAX_PRICE: null,
-				MIN_YEAR: null,
-				MAX_YEAR: null,
-				brand: {
-					text: '',
-					data: []
-				},
-				model: {
-					text: '',
-					data: []
-				},
-				body: {
-					text: '',
-					data: []
-				},
-				transmission: {
-					text: '',
-					data: []
-				},
-			},
-			items: false
-		};
+		this.state = this.default;
 	}
 
 	componentDidMount() {
 		this.setState((prevState) => ({
-			...prevState
+			...prevState,
+			items: Storage.get('FILTER_ITEMS', this.default.items),
+			filter: Storage.get('FILTER_PARAM', this.default.filter)
 		}));
 	}
 
@@ -57,6 +61,24 @@ export class Filter extends React.Component {
 			return false;
 		}
 	}
+
+	onClickHandle = async () => {
+		let filter = {};
+		await this.setState((prevState) => ({...prevState, items: null }));
+		filter.BRAND_ID = this.state.filter.brand.data;
+		filter.MODEL_ID = this.state.filter.model.data.join(',');
+		filter.BODY_ID = this.state.filter.body.data.join(',');
+		filter.TRANSMISSION_ID = this.state.filter.transmission.data.join(',');
+		filter.MIN_PRICE = this.state.filter.MIN_PRICE;
+		filter.MAX_PRICE = this.state.filter.MAX_PRICE;
+		filter.MIN_YEAR = this.state.filter.MIN_YEAR;
+		filter.MAX_YEAR = this.state.filter.MAX_YEAR;
+		Car.filter(filter).then((result) => {
+			Storage.save('FILTER_ITEMS', result);
+			Storage.save('FILTER_PARAM', this.state.filter);
+			this.setState((prevState) => ({...prevState, items: result }));
+		})
+	};
 
 	render(){
 		return (
@@ -82,6 +104,10 @@ export class Filter extends React.Component {
 										child: () => (
 											<LifeSearch
 												onSearch={Brand.search}
+												searchParams={{
+													BODY_ID: this.state.filter.body.data,
+													TRANSMISSION_ID: this.state.filter.transmission.data,
+												}}
 												onlyOne={true}
 												picked={this.state.filter.brand}
 												onPick={async (picked) => {
@@ -91,8 +117,8 @@ export class Filter extends React.Component {
 															filter: {
 																...prevState.filter,
 																model: {
-																	text: '',
-																	data: []
+																	data: [],
+																	text: ''
 																}
 															}
 														}))
@@ -110,7 +136,7 @@ export class Filter extends React.Component {
 										header: 'Марка',
 										right: {
 											text: 'Очистить',
-											callback: () => console.log('right callback')
+											callback: () => console.log(123)
 										}
 									})}
 									type="text"
@@ -128,9 +154,11 @@ export class Filter extends React.Component {
 									onClick={() => this.context.widget({
 										child: () => (
 											<LifeSearch
-												onSearch={Model.searchWithBrandId}
+												onSearch={Model.search}
 												searchParams={{
-													BRAND_ID: this.state.filter.brand.data[0]
+													BRAND_ID: this.state.filter.brand.data[0],
+													TRANSMISSION_ID: this.state.filter.transmission.data,
+													BODY_ID: this.state.filter.body.data
 												}}
 												picked={this.state.filter.model}
 												onPick={async (picked) => {
@@ -156,10 +184,12 @@ export class Filter extends React.Component {
 								/>
 								<i className="icon icon-chevron_right" />
 							</div>
+
 							<div className="item">
 								<input
 							       type="number"
 							       name="MIN_YEAR"
+							       value={this.state.filter.MIN_YEAR || ''}
 							       placeholder="Год выпуска, от"
 							       onChange={(e) => {
 								       e.persist();
@@ -175,6 +205,7 @@ export class Filter extends React.Component {
 							</div>
 							<div className="item">
 								<input
+									value={this.state.filter.MAX_YEAR || ''}
 									type="number"
 									name="MAX_YEAR"
 									placeholder="Год выпуска, до"
@@ -190,8 +221,10 @@ export class Filter extends React.Component {
 									}}
 								/>
 							</div>
+
 							<div className="item">
 								<input
+									value={this.state.filter.MIN_PRICE || ''}
 									type="number"
 									name="MIN_PRICE"
 									placeholder="Цена, от"
@@ -209,6 +242,7 @@ export class Filter extends React.Component {
 							</div>
 							<div className="item">
 								<input
+									value={this.state.filter.MAX_PRICE || ''}
 									type="number"
 									name="MAX_PRICE"
 									placeholder="Цена, до"
@@ -234,6 +268,11 @@ export class Filter extends React.Component {
 											<LifeSearch
 												picked={this.state.filter.body}
 												onSearch={Body.search}
+												searchParams={{
+													BRAND_ID: this.state.filter.brand.data,
+													MODEL_ID: this.state.filter.model.data,
+													TRANSMISSION_ID: this.state.filter.transmission.data,
+												}}
 												onPick={async (picked) => await this.setState((prevState) => ({
 													...prevState,
 													filter: {
@@ -265,6 +304,11 @@ export class Filter extends React.Component {
 											<LifeSearch
 												picked={this.state.filter.transmission}
 												onSearch={Transmission.search}
+												searchParams={{
+													BRAND_ID: this.state.filter.brand.data,
+													MODEL_ID: this.state.filter.model.data,
+													BODY_ID: this.state.filter.body.data,
+												}}
 												onPick={async (picked) => await this.setState((prevState) => ({
 													...prevState,
 													filter: {
@@ -286,26 +330,11 @@ export class Filter extends React.Component {
 								/>
 								<i className="icon icon-chevron_right" />
 							</div>
+
 						</div>
 
 						<div className="content-wrapper">
-							<button className={(this.state.items === null) ? 'btn btn-primary d-none w-100' : 'btn btn-primary w-100'}
-								onClick={async () => {
-									let filter = {};
-									await this.setState((prevState) => ({...prevState, items: null }));
-									filter.BRAND_ID = this.state.filter.brand.data;
-									filter.MODEL_ID = this.state.filter.model.data.join(',');
-									filter.BODY_ID = this.state.filter.body.data.join(',');
-									filter.TRANSMISSION_ID = this.state.filter.transmission.data.join(',');
-									filter.MIN_PRICE = this.state.filter.MIN_PRICE;
-									filter.MAX_PRICE = this.state.filter.MAX_PRICE;
-									filter.MIN_YEAR = this.state.filter.MIN_YEAR;
-									filter.MAX_YEAR = this.state.filter.MAX_YEAR;
-									Car.filter(filter).then((r) => {
-										this.setState((prevState) => ({...prevState, items: r }));
-									})
-								}}
-							>Искать</button>
+							<button className={(this.state.items === null) ? 'btn btn-primary d-none w-100' : 'btn btn-primary w-100'} onClick={this.onClickHandle}>Искать</button>
 						</div>
 
 
@@ -320,7 +349,22 @@ export class Filter extends React.Component {
 										<div className={"alert alert-info bg-info"}>Ничего не найдено</div>
 									) : (
 										<div className={"content-wrapper"}>
-											<CarList items={this.state.items} />
+											<CarList
+												history={this.props.history}
+												items={this.state.items}
+												onClick={(e, car_id) => this.context.widget({
+													child: () => (
+														<>
+															<ParkingProvider>
+																	<CarItem
+																		history={this.props.history}
+																		id={car_id}
+																	/>
+															</ParkingProvider>
+														</>
+													)
+												})}
+											/>
 										</div>
 									)
 								)

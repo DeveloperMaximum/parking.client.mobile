@@ -3,7 +3,7 @@ import React from 'react';
 import { Context } from "../../components/base/Context";
 import { Root, Header, Footer } from "../../components/ui";
 import { CarItem } from "../../components/App";
-import {SellerProvider} from "../../components/base/Context/Necessitate";
+import { ParkingProvider } from "../../components/base/Context/Parking";
 
 export class Car extends React.Component {
 
@@ -20,11 +20,11 @@ export class Car extends React.Component {
                     </div>
                 </Header>
 
-	            <SellerProvider>
+	            <ParkingProvider>
 	                <main>
                         <CarItem id={this.props.match.params.id} />
 	                </main>
-	            </SellerProvider>
+	            </ParkingProvider>
 
                 <Footer history={this.props.history} />
             </Root>

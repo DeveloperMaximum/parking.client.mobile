@@ -7,9 +7,9 @@ const get = async (props) => {
         URL: 'token',
         BODY: props.body
     }).then((result) => {
-        if (result.success === true) {
-            return result.data;
-        }
+	    if (result.success === true) {
+		    return result.data;
+	    }
         return false;
     });
 };

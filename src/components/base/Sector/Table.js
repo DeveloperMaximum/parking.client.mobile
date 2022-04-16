@@ -1,38 +1,43 @@
 import React from 'react';
 
-import { Context } from "../../base/Context";
+import { Context } from "../Context";
 import * as Storage from "../../base/Storage";
 import { Place } from "../../App/Api";
 
 
 export class Table extends React.Component {
 
-    static contextType = Context;
+	static contextType = Context;
+
+	places = null;
+	sector = null;
+	search = null;
 
     constructor(props){
         super(props);
         this.state = {
-	        temp: null,
-            id: props.id,
-            sector: null,
-            places: null,
-            car_id: null,
+	        render: null,
+	        search: null,
         };
+	    this.sector = Storage.get('SECTOR')[this.props.id];
+	    this.search = (new URLSearchParams(this.props.history?.location.search))?.get('car_id');
     }
 
     componentDidMount = async () => {
+	    this.sector = Storage.get('SECTOR')[this.props.id];
         await Place.get({
 	        ALL: 'Y',
-	        GROUP: 'INNER_ID',
 	        DETAILED: 'Y',
 	        SECTOR_ID: this.props.id,
         }).then((result) => {
+	        this.places = result;
+	        this.renderSchema();
+
 	        this.setState((prevState) => ({
 		        ...prevState,
-		        places: result
+		        search: (new URLSearchParams(this.props.history?.location.search))?.get('car_id')
 	        }));
         });
-        this.renderSchema();
     };
 
 	componentWillUnmount() {
@@ -41,31 +46,23 @@ export class Table extends React.Component {
 		}
 	}
 
-    renderSchema = () => {
+    renderSchema = async () => {
 	    let places = {};
-	    let schema = {};
-	    let data_tiles = [];
-	    let data_places = {};
-
-	    let sectors = Storage.get('SECTOR');
-	    sectors.forEach(sector => {
-		    schema = sector.SCHEMA;
-		    if(sector.ID === this.props.id){
-			    data_tiles = schema.layers[0].data;
-			    data_places = schema.layers[1].objects;
-		    }
-	    });
+	    let schema = this.sector.SCHEMA;
+	    let data_tiles = schema.layers[0].data;
+	    let data_places = schema.layers[1].objects;
 
 	    data_places.forEach(obj => {
 	    	let x = (obj.x === 0) ? 0 : (obj.x / obj.width);
 	    	let y = (obj.y === 0) ? 0 : (obj.y / obj.height) - 1;
 	    	if(!places[x]) places[x] = [];
 
-	    	// todo
-		    obj.x = x;
-		    obj.y = y;
+		    obj.x = x; obj.y = y;
 		    obj.inner_id = (obj?.inner_id) ? obj.inner_id : obj.id;
-		    obj.info = (this.state.places[obj.inner_id]) ? this.state.places[obj.inner_id] : false;
+
+		    // todo: парковочные места в массиве. отсчет с 0
+		    obj.info = (this.places[obj.inner_id - 1]) ? this.places[obj.inner_id - 1] : false;
+
 		    obj.icon = (obj.info?.NECESSITATE_TOTAL > 0) ? 'icon-build' : false;
 
 		    places[x][y] = obj;
@@ -105,7 +102,7 @@ export class Table extends React.Component {
 
         this.setState((prevState) => ({
             ...prevState,
-            temp: render
+	        render: render
         }));
     };
 }

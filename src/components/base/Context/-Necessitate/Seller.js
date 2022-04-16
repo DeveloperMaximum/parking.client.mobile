@@ -22,6 +22,9 @@ export class SellerProvider extends React.Component {
     }
 
 	stop = async () => {
+    	if(this.state.callback !== false){
+    		await this.state.callback();
+	    }
 		await this.setState((prevState) => ({
 			car: null,
 			necessitates: null,

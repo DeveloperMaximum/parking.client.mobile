@@ -13,7 +13,7 @@ export class Parking extends React.Component {
 		return (
 			<ParkingConsumer>
 				{({ data }) => (
-					<Root viewId={"PARKING"} active={data.process}>
+					<Root viewId={"PARKING"} active={data.process} className={"inner-root-component"}>
 						<Header>
 							<div className="d-flex">
 								<h1 className="d-inline-block">

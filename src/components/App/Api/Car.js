@@ -1,18 +1,20 @@
 import { Request } from "../../utils/Request";
 import * as Storage from "../../base/Storage";
 
-const search = async (props) => {
+const search = async (query, controller, page = 1) => {
 
-    let url = 'car/?LOGIC=SEARCH';
-    let keys = ['VIN', 'VIN2', 'G_NUMBER', 'BRAND', 'MODEL'];
+	let user = Storage.get('USER');
+
+	let url = `operator/${user.OPERATOR.ID}/car/?LOGIC=SEARCH&nav=page-${page}`;
+    let keys = ['VIN', 'VIN2', 'G_NUMBER'];
     for (let i = 0; i < keys.length; i++) {
-        url += '&' + keys[i] + '=' + props.search;
+        url += '&' + keys[i] + '=' + query;
     }
-    url += '&MAP_ID=' + Storage.get('UF_LOCATION') + '&LAST_EVENT_HISTORY=Y&NEED_NECESSITATE_TOTAL=Y';
+    url += '&LAST_EVENT_HISTORY=Y&NEED_NECESSITATE_TOTAL=Y&NEED_SECTOR_ID=Y';
 
     return await Request({
         URL: url,
-        CONTROLLER: props.controller,
+        CONTROLLER: controller,
         UF_TOKEN: Storage.get('UF_TOKEN')
     }).then((result) => {
         if (result.status === 204) {
@@ -27,34 +29,16 @@ const search = async (props) => {
 
 const filter = async (props) => {
 
-    let url = 'car/?LOGIC=SEARCH';
+	let user = Storage.get('USER');
 
-    if(props?.BRAND_ID){
-	    url += '&BRAND_ID=' + props.BRAND_ID;
-    }
-    if(props?.MODEL_ID){
-	    url += '&MODEL_ID=' + props.MODEL_ID;
-    }
-    if(props?.BODY_ID){
-	    url += '&BODY_ID=' + props.BODY_ID;
-    }
-    if(props?.TRANSMISSION_ID){
-	    url += '&TRANSMISSION_ID=' + props.TRANSMISSION_ID;
-    }
-    if(props?.MIN_PRICE){
-	    url += '&MIN_PRICE=' + props.MIN_PRICE;
-    }
-    if(props?.MAX_PRICE){
-	    url += '&MAX_PRICE=' + props.MAX_PRICE;
-    }
-    if(props?.MIN_YEAR){
-	    url += '&MIN_YEAR=' + props.MIN_YEAR;
-    }
-    if(props?.MAX_YEAR){
-	    url += '&MAX_YEAR=' + props.MAX_YEAR;
-    }
-
-    url += '&MAP_ID=' + Storage.get('UF_LOCATION') + '&LAST_EVENT_HISTORY=Y';
+	let url = `operator/${user.OPERATOR.ID}/car/?LOGIC=SEARCH`;
+	let keys = ['BRAND_ID', 'MODEL_ID', 'BODY_ID', 'TRANSMISSION_ID', 'MIN_PRICE', 'MAX_PRICE', 'MIN_YEAR', 'MAX_YEAR'];
+	for (let i = 0; i < keys.length; i++) {
+		if(props[keys[i]]){
+			url += '&' + keys[i] + '=' + props[keys[i]];
+		}
+	}
+	url += '&LAST_EVENT_HISTORY=Y&NEED_NECESSITATE_TOTAL=Y&NEED_SECTOR_ID=Y';
 
     return await Request({
         URL: url,
@@ -74,7 +58,7 @@ const filter = async (props) => {
 const getById = async (id) => {
 
     return await Request({
-        URL: `car/${id}?&LAST_EVENT_HISTORY=Y&NEED_NECESSITATE_TOTAL=Y`,
+        URL: `car/${id}?LAST_EVENT_HISTORY=Y&NEED_NECESSITATE_TOTAL=Y&NEED_SECTOR_ID=Y`,
         UF_TOKEN: Storage.get('UF_TOKEN')
     }).then((result) => {
         if (result.success === true) {
@@ -115,7 +99,6 @@ const necessitates = async (props) => {
 };
 
 const addNecessitates = async (props) => {
-	console.log(props)
     let url = `car/${props.CAR_ID}/necessitate?`;
     return await Request({
         URL: url,
@@ -132,4 +115,53 @@ const addNecessitates = async (props) => {
     });
 };
 
-export { search, getById, get, filter, necessitates, addNecessitates }
+const toTDrive = async (props) => {
+	return await Request({
+		METHOD: `PUT`,
+		URL: `car/${props.ID}/tdrive`,
+		UF_TOKEN: Storage.get('UF_TOKEN')
+	});
+};
+
+const toDemo = async (props) => {
+	return await Request({
+		METHOD: `PUT`,
+		URL: `car/${props.ID}/demo`,
+		UF_TOKEN: Storage.get('UF_TOKEN')
+	});
+};
+
+const toParking = async (props) => {
+	return await Request({
+		METHOD: `PUT`,
+		URL: `car/${props.ID}/parking`,
+		UF_TOKEN: Storage.get('UF_TOKEN'),
+		BODY: {
+			PLACE_ID: props.PLACE_ID
+		}
+	});
+};
+
+const toMoved = async (props) => {
+	return await Request({
+		METHOD: `PUT`,
+		URL: `car/${props.ID}/moving`,
+		UF_TOKEN: Storage.get('UF_TOKEN'),
+		BODY: {}
+	});
+};
+
+const dcard = async (props) => {
+	let url = `car/${props.CAR_ID}/dcard?`;
+	return await Request({
+		URL: url,
+		UF_TOKEN: Storage.get('UF_TOKEN')
+	}).then((result) => {
+		if (result.success === true) {
+			return result.data;
+		}
+		return false;
+	});
+};
+
+export { search, getById, get, filter, toTDrive, toDemo, toParking, toMoved, necessitates, addNecessitates, dcard }
