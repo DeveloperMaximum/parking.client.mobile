@@ -2,6 +2,7 @@ import React from 'react';
 
 export class Props extends React.Component {
 
+
 	render(){
 
 		return (

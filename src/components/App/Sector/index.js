@@ -1,5 +1,6 @@
-import { List } from './List'
-import { Table } from './Table'
-import { Place } from './Place'
+import * as Item from './Item'
 
-export { List, Table, Place }
+// todo
+import { List } from './List/List.js'
+
+export { List, Item }

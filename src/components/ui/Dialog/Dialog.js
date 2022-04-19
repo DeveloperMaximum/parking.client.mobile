@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Consumer } from "../../base/Context";
+import { Consumer } from "../../App/Context";
 
 
 export class Dialog extends React.Component {
@@ -92,6 +92,7 @@ export class Dialog extends React.Component {
 	                                        <>
 	                                            <div className={"modal-body"}>
 	                                                {data.dialog.content}
+		                                            {data.dialog.child && data.dialog.child()}
 	                                            </div>
 	                                            <div className={"modal-footer border-white"}>
 		                                            {buttons.map((btn, index) => (
@@ -102,6 +103,7 @@ export class Dialog extends React.Component {
 						                                            dialog({
 							                                            header: data.dialog.header,
 							                                            content: result,
+							                                            child: false,
 							                                            buttons: [],
 						                                            });
 					                                            }
@@ -109,6 +111,11 @@ export class Dialog extends React.Component {
 			                                            }}>{btn.text}</button>
 		                                            ))}
 		                                            <button className={cancelBtn.className} onClick={async () => {
+		                                            	if(data.dialog?.callback){
+				                                            await this.callback(data.dialog.callback).then((result) => {
+					                                            return true;
+				                                            });
+			                                            }
 			                                            dialog(false);
 			                                            return true;
 		                                            }}>{cancelBtn.text}</button>

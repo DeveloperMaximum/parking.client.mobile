@@ -1,21 +1,20 @@
 import React from 'react';
 
-import { Context } from "../../components/base/Context";
-import * as Storage from "../../components/base/Storage";
+import { App } from "../../components/App/Context";
+import * as Storage from "../../components/App/Storage";
 
 import { Root } from "../../components/ui/Root/Root";
 import { Header } from "../../components/ui/Header/Header";
 import { Footer } from "../../components/ui/Footer/Footer";
 import { LifeSearch } from "../../components/ui/";
 
-import { Car, Brand, Model, Body, Transmission } from "../../components/App/Api";
-import { CarItem, CarList } from "../../components/App";
-import { ParkingProvider } from "../../components/base/Context/Parking";
+import { Car as ApiCar, Brand, Model, Body, Transmission } from "../../components/App/Api";
+import { Car } from "../../components/App";
 
 
 export class Filter extends React.Component {
 
-	static contextType = Context;
+	static contextType = App;
 
 	default = {
 		filter: {
@@ -73,7 +72,7 @@ export class Filter extends React.Component {
 		filter.MAX_PRICE = this.state.filter.MAX_PRICE;
 		filter.MIN_YEAR = this.state.filter.MIN_YEAR;
 		filter.MAX_YEAR = this.state.filter.MAX_YEAR;
-		Car.filter(filter).then((result) => {
+		ApiCar.filter(filter).then((result) => {
 			Storage.save('FILTER_ITEMS', result);
 			Storage.save('FILTER_PARAM', this.state.filter);
 			this.setState((prevState) => ({...prevState, items: result }));
@@ -349,18 +348,16 @@ export class Filter extends React.Component {
 										<div className={"alert alert-info bg-info"}>Ничего не найдено</div>
 									) : (
 										<div className={"content-wrapper"}>
-											<CarList
+											<Car.List
 												history={this.props.history}
 												items={this.state.items}
 												onClick={(e, car_id) => this.context.widget({
 													child: () => (
 														<>
-															<ParkingProvider>
-																	<CarItem
-																		history={this.props.history}
-																		id={car_id}
-																	/>
-															</ParkingProvider>
+															<Car.Item
+																history={this.props.history}
+																id={car_id}
+															/>
 														</>
 													)
 												})}

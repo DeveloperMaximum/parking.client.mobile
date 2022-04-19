@@ -1,3 +1,3 @@
-import { Dcard } from './Dcard'
+import { Dcard } from './Dcard.js'
 
 export { Dcard }

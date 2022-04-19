@@ -1,20 +1,21 @@
 import React from 'react';
 
-import * as Storage from "../../../base/Storage";
-import { Context } from "../../../base/Context";
-import { ParkingConsumer } from "../../../base/Context/Parking";
-import { Seller } from "../../../App/Car/Necessitate/Seller";
-import { Dcard } from "../../Car/Dcard/Dcard.js";
-
+import * as Storage from "../../../App/Storage/Storage";
+import { App } from "../../Context";
 import { Car } from "../../Api";
-import { Status, Props } from "./";
+import { Dcard } from "../../Car/Dcard";
+import { Parking } from "../../Car/Parking";
+import { Seller } from "../../Car/Necessitate/Seller";
+import { Status } from "./Status";
+import { Props } from "./Props";
 
 
 export class Item extends React.Component {
 
-	static contextType = Context;
+	static contextType = App;
 
 	statuses;
+
 
     constructor(props){
         super(props);
@@ -104,31 +105,21 @@ export class Item extends React.Component {
 	    if(this.state.car?.STATUS_CODE === 'MOVING'){
 		    return (
 			    <div className="btn-wrapper d-flex flex-wrap justify-content-between mb-3">
-				    <ParkingConsumer>
-					    {({ start }) => (
-						    <button className={"btn btn-primary w-100"} onClick={async (e) => {
-							    e.persist();
-							    await this.context.dialog({
-								    header: "Перемещение",
-								    content: "Вы действительно хотите припарковать автомобиль?",
-								    buttons: {
-									    tDrive: {
-										    text: 'Да',
-										    callback: async () => {
-											    start({
-												    callback: async () => {
-													    this.componentDidMount();
-												    },
-												    car_id: this.state.id
-											    });
-											    return true;
-										    },
-									    }
-								    }
-							    });
-						    }}>Припарковать автомобиль</button>
-					    )}
-				    </ParkingConsumer>
+				    <button className={"btn btn-primary w-100"} onClick={async (e) => {
+					    e.persist();
+					    await this.context.dialog({
+						    header: "Перемещение",
+						    content: "Вы действительно хотите припарковать автомобиль?",
+						    buttons: {
+							    tDrive: {
+								    text: 'Да',
+								    callback: async () => {
+									    return true;
+								    },
+							    }
+						    }
+					    });
+				    }}>Припарковать автомобиль</button>
 			    </div>
 		    );
 	    }
@@ -138,31 +129,32 @@ export class Item extends React.Component {
 			    <>
 				    { this.renderTimer(this.state.car.HISTORY_DATE_CREATE) }
 				    <div className="btn-wrapper d-flex flex-wrap justify-content-between mb-3">
-					    <ParkingConsumer>
-						    {({ start }) => (
-							    <button className={"btn btn-primary w-100"} onClick={async (e) => {
-								    e.persist();
-								    await this.context.dialog({
-									    header: "Тест-драйв",
-									    content: "Вы действительно хотите завершить тест-драйв авто?",
-									    buttons: {
-										    tDrive: {
-											    text: 'Да',
-											    callback: async () => {
-												    start({
-													    callback: async () => {
-														    this.componentDidMount();
-													    },
-													    car_id: this.state.id
-												    });
-												    return true;
-											    },
-										    }
-									    }
-								    });
-							    }}>Звершить тест-драйв</button>
-						    )}
-					    </ParkingConsumer>
+					    <button className={"btn btn-primary w-100"} onClick={async (e) => {
+						    e.persist();
+						    await this.context.dialog({
+							    header: "Тест-драйв",
+							    content: "Вы действительно хотите завершить тест-драйв авто?",
+							    buttons: {
+								    parking: {
+									    text: 'Да',
+									    callback: async () => {
+										    await this.context.sider({
+											    template: false,
+											    child: () => {
+												    return (
+													    <Parking
+													        car={this.state.car}
+													        callback={this.componentDidMount}
+													    />
+												    )
+											    }
+										    });
+										    return true;
+									    },
+								    }
+							    }
+						    });
+					    }}>Звершить тест-драйв</button>
 				    </div>
 			    </>
 		    );
@@ -250,7 +242,7 @@ export class Item extends React.Component {
 								                            return await Car.toMoved({ID: this.state.car.ID}).then((result) => {
 									                            if(result.success === true){
 										                            if(this.context.data.widget.children !== false && this.props?.history){
-											                            this.props.history.push(`/catalog/car/${this.state.id}`);
+											                            this.props.history.push(`/home/car/${this.state.id}`);
 											                            this.context.widget();
 										                            }
 										                            this.componentDidMount();
@@ -290,7 +282,7 @@ export class Item extends React.Component {
 								                            return await Car.toTDrive({ID: this.state.id}).then((result) => {
 									                            if(result.success === true){
 										                            if(this.context.data.widget.children !== false && this.props?.history){
-											                            this.props.history.push(`/catalog/car/${this.state.id}`);
+											                            this.props.history.push(`/home/car/${this.state.id}`);
 											                            this.context.widget();
 										                            }
 										                            this.componentDidMount();
@@ -314,7 +306,7 @@ export class Item extends React.Component {
 								                            return await Car.toDemo({ID: this.state.id}).then((result) => {
 									                            if(result.success === true){
 										                            if(this.context.data.widget.children !== false && this.props?.history){
-											                            this.props.history.push(`/catalog/car/${this.state.id}`);
+											                            this.props.history.push(`/home/car/${this.state.id}`);
 											                            this.context.widget();
 										                            }
 										                            this.componentDidMount();

@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { Context } from "../../components/base/Context";
+import { App } from "../../components/App/Context";
 import { Root, Header, Footer } from "../../components/ui";
-import { CarList } from "../../components/App";
-import { Car } from "../../components/App/Api";
+import { Car } from "../../components/App";
+import { Car as ApiCar } from "../../components/App/Api";
 
 export class Demo extends React.Component {
 
-	static contextType = Context;
+	static contextType = App;
 
 	constructor(props){
 		super(props);
@@ -27,7 +27,7 @@ export class Demo extends React.Component {
 	}
 
 	loadCars() {
-		return Car.get({
+		return ApiCar.get({
 			STATUS_ID: 8,
 			NECESSITATE_TOTAL: 'Y',
 			LAST_EVENT_HISTORY: 'Y'
@@ -52,7 +52,7 @@ export class Demo extends React.Component {
                 <main>
 	                <div className={"content-wrapper"}>
 		                {this.state.cars !== null ? (
-			                <CarList
+			                <Car.List
 				                history={this.props.history}
 				                items={this.state.cars}
 			                />

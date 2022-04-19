@@ -1,4 +1,3 @@
-import { PrivateRoute } from './PrivateRoute';
-import { Context, Provider, Consumer } from './Context'
+import * as Sector from './Sector'
 
-export { PrivateRoute, Context, Provider, Consumer }
+export { Sector }

@@ -1,13 +1,12 @@
 import React from 'react';
 
-import { Context } from "../../components/base/Context";
+import { App } from "../../components/App/Context";
 import { Root, Header, Footer } from "../../components/ui";
-import { CarItem } from "../../components/App";
-import { ParkingProvider } from "../../components/base/Context/Parking";
+import { Car as ComponentCar } from "../../components/App";
 
 export class Car extends React.Component {
 
-	static contextType = Context;
+	static contextType = App;
 
     render() {
 
@@ -20,11 +19,9 @@ export class Car extends React.Component {
                     </div>
                 </Header>
 
-	            <ParkingProvider>
-	                <main>
-                        <CarItem id={this.props.match.params.id} />
-	                </main>
-	            </ParkingProvider>
+                <main>
+                    <ComponentCar.Item id={this.props.match.params.id} />
+                </main>
 
                 <Footer history={this.props.history} />
             </Root>

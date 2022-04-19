@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-export class List extends React.Component {
+export class Item extends React.Component {
 
     constructor(props) {
         super(props);
@@ -53,4 +53,19 @@ export class List extends React.Component {
         if(car_necessitate_total > 5) return 'danger';
         return 'warning';
     };
+
+	render() {
+		return (
+			<div className={"d-block item " + this.typeNotice(this.props.CAR_NECESSITATE_TOTAL)}>
+				<div className="d-flex">
+					<div className="name ">{this.props.NAME}</div>
+				</div>
+				{this.placeTotal(this.props.PLACE_TOTAL, this.props.CAR_TOTAL)}
+				<div className="cars">
+					{this.carTotal(this.props.CAR_TOTAL)}
+					{this.carNecessitateTotal(this.props.CAR_NECESSITATE_TOTAL)}
+				</div>
+			</div>
+		);
+	}
 }

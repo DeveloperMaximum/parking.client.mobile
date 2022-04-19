@@ -1,14 +1,16 @@
 import React from 'react';
 
-import { Context } from "../../base/Context";
+import { App } from "../Context";
+import { Search } from "../../base/Car/Search";
 import { Request } from "../../utils/Request";
 import * as Place from "../Api/Place";
-import {CarItem, CarList, CarSearch} from "../index";
+import { Car } from "../";
 
 
 export class Item extends React.Component {
 
-	static contextType = Context;
+	static contextType = App;
+
 
 	constructor(props){
 		super(props);
@@ -28,35 +30,49 @@ export class Item extends React.Component {
 		}
 	}
 
+	onParking = async (car) => {
+		await this.context.dialog({
+			header: "Парковка",
+			content: `Вы действительно хотите припарковать здесь ${car.BRAND_NAME} ${car.MODEL_NAME} (${car.G_NUMBER})`,
+			buttons: {
+				parking: {
+					text: 'Да',
+					callback: async () => {
+						return await Place.parking({
+							ID: this.props.ID,
+							CAR_ID: car.ID
+						}).then(async (result) => {
+							if(result === false){
+								return 'Не удалось припарковать здесь автомобиль'
+							}
+							await this.props?.tableDidMount();
+							await this.context.widget({
+								header: `Парковочное место #${this.props.INNER_ID}`,
+								child: () => (
+									<>
+										<Car.Item
+											id={car.ID}
+											tableDidMount={this.props?.tableDidMount}
+										/>
+									</>
+								)
+							});
+							return true;
+						});
+					},
+				}
+			}
+		});
+	};
+
 	render(){
 		return (
 
 			<>
 				<div className={"car w-100 overflow-hidden"}>
 					<div className={"content-wrapper"}>
-						<CarSearch
-							template="widget"
-							history={this.props.history}
-							onClickItem={(e, car_id) => {
-								Place.parking({
-									ID: this.props.id,
-									CAR_ID: car_id
-								}).then(async () => {
-									await this.props?.tableDidMount();
-									await this.context.widget({
-										header: `Парковочное место #${this.props.innerId}`,
-										child: () => (
-											<>
-												<CarItem
-													history={this.props.history}
-													id={car_id}
-													tableDidMount={this.props?.tableDidMount}
-												/>
-											</>
-										)
-									});
-								});
-							}}
+						<Search
+							onClick={this.onParking}
 						>
 
 							<>
@@ -103,8 +119,7 @@ export class Item extends React.Component {
 																					header: `Парковочное место #${this.props.innerId}`,
 																					child: () => (
 																						<>
-																							<CarItem
-																								history={this.props.history}
+																							<Car.Item
 																								id={result.data[0].ID}
 																								tableDidMount={this.props?.tableDidMount}
 																							/>
@@ -131,7 +146,7 @@ export class Item extends React.Component {
 								</div>
 							</>
 
-						</CarSearch>
+						</Search>
 					</div>
 				</div>
 			</>

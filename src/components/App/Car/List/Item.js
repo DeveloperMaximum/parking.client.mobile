@@ -1,5 +1,6 @@
 import React from 'react';
-import { Context } from "../../../base/Context";
+
+import { App } from "../../Context";
 
 let props = {
 	item: {
@@ -11,28 +12,29 @@ let props = {
 
 export class Item extends React.Component {
 
-	static contextType = Context;
+	static contextType = App;
 
 	notice;
 	status_id;
 	description;
 	responsible;
 
+
 	constructor(props) {
 		super(props);
 
 		this.notice = this.getNotice();
 		this.description = this.getDescription();
-		this.status_id = Number(this.props.item.STATUS_ID);
+		this.status_id = Number(this.props.STATUS_ID);
 		this.responsible = {
-			name: `${this.props.item?.HISTORY_RESPONSIBLE_NAME}`,
-			lastName: `${this.props.item?.HISTORY_RESPONSIBLE_LAST_NAME}`,
-			time: `${this.props.item?.HISTORY_DATE_CREATE?.split(" ")[1]}`
+			name: `${this.props?.HISTORY_RESPONSIBLE_NAME}`,
+			lastName: `${this.props?.HISTORY_RESPONSIBLE_LAST_NAME}`,
+			time: `${this.props?.HISTORY_DATE_CREATE?.split(" ")[1]}`
 		};
 	}
 
 	getNotice = () => {
-		let total = Number(this.props.item.NECESSITATE_TOTAL);
+		let total = Number(this.props.NECESSITATE_TOTAL);
 		if(total === 0){
 			return  { type: "success", title: "Действия не требуются" };
 		}else if(total > 3){
@@ -44,14 +46,14 @@ export class Item extends React.Component {
 
 	getDescription = () => {
 		let items = [];
-		if(this.props.item?.MILEAGE){
-			items.push(new Intl.NumberFormat('ru-RU').format(this.props.item.MILEAGE) + ' км ');
+		if(this.props?.MILEAGE){
+			items.push(new Intl.NumberFormat('ru-RU').format(this.props.MILEAGE) + ' км ');
 		}
-		if(this.props.item?.BODY_NAME){
-			items.push(this.props.item.BODY_NAME);
+		if(this.props?.BODY_NAME){
+			items.push(this.props.BODY_NAME);
 		}
-		if(this.props.item?.TRANSMISSION_NAME){
-			items.push(this.props.item.TRANSMISSION_NAME);
+		if(this.props?.TRANSMISSION_NAME){
+			items.push(this.props.TRANSMISSION_NAME);
 		}
 		return items.join(', ')
 	};
@@ -70,20 +72,17 @@ export class Item extends React.Component {
 				}
 			}
 		}
-		if(!this.props?.onClick){
-			this.props.history.replace(`/catalog/car/${car_id}`);
-		}
 	};
 
 	render() {
 		return (
-			<div data-id={this.props.item.ID} onClick={this.onClickHandle} className={`d-block item ${this.notice.type}`}>
+			<div data-id={this.props.ID} className={`d-block item ${this.notice.type}`}>
 				<div className={`position-absolute`}/>
 				<div className="d-flex">
 					<div className="notice">{this.notice.title}</div>
 				</div>
 				<div className="d-flex">
-					<div className="name">{this.props.item.BRAND_NAME} {this.props.item.MODEL_NAME} {this.props.item.CATEGORY}-класс</div>
+					<div className="name">{this.props.BRAND_NAME} {this.props.MODEL_NAME} {this.props.CATEGORY}-класс</div>
 				</div>
 				<div className="description">{this.description}</div>
 				{(this.status_id === 6) ? (

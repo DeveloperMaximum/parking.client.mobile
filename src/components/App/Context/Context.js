@@ -1,12 +1,12 @@
 import React from "react";
 
-import * as Storage from "../Storage";
-import { DB, User} from "../../App/Api";
-import { Camera } from "../../App/Camera";
 import { Widget, Sider, Wmenu } from "../../ui/Widget";
 import { Dialog } from "../../ui/Dialog";
+import { DB, User} from "../Api";
+import * as Storage from "../Storage";
+import { Camera } from "../Camera";
 
-export const Context = React.createContext({});
+export const App = React.createContext({});
 
 export class Provider extends React.Component {
 
@@ -48,6 +48,8 @@ export class Provider extends React.Component {
 		        buttons: {},
 	            header: "Внимание!",
 	            content: "",
+		        child: false,
+		        callback: false,
 	            display: false
             },
 
@@ -191,7 +193,16 @@ export class Provider extends React.Component {
     };
 
     dialog = async (props = false) => {
-	    if(props === false) props = {};
+	    if(props === false){
+		    props = {
+			    buttons: {},
+			    header: "Внимание!",
+			    content: "",
+			    child: false,
+			    callback: false,
+			    display: false
+		    };
+	    }
         await this.setState((prevState) => ({
             ...prevState,
 	        dialog: {
@@ -224,7 +235,7 @@ export class Provider extends React.Component {
     render() {
 
         return (
-            <Context.Provider value={{
+            <App.Provider value={{
                 data: this.state,
                 login: this.login,
 	            logout: this.logout,
@@ -248,9 +259,9 @@ export class Provider extends React.Component {
                 <Wmenu />
 
 
-            </Context.Provider>
+            </App.Provider>
         );
     }
 }
 
-export const Consumer = Context.Consumer;
+export const Consumer = App.Consumer;

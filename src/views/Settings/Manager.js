@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Context } from "../../components/base/Context";
+import { App } from "../../components/App/Context";
 import { Root } from "../../components/ui/Root/Root";
 import { Header } from "../../components/ui/Header/Header";
 import { Footer } from "../../components/ui/Footer/Footer";
@@ -8,7 +8,7 @@ import {DB as ApiDB} from "../../components/App/Api/DB";
 
 export class Manager extends React.Component {
 
-    static contextType = Context;
+    static contextType = App;
 
     constructor(props){
         super(props);

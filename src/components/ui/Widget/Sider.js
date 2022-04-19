@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Root } from "../../ui/Root";
 import { Header } from "../../ui/Header";
-import { Consumer } from "../../base/Context";
+import { Consumer } from "../../App/Context";
 
 
 export class Sider extends React.Component {

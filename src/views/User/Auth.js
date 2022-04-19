@@ -1,14 +1,14 @@
 import React from 'react';
 import { Redirect } from "react-router-dom";
 
-import { Context } from "../../components/base/Context";
+import { App } from "../../components/App/Context";
 
 import { Form, Input, InputPassword } from "../../components/ui";
 import { Token } from "../../components/App/Api";
 
 export class Auth extends React.Component {
 
-    static contextType = Context;
+    static contextType = App;
 
     constructor(props){
         super(props);

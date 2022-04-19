@@ -1,18 +1,14 @@
 import React from 'react';
 
-import { Context } from "../../components/base/Context";
-import * as Storage from "../../components/base/Storage";
-import { Sector } from "../../components/App/Api";
-
+import * as Storage from "../../components/App/Storage";
+import { Sector as ApiSector } from "../../components/App/Api";
 import { Root } from "../../components/ui/Root/Root";
 import { Footer } from "../../components/ui/Footer/Footer";
-
-import { SectorList, CarSearch } from "../../components/App";
+import { Sector, Car } from "../../components/App";
 
 
 export class Home extends React.Component {
 
-    static contextType = Context;
 
     constructor(props){
         super(props);
@@ -32,7 +28,7 @@ export class Home extends React.Component {
     }
 
     loadSectors() {
-        return Sector.get({DETAILED: 'Y'}).then(result => {
+        return ApiSector.get({DETAILED: 'Y'}).then(result => {
             this.setState((prevState) => ({
                 ...prevState,
                 sectors: result
@@ -43,9 +39,7 @@ export class Home extends React.Component {
     render(){
         return (
             <Root viewId={"HOME"}>
-	            <CarSearch
-		            template="page"
-		            history={this.props.history}
+	            <Car.Search
 		            beforeForm={(
 			            <div className="d-flex pb-2" onClick={() => this.props.history.push(`/profile`)}>
 				            <h1 className="d-inline-block">{Storage.get('USER').NAME}</h1>
@@ -54,12 +48,11 @@ export class Home extends React.Component {
 		            )}
 	            >
 
-		            <SectorList
+		            <Sector.List
 			            items={this.state.sectors}
-			            history={this.props.history}
 		            />
 
-	            </CarSearch>
+	            </Car.Search>
 
                 <Footer
 	                history={this.props.history}

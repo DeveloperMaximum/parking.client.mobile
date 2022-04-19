@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Context } from "../../components/base/Context";
+import { App } from "../../components/App/Context";
 import { Root, Header, Footer } from "../../components/ui";
 import { CarItem, SectorList } from "../../components/App";
 import { Sector } from "../../components/App/Api";

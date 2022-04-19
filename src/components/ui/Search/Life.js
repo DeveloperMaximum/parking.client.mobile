@@ -1,11 +1,7 @@
 import React from 'react';
 
-import {Context} from "../../base/Context";
-
 
 export class Life extends React.Component {
-
-	static contextType = Context;
 
 	onPick;
 	onSearch;

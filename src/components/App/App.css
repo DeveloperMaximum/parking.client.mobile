@@ -56,3 +56,15 @@
 #APP .widget {
     bottom: -150vh;
 }
+
+#APP #SECTOR header .search-inner {
+    font-size: 28px;
+}
+
+#APP.scrolling {
+    overflow: initial !important;
+}
+
+.sector-cell.active:after {
+    border: 2px solid #fcc300;
+}

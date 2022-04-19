@@ -2,6 +2,7 @@ import React from 'react';
 
 export class Status extends React.Component {
 
+
 	render(){
 		let icon = 'mood';
 		let text = this.props.car?.STATUS_NAME;

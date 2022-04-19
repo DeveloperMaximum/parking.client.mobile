@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Consumer } from "../../base/Context";
+import { Consumer } from "../../App/Context";
 
 
 export class Widget extends React.Component {

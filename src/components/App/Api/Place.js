@@ -1,5 +1,5 @@
 import { Request } from "../../utils/Request";
-import * as Storage from "../../base/Storage";
+import * as Storage from "../Storage";
 
 const get = async (props) => {
 
@@ -29,10 +29,7 @@ const parking = async (props) => {
 	    },
         UF_TOKEN: Storage.get('UF_TOKEN')
     }).then((result) => {
-        if (result.success === true) {
-            return result.data;
-        }
-        return false;
+	    return (result.success !== true) ? false : result;
     });
 };
 

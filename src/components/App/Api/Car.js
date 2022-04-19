@@ -1,5 +1,5 @@
 import { Request } from "../../utils/Request";
-import * as Storage from "../../base/Storage";
+import * as Storage from "../Storage";
 
 const search = async (query, controller, page = 1) => {
 

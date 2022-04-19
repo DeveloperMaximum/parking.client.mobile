@@ -1,12 +1,14 @@
 import React from 'react';
 
-import { Context } from "../../components/base";
-import * as Storage from "../../components/base/Storage";
 import { Root, Header, Footer } from "../../components/ui";
+import * as Storage from "../../components/App/Storage";
+import { App } from "../../components/App/Context";
+
 
 export class Location extends React.Component {
 
-    static contextType = Context;
+    static contextType = App;
+
 
     handleClick = async (e, id = false) => {
         e.persist();

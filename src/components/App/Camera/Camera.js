@@ -1,5 +1,5 @@
 import React from 'react';
-import { Consumer } from "../../base/Context/Context";
+import { Consumer } from "../Context/Context";
 
 export class Camera extends React.Component {
 

@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { Context } from "../../components/base/Context";
-import * as Storage from "../../components/base/Storage";
+import { App } from "../../components/App/Context";
+import * as Storage from "../../components/App/Storage";
 
 import { Root } from "../../components/ui/Root/Root";
 import { Header } from "../../components/ui/Header/Header";
@@ -9,7 +9,7 @@ import { Footer } from "../../components/ui/Footer/Footer";
 
 export class Profile extends React.Component {
 
-    static contextType = Context;
+    static contextType = App;
 
     render() {
 
