@@ -1,15 +1,14 @@
 import React from "react";
 
-import {Header} from "../../../ui/Header";
-import { App } from "../../Context";
+import { Header } from "../../../ui/Header";
+import { Request } from "../../../utils/Request";
+import { Context, Sector } from "../../../App";
 import { Sector as ApiSector } from "../../Api";
-import { Sector } from "../../../App";
-import {Request} from "../../../utils/Request";
 
 
 export class Parking extends React.Component {
 
-	static contextType = App;
+	static contextType = Context;
 
 
 	constructor(props) {
@@ -37,12 +36,49 @@ export class Parking extends React.Component {
 	back = async (e) => {
 		e.persist();
 		if(this.state.sector_id === false){
-			this.context.sider();
+			await this.context.sider();
 		}else{
 			await this.setState((prevState) => ({
 				...prevState,
 				sector_id: false
 			}))
+		}
+	};
+
+	parking = async (cell) => {
+		if(cell?.place?.CAR_ID){
+			await this.context.dialog({
+				buttons: [],
+				display: true,
+				header: "Парковка",
+				content: `Это парковочное место занято`,
+			});
+		}else if(!this.props?.place?.ID){
+			await this.context.dialog({
+				header: "Парковка",
+				content: `Вы уверены, что хотите припарковать автомобиль на парковочном месте ${cell.place.INNER_ID}`,
+				buttons: {
+					parking: {
+						text: 'Да',
+						callback: async () => {
+							return await Request({
+								URL: `car/${this.props.car.ID}/parking`,
+								METHOD: `PUT`,
+								BODY: {
+									PLACE_ID: cell.place.ID
+								}
+							}).then((result) => {
+								if(result.success !== true){
+									return result.message
+								}else{
+									this.props.callback();
+									return `Автомобиль успешно припаркован на парковочном месте ${cell.place.INNER_ID}`;
+								}
+							})
+						},
+					}
+				}
+			});
 		}
 	};
 
@@ -73,30 +109,7 @@ export class Parking extends React.Component {
 						{this.state.sector_id !== false ? (
 							<Sector.Item.Table
 								id={this.state.sector_id}
-								onClick={async (cell) => await Request({
-									URL: `car/${this.props.car.ID}/parking`,
-									METHOD: `PUT`,
-									BODY: {
-										PLACE_ID: cell.place.info.ID
-									}
-								}).then((result) => {
-									let place_id = this.state.place_id;
-									if(result.success !== true){
-										this.context.dialog({
-											header: "Парковка",
-											content: result.message,
-										});
-									}
-									this.context.sider();
-									this.context.dialog({
-										header: "Парковка",
-										callback: async () => {
-											await this.props.callback();
-											return true;
-										},
-										content: `Автомобиль успешно припаркован на парковочном месте ${cell.place.info.INNER_ID}`,
-									});
-								})}
+								onClick={this.parking}
 							/>
 						) : (
 							<Sector.List

@@ -1,12 +1,11 @@
 import React from 'react';
 
-import { App } from "../../components/App/Context";
-import { Root, Header, Footer } from "../../components/ui";
+import { Root, Header } from "../../components/ui";
 import { Place as ComponentPlace } from "../../components/App";
+
 
 export class Place extends React.Component {
 
-	static contextType = App;
 
 	render() {
 
@@ -22,8 +21,6 @@ export class Place extends React.Component {
 				<main>
 					<ComponentPlace.Item sector_id={this.props.match.params.id} id={this.props.match.params.id} />
 				</main>
-
-				<Footer history={this.props.history} />
 			</Root>
 		);
 	}

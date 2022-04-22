@@ -1,14 +1,11 @@
 import React from 'react';
 
-import { App } from "../../../App/Context";
-import * as Storage from "../../../App/Storage";
+import { Storage } from "../../../App";
 import { Place } from "../../../App/Api";
 import { Cell } from "./Cell";
 
 
 export class Table extends React.Component {
-
-	static contextType = App;
 
 	places = null;
 	sector = null;

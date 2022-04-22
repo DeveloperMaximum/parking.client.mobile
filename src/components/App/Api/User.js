@@ -1,5 +1,6 @@
 import { Request } from "../../utils/Request";
-import * as Storage from "../Storage";
+import { Storage } from "../../App";
+
 
 const location = async (props) => {
 

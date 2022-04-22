@@ -1,10 +1,12 @@
 import React from 'react';
-import { Consumer } from "../Context/Context";
+import {Redirect} from "react-router";
+
 
 export class Camera extends React.Component {
 
 	canEnableLight;
 	canChangeCamera;
+
 
 	constructor(props){
 		super(props);
@@ -12,9 +14,26 @@ export class Camera extends React.Component {
 			this.canEnableLight = status.canEnableLight;
 			this.canChangeCamera = status.canChangeCamera;
 		});
+
+		this.state = {
+			car_id: null,
+			ref_key: null,
+		};
 	}
 
-	onLightHandle = async (e) => {
+	componentDidMount = () => {
+		return this.setState((prevState) => ({
+			...prevState,
+		}));
+	};
+
+	componentWillUnmount() {
+		this.setState = (state, callback) => {
+			return false;
+		}
+	}
+
+	lightHandle = async (e) => {
 		window.QRScanner.getStatus(function(status){
 			if(status?.canEnableLight === true){
 				if(status?.lightEnabled){
@@ -30,7 +49,7 @@ export class Camera extends React.Component {
 		});
 	};
 
-	onChangeCameraHandle = async (e) => {
+	changeCameraHandle = async (e) => {
 		window.QRScanner.getStatus(function(status){
 			if(status.currentCamera === 0){
 				window.QRScanner.useFrontCamera(function(err, status){
@@ -50,33 +69,48 @@ export class Camera extends React.Component {
     render() {
         return (
             <>
-                <Consumer>
-                    {({ data }) => (
-                        <div className={ data.camera.scanned === true ? "camera active scanned" : "camera"}>
-                            <div className="opacity" />
-                            { data.camera.loading === true ? (
-                                <>
-                                    <div className="spinner" />
-                                </>
-                            ) : (
-                                <>
-                                    <div className="tools">
-	                                    { this.canChangeCamera === true ? (
-		                                    <span className={"front"} id={"front"} onClick={this.onChangeCameraHandle}>
-			                                    <i className={"icon icon-party_mode"} />
-		                                    </span>
-	                                    ) : (<></>) }
-	                                    { this.canEnableLight === true ? (
-		                                    <span className={"light"} id={"light"} onClick={this.onLightHandle}>
-		                                        <i className={"icon icon-emoji_objects"} />
-		                                    </span>
-	                                    ) : (<></>) }
-                                    </div>
-                                </>
-                            )}
-                        </div>
-                    )}
-                </Consumer>
+	            {this.props?.result !== false ? (
+	            	<>
+			            <Redirect to={{
+				            pathname: `/home/car/${this.props.result.ID}`
+			            }} />
+		            </>
+	            ) : (
+		            <div className={ this.props.scanned === true ? "camera active scanned" : "camera"}>
+			            <div className="opacity" />
+			            <>
+				            { this.props.active !== true ? (<></>) : (
+					            <>
+						            { this.props.loading === true ? (
+							            <>
+								            <div className="spinner" />
+							            </>
+						            ) : (
+							            <>
+								            <div className="stick top">
+									            <div className={`text-muted`}>
+										            <i className="icon-qr_code" /> {this.props?.text ? this.props.text : `Наведите камеру на QR-код`}
+									            </div>
+								            </div>
+								            <div className="tools">
+									            { this.canChangeCamera !== true ? (<></>) : (
+										            <span className={"front"} id={"front"} onClick={this.changeCameraHandle}>
+				                                    <i className={"icon icon-party_mode"} />
+			                                    </span>
+									            ) }
+									            { this.canEnableLight !== true ? (<></>) : (
+										            <span className={"light"} id={"light"} onClick={this.lightHandle}>
+			                                        <i className={"icon icon-emoji_objects"} />
+			                                    </span>
+									            ) }
+								            </div>
+							            </>
+						            )}
+					            </>
+				            )}
+			            </>
+		            </div>
+	            )}
             </>
         );
     }

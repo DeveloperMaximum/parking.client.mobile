@@ -1,7 +1,8 @@
 import React from 'react';
-import {Car} from "../../App/Api";
+
 
 export class Item extends React.Component {
+
 
 	constructor(props) {
 		super(props);

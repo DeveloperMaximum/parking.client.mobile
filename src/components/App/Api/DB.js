@@ -1,5 +1,5 @@
 import { Request } from "../../utils/Request";
-import * as Storage from "../Storage";
+import { Storage } from "../../App";
 
 const get = async () => {
     return await Request({

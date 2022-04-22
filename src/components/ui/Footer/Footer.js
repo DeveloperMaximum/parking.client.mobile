@@ -1,10 +1,9 @@
 import React from 'react';
 import { NavLink } from "react-router-dom";
 
-import { Request } from "../../utils/Request";
-import { Consumer } from "../../App/Context";
 
 export class Footer extends React.Component {
+
 
     constructor(props) {
         super(props);
@@ -13,27 +12,11 @@ export class Footer extends React.Component {
         };
     }
 
-    componentWillUnmount() {
-        this.setState = (state, callback) => {
-            return false;
-        }
+    componentDidMount() {
+	    this.setState((prevState) => ({
+		    ...prevState,
+	    }));
     }
-
-    onNavLink = async (data, camera, wmenu, widget) => {
-        if(data.wmenu.display === true){
-	        await wmenu();
-	        await this.toggleLinkActive(true);
-        }
-
-        if(data.widget.display === true){
-            await widget();
-        }
-
-        if(data.camera.active === true || data.camera.scanned === true){
-            this.toggleLinkActive(true);
-            await this.closeShutter(camera);
-        }
-    };
 
     toggleLinkActive = async (restore = false) => {
         let elem = document.querySelector('footer menu .active');
@@ -47,103 +30,55 @@ export class Footer extends React.Component {
         return elem;
     };
 
-    closeShutter = async (camera) => {
-        camera(1);
-        await window.QRScanner.getStatus(status => {
-	        window.QRScanner.disableLight();
-            if(status.scanned === true) window.QRScanner.cancelScan();
-            if(status.showing === true) window.QRScanner.hide();
-            window.QRScanner.destroy();
+    handleClick = async (e) => {
+	    e.persist();
 
-            camera(0);
-            document.getElementsByTagName('body')[0].classList.remove('SCANNED');
-        });
-    };
+	    let type = e.target.getAttribute('data-type');
 
-    toggleScanned = async (data, camera, wmenu, widget) => {
-        if(data.wmenu.display === true){
-	        await wmenu();
-	        await this.toggleLinkActive(true);
-        }
+	    if(type === 'link'){
+		    if(this.props.data.widget.display === true){
+			    await this.props.widget(false);
+		    }
 
-	    if(data.widget.display === true){
-		    widget();
+		    if(this.props.data.wmenu.display === true){
+			    await this.props.wmenu(false);
+		    }
+
+		    if(this.props.data.camera.active === true){
+			    await this.props.camera(false);
+		    }
 	    }
-
-        if(data.camera.active === false && data.camera.scanned === false){
-	        camera(2);
-	        this.toggleLinkActive();
-	        document.getElementsByTagName('body')[0].classList.add('SCANNED');
-            await window.QRScanner.prepare(() => {
-                window.QRScanner.show(() => {
-                    camera(3);
-                    window.QRScanner.scan((err, content) => {
-                        if(err){
-                            this.toggleLinkActive(true);
-                            this.closeShutter(camera);
-                        }else if(content){
-                            let urlArray = content.split('/');
-	                        Request({
-		                        URL: 'car/?REF_KEY=' + urlArray[urlArray.length - 1],
-	                        }).then((result) => {
-		                        if(result.success === true){
-			                        this.toggleLinkActive(true);
-			                        this.closeShutter(camera);
-			                        return this.props.history.push(`/home/car/${result.data[0].ID}`);
-		                        }
-	                        });
-                        }
-                    });
-                });
-            });
-        }else if(data.camera.active === true || data.camera.scanned === true){
-	        await this.closeShutter(camera);
-            this.toggleLinkActive(true);
-        }
-    };
-
-    wmenu = async (data, camera, wmenu) => {
-        if(data.camera.active === true){
-        	await this.closeShutter(camera);
-        }
-
-        if(data.wmenu.display === true){
-	        await wmenu();
-	        await this.toggleLinkActive(true);
-        }else{
-	        await this.toggleLinkActive();
-	        await wmenu();
-        }
     };
 
     render() {
 
         return (
             <>
-                <Consumer>
-	                {({ data, camera, wmenu, widget }) => (
-		                <footer className="d-flex w-100 text-center">
-		                    <menu className="d-flex w-100 text-center static">
-		                        <NavLink onClick={() => this.onNavLink(data, camera, wmenu, widget)} activeclassname={'active'} to={"/home"} id={"home"} className={"menu-item flex-fill"}>
-		                            <i className={"icon-directions_car"} />
-		                            <div>Парковка</div>
-		                        </NavLink>
-		                        <span onClick={() => this.toggleScanned(data, camera, wmenu, widget)} id={"qr"} className={(data.camera.active === true) ? "menu-item flex-fill active" : "menu-item flex-fill"}>
-		                            <i className={"icon-qr_code"} />
-		                            <div>QR-код</div>
-		                        </span>
-		                        <NavLink onClick={() => this.onNavLink(data, camera, wmenu, widget)} activeclassname={'active'} to={"/map"} id={"map"} className={"menu-item flex-fill"}>
-		                            <i className={"icon-dashboard"} />
-		                            <div>Карта</div>
-		                        </NavLink>
-		                        <span onClick={() => this.wmenu(data, camera, wmenu, widget)} id={"more"} className={(data.wmenu.display === true) ? "menu-item flex-fill active" : "menu-item flex-fill"}>
-		                            <i className={"icon-more_horiz"} />
-		                            <div>Ещё</div>
-		                        </span>
-		                    </menu>
-		                </footer>
-	                )}
-                </Consumer>
+                <footer className={this.props.data.sider.display || this.props.isAuth() === false ? `d-flex w-100 text-center disabled` : `d-flex w-100 text-center`}>
+                    <menu className="d-flex w-100 text-center static">
+                        <NavLink onClick={this.handleClick} data-type="link" activeclassname={'active'} to={"/home"} id={"home"} className={"menu-item flex-fill"}>
+                            <i className={"icon-directions_car"} />
+                            <div>Парковка</div>
+                        </NavLink>
+
+                        <span onClick={() => this.props.camera().then((result) => {
+                        	console.log(result)
+                        })} data-type="camera" id={"qr"} className={(this.props.data.camera.active === true) ? "menu-item flex-fill active" : "menu-item flex-fill"}>
+                            <i className={"icon-qr_code"} />
+                            <div>QR-код</div>
+                        </span>
+
+                        <NavLink onClick={this.handleClick} data-type="link" activeclassname={'active'} to={"/map"} id={"map"} className={"menu-item flex-fill"}>
+                            <i className={"icon-dashboard"} />
+                            <div>Карта</div>
+                        </NavLink>
+
+                        <span onClick={() => this.props.wmenu()} data-type="wmenu" id={"more"} className={(this.props.data.wmenu.display === true) ? "menu-item flex-fill active" : "menu-item flex-fill"}>
+                            <i className={"icon-more_horiz"} />
+                            <div>Ещё</div>
+                        </span>
+                    </menu>
+                </footer>
             </>
         );
     }

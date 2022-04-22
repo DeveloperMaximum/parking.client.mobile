@@ -1,70 +1,66 @@
-#APP menu .item span.before {
-    position: relative;
-}
-
-#APP menu .item span.before i {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    margin-top: -7px;
-    margin-left: -7px;
-}
-
 #APP .tabs .tab-content {
     margin-top: 0;
 }
 
-#APP .widget .root-component main {
-    max-height: initial;
-    height: initial;
-}
-
-#APP .root-component.inner-root-component header + header + main {
-    padding-top: 150px;
-}
-
-#APP #DCARD table p {
-    margin-bottom: 0;
-}
-
-#APP #SIDER main {
-    padding-bottom: 0;
-}
-
-#APP .root-component.active.d-none {
-    display: flex !important;
-    z-index: 45 !important;
-}
-
-#APP #SIDER.root-component.active.d-none + .root-component {
-    display: none;
-}
-
-#APP #SIDER main .sticker {
-    bottom: -100vh;
-    transition: .3s;
-}
-
-#APP #SIDER main .sticker.active {
-    bottom: 15px;
-}
-
-#APP #SIDER main .sticker > div.btn {
-    box-shadow: 0 30px 30px 30px rgba(255, 255, 255, 1);
-}
-
-#APP .widget {
-    bottom: -150vh;
-}
-
-#APP #SECTOR header .search-inner {
+.search-inner {
     font-size: 28px;
 }
 
-#APP.scrolling {
-    overflow: initial !important;
+#APP .stick {
+    z-index: 50;
 }
 
-.sector-cell.active:after {
-    border: 2px solid #fcc300;
+#APP .stick.top {
+    top: 150px;
+    margin-left: -125px;
+    width: 250px;
+    padding-bottom: 22px;
+}
+
+#APP .camera.active.scanned .opacity:after {
+    width: 250px;
+    margin-top: 50px;
+}
+
+#APP footer menu a *,
+#APP footer menu span * {
+    position: relative;
+    z-index: -1;
+}
+
+#APP footer {
+    transition: .3s;
+}
+
+#APP footer.disabled {
+    bottom: -19vh;
+}
+
+#APP #SIDER {
+    position: absolute;
+    right: -100vw;
+    transition: .3s;
+    display: flex !important;
+}
+
+#APP #SIDER.active {
+    position: absolute;
+    right: 0;
+    left: initial;
+}
+
+#APP .root-component + .root-component {
+    position: relative;
+    left: 0;
+    transition: .3s;
+}
+
+#APP .root-component.active.d-none + .root-component {
+    position: absolute;
+    display: flex !important;
+    left: -100vw;
+}
+
+#APP .stick.top {
+    font-size: 12px;
 }

@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { App } from "../../Context";
 import { Car, Place } from "../../../App";
+import { Context } from "../../../App/Context";
 
 
 export class Cell extends React.Component {
 
-	static contextType = App;
+	static contextType = Context;
 
 
 	handleCell = async (e) => {

@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { Root } from "../../components/ui/Root/Root";
-import {Header} from "../../components/ui/Header/Header";
-import {Footer} from "../../components/ui/Footer/Footer";
+import { Root, Header } from "../../components/ui";
+
 
 export class Forbidden extends React.Component {
+
 
     render() {
         return (
@@ -23,8 +23,6 @@ export class Forbidden extends React.Component {
                         Вам не доступен ресурс <b>{window.location.hash}</b>
                     </div>
                 </main>
-
-                <Footer history={this.props.history} />
             </Root>
         );
     }

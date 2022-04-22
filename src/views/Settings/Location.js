@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { Root, Header, Footer } from "../../components/ui";
-import * as Storage from "../../components/App/Storage";
-import { App } from "../../components/App/Context";
+import { Root, Header } from "../../components/ui";
+import { Storage } from "../../components/App";
+import { Context } from "../../components/App/Context";
 
 
 export class Location extends React.Component {
 
-    static contextType = App;
+    static contextType = Context;
 
 
     handleClick = async (e, id = false) => {
@@ -57,8 +57,6 @@ export class Location extends React.Component {
                         )}
                     </div>
                 </main>
-
-                <Footer history={this.props.history} />
             </Root>
         );
     }

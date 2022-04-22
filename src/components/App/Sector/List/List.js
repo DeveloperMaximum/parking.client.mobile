@@ -1,10 +1,10 @@
 import React from 'react';
 import { Link } from "react-router-dom";
 
-import * as BaseList from "../../../base/Sector/List";
+import { Item } from "./Item";
 
 
-export class List extends BaseList.List {
+export class List extends React.Component {
 
 
     render() {
@@ -19,11 +19,11 @@ export class List extends BaseList.List {
                 	<div key={index}>
 		                {this.props?.onClick ? (
 			                <div onClick={() => this.props.onClick(item)}>
-				                <BaseList.Item {...item} />
+				                <Item {...item} />
 			                </div>
 		                ) : (
 			                <Link to={`/home/sector/${item.ID}`}>
-				                <BaseList.Item {...item} />
+				                <Item {...item} />
 			                </Link>
 		                )}
 	                </div>

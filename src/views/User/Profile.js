@@ -1,15 +1,14 @@
 import React from 'react';
 
-import { App } from "../../components/App/Context";
-import * as Storage from "../../components/App/Storage";
+import { Root, Header } from "../../components/ui";
+import { Storage } from "../../components/App";
+import { Context } from "../../components/App/Context";
 
-import { Root } from "../../components/ui/Root/Root";
-import { Header } from "../../components/ui/Header/Header";
-import { Footer } from "../../components/ui/Footer/Footer";
 
 export class Profile extends React.Component {
 
-    static contextType = App;
+    static contextType = Context;
+
 
     render() {
 
@@ -118,8 +117,6 @@ export class Profile extends React.Component {
 		                </div>
 	                </div>
                 </main>
-
-                <Footer history={this.props.history} />
             </Root>
         );
     }

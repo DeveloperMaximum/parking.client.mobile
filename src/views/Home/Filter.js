@@ -1,20 +1,16 @@
 import React from 'react';
 
-import { App } from "../../components/App/Context";
-import * as Storage from "../../components/App/Storage";
-
-import { Root } from "../../components/ui/Root/Root";
-import { Header } from "../../components/ui/Header/Header";
-import { Footer } from "../../components/ui/Footer/Footer";
+import { Root, Header } from "../../components/ui";
+import { Car, Storage } from "../../components/App";
+import { Context } from "../../components/App/Context";
 import { LifeSearch } from "../../components/ui/";
 
 import { Car as ApiCar, Brand, Model, Body, Transmission } from "../../components/App/Api";
-import { Car } from "../../components/App";
 
 
 export class Filter extends React.Component {
 
-	static contextType = App;
+	static contextType = Context;
 
 	default = {
 		filter: {
@@ -369,8 +365,6 @@ export class Filter extends React.Component {
 						</>
 					</div>
 				</main>
-
-				<Footer history={this.props.history} />
 			</Root>
 		);
 	}

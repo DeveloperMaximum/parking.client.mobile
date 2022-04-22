@@ -1,7 +1,7 @@
 import React from 'react';
 
-import * as Storage from "../../../App/Storage/Storage";
-import { App } from "../../Context";
+import * as Storage from "../../Storage";
+import { Context } from "../../../App";
 import { Car } from "../../Api";
 import { Dcard } from "../../Car/Dcard";
 import { Parking } from "../../Car/Parking";
@@ -12,7 +12,7 @@ import { Props } from "./Props";
 
 export class Item extends React.Component {
 
-	static contextType = App;
+	static contextType = Context;
 
 	statuses;
 
@@ -138,18 +138,20 @@ export class Item extends React.Component {
 								    parking: {
 									    text: 'Да',
 									    callback: async () => {
-										    await this.context.sider({
+										    this.context.sider({
 											    template: false,
 											    child: () => {
 												    return (
 													    <Parking
 													        car={this.state.car}
-													        callback={this.componentDidMount}
+													        callback={() => {
+														        this.componentDidMount();
+														        this.context.sider();
+													        }}
 													    />
 												    )
 											    }
 										    });
-										    return true;
 									    },
 								    }
 							    }
@@ -280,6 +282,9 @@ export class Item extends React.Component {
 							                            text: 'Да',
 							                            callback: async () => {
 								                            return await Car.toTDrive({ID: this.state.id}).then((result) => {
+									                            if(result.success !== true){
+										                            return result.message;
+									                            }
 									                            if(result.success === true){
 										                            if(this.context.data.widget.children !== false && this.props?.history){
 											                            this.props.history.push(`/home/car/${this.state.id}`);
@@ -288,7 +293,6 @@ export class Item extends React.Component {
 										                            this.componentDidMount();
 										                            return true;
 									                            }
-									                            return result.message;
 								                            });
 							                            }
 						                            }

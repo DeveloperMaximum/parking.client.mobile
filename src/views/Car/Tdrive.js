@@ -1,13 +1,12 @@
 import React from 'react';
 
-import { App } from "../../components/App/Context";
-import { Root, Header, Footer } from "../../components/ui";
+import { Root, Header } from "../../components/ui";
 import { Car } from "../../components/App";
 import { Car as ApiCar } from "../../components/App/Api";
 
+
 export class Tdrive extends React.Component {
 
-	static contextType = App;
 
 	constructor(props){
 		super(props);
@@ -61,8 +60,6 @@ export class Tdrive extends React.Component {
 		                )}
 	                </div>
                 </main>
-
-                <Footer history={this.props.history} />
             </Root>
         );
     }

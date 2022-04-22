@@ -1,11 +1,10 @@
 import React from 'react';
 
-import { Root } from "../../components/ui/Root/Root";
-import { Header } from "../../components/ui/Header/Header";
-import { Footer } from "../../components/ui/Footer/Footer";
+import { Root, Header } from "../../components/ui";
 
 
 export class About extends React.Component {
+
 
     render(){
 
@@ -41,8 +40,6 @@ export class About extends React.Component {
                         </a>
                     </div>
                 </main>
-
-                <Footer history={this.props.history} />
             </Root>
         );
     }

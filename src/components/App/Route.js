@@ -1,15 +1,15 @@
 import React, { useContext } from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route as ReactRoute, Redirect } from 'react-router-dom';
 
-import { App } from "../Context";
+import { Context } from "../App";
 
 
-export const Private = ({ component: Component, ...rest }) => {
+export const Route = ({ component: Component, ...rest }) => {
 
-    const { isAuth } = useContext(App);
+    const { isAuth } = useContext(Context);
 
     return (
-    	<Route
+    	<ReactRoute
 		    {...rest}
 		    render={ props => (
 		        (!isAuth()) ? (

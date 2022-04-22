@@ -1,7 +1,5 @@
 import React from 'react';
 
-import { App } from "../../Context";
-
 let props = {
 	item: {
 		HISTORY_DATE_CREATE: null,
@@ -11,8 +9,6 @@ let props = {
 };
 
 export class Item extends React.Component {
-
-	static contextType = App;
 
 	notice;
 	status_id;

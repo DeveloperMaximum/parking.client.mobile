@@ -1,13 +1,13 @@
 import React from 'react';
 
-import { App } from "../../components/App/Context";
-import { Root } from "../../components/ui/Root/Root";
-import { Header } from "../../components/ui/Header/Header";
-import { Footer } from "../../components/ui/Footer/Footer";
+import { Root, Header } from "../../components/ui";
+import { Context } from "../../components/App/Context";
+
 
 export class Settings extends React.Component {
 
-    static contextType = App;
+    static contextType = Context;
+
 
     constructor(props){
         super(props);
@@ -68,8 +68,6 @@ export class Settings extends React.Component {
 
                     </div>
                 </main>
-
-                <Footer history={this.props.history} />
             </Root>
         );
     }

@@ -1,15 +1,14 @@
 import React from 'react';
 
-import { App } from "../Context";
+import { Context, Car } from "../../App";
 import { Search } from "../../base/Car/Search";
 import { Request } from "../../utils/Request";
 import * as Place from "../Api/Place";
-import { Car } from "../";
 
 
 export class Item extends React.Component {
 
-	static contextType = App;
+	static contextType = Context;
 
 
 	constructor(props){

@@ -1,14 +1,11 @@
 import React from 'react';
 
-import { App } from "../../../App/Context";
 import { Car as ApiCar } from "../../../App/Api";
 import { Car } from "../../../App";
 import { Form } from "./Form";
 
 
 export class Search extends React.Component {
-
-    static contextType = App;
 
 
     constructor(props) {

@@ -2,12 +2,9 @@ import React from 'react';
 
 import { Header } from "../../../ui/Header";
 import { Item as Card } from "../../../ui/Card";
-import { App } from "../../Context";
 import { Car } from "../../Api";
 
 export class Dcard extends React.Component {
-
-	static contextType = App;
 
 
 	constructor(props) {

@@ -1,13 +1,10 @@
 import React from 'react';
 
-import { App } from "../../components/App/Context";
-import { Root } from "../../components/ui/Root/Root";
-import { Header } from "../../components/ui/Header/Header";
-import { Footer } from "../../components/ui/Footer/Footer";
+import { Root, Header } from "../../components/ui";
+
 
 export class Tech extends React.Component {
 
-    static contextType = App;
 
     constructor(props){
         super(props);
@@ -111,8 +108,6 @@ export class Tech extends React.Component {
                         </table>
                     </div>
                 </main>
-
-                <Footer history={this.props.history} />
             </Root>
         );
     }

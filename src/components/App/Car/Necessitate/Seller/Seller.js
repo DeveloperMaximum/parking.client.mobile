@@ -2,14 +2,15 @@ import React from 'react';
 
 import { Header } from "../../../../ui/Header";
 import { StyledCheckbox } from "../../../../ui";
-import * as Storage from "../../../Storage";
-import { App } from "../../../Context";
+import { Storage } from "./../../../../App";
+import { Context } from "./../../../../App";
 import { Car } from "../../../../App/Api";
+
 
 export class Seller extends React.Component {
 
 	necessitates = [];
-	static contextType = App;
+	static contextType = Context;
 
 	constructor(props) {
 		super(props);
