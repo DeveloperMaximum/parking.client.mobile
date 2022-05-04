@@ -24,7 +24,7 @@ export class Table extends React.Component {
 
 	componentDidMount = async () => {
 		this.sector = Storage.get('SECTOR')[this.props.id];
-		await Place.get({
+		await Place.Get({
 			ALL: 'Y',
 			DETAILED: 'Y',
 			SECTOR_ID: this.props.id,

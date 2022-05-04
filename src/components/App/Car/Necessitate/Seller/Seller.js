@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Header } from "../../../../ui/Header";
-import { StyledCheckbox } from "../../../../ui";
+import { Root, StyledCheckbox } from "../../../../ui";
 import { Storage } from "./../../../../App";
 import { Context } from "./../../../../App";
 import { Car } from "../../../../App/Api";
@@ -22,7 +22,7 @@ export class Seller extends React.Component {
 	}
 
 	componentDidMount(){
-		Car.necessitates({ CAR_ID: this.props.car.ID }).then(result => {
+		Car.Necessitate.List({ CAR_ID: this.props.car.ID }).then(result => {
 			const storage = Storage.get('NECESSITATE');
 			Object.keys(storage).forEach((key) =>{
 				this.necessitates[storage[key].ID] = storage[key];
@@ -62,7 +62,7 @@ export class Seller extends React.Component {
 		this.state.added.forEach(function(entry) {
 			params.push(entry)
 		});
-		Car.addNecessitates({
+		Car.Necessitate.Add({
 			CAR_ID: this.props.car.ID,
 			NECESSITATES: params
 		}).then(result => {
@@ -84,54 +84,31 @@ export class Seller extends React.Component {
 
 		return (
 			<>
-				<Header>
-					<div className="d-flex" onClick={this.back}>
-						<i className="icon icon-chevron_left d-inline-block" />
-						<h1 className="d-inline-block d-inline-block">Потребности</h1>
-					</div>
-				</Header>
+				{this.state.necessitates !== null ? (
+					this.necessitates.map((necessitate, index) => {
+						return (
+							<StyledCheckbox
+								key={index}
+								id={necessitate.ID}
+								name={necessitate.NAME}
+								true={'Да'}
+								false={'Нет'}
+								placeholder={"Оставьте комментарий"}
+								onHandle={this.changeNecessitate}
+								changed={!!this.state.added[necessitate.ID]}
+								active={!!this.state.necessitates[necessitate.ID]}
+								disabled={!!this.state.necessitates[necessitate.ID]}
+								description={this.state.necessitates[necessitate.ID] ? this.state.necessitates[necessitate.ID].DESCRIPTION : this.state.added[necessitate.ID]?.DESCRIPTION}
+							/>
+						);
+					})
+				) : (
+					<div className={"spinner"} />
+				)}
 
-				<header className="d-flex align-items-center" onClick={this.back}>
-					<div className="thumb">
-						<img src="tiles/car.png"/>
-					</div>
-					<div>
-						<div>
-							<b>{this.props.car?.BRAND_NAME} {this.props.car?.MODEL_NAME}</b>
-						</div>
-						<div>{(this.props.car?.INNER_ID) ? `${this.props.car.SECTOR_NAME}, место ${this.props.car.INNER_ID}` : '-'}</div>
-					</div>
-				</header>
-
-				<main className={this.state.count > 0 ? `pb-5` : `pb-0`}>
-					<div className={this.state.count > 0 ? `content-wrapper pb-5` : `content-wrapper`}>
-						{this.state.necessitates !== null ? (
-							this.necessitates.map((necessitate, index) => {
-								return (
-									<StyledCheckbox
-										key={index}
-										id={necessitate.ID}
-										name={necessitate.NAME}
-										true={'Да'}
-										false={'Нет'}
-										placeholder={"Оставьте комментарий"}
-										onHandle={this.changeNecessitate}
-										changed={!!this.state.added[necessitate.ID]}
-										active={!!this.state.necessitates[necessitate.ID]}
-										disabled={!!this.state.necessitates[necessitate.ID]}
-										description={this.state.necessitates[necessitate.ID] ? this.state.necessitates[necessitate.ID].DESCRIPTION : this.state.added[necessitate.ID]?.DESCRIPTION}
-									/>
-								);
-							})
-						) : (
-							<div className={"spinner"} />
-						)}
-
-						<div className={this.state.count > 0 ? `sticker active` : `sticker`}>
-							<div className={`btn btn-primary d-block w-100`} onClick={this.sendNecessitates}>Сформировать</div>
-						</div>
-					</div>
-				</main>
+				<div className={this.state.count > 0 ? `sticker active` : `sticker`}>
+					<div className={`btn btn-primary d-block w-100`} onClick={this.sendNecessitates}>Сформировать</div>
+				</div>
 			</>
 		);
 	}

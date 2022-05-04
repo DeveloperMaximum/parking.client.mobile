@@ -18,53 +18,31 @@ export class Wmenu extends React.Component {
 
 					<div className="content">
 						<menu onClick={this.props.close}>
-							<NavLink activeclassname={'active'} to={"/catalog/tdrive"} className={"item flex-fill"}>
+							<NavLink activeclassname={'active'} to={"/home/filter"} className={"item flex-fill"}>
                                 <span className="before">
-                                    <i className="icon-directions_car" />
-                                </span>
-								Автомобили в тест-драйве
-								<span className="badge badge-primary">3</span>
-							</NavLink>
-							<NavLink activeclassname={'active'} to={"/catalog/demo"} className={"item flex-fill"}>
-                                <span className="before">
-                                    <i className="icon-directions_car" />
-                                </span>
-								Автомобили на демонстрации
-								<span className="badge badge-primary">3</span>
-							</NavLink>
-							<NavLink activeclassname={'active'} to={"/filter"} className={"item flex-fill"}>
-                                <span className="before">
-                                    <i className="icon-directions_car" />
+                                    <i className="icon-search" />
                                 </span>
 								Поиск автомобилей
 							</NavLink>
-							<a href="#" className="item">
+							<NavLink activeclassname={'active'} to={"/more/location"} className={"item flex-fill"}>
                                 <span className="before">
-                                    <i className="icon-build" />
+                                    <i className="icon-pin_drop" />
                                 </span>
-								Автомобили на обслуживании
-								<span className="badge badge-primary">14</span>
-							</a>
-							<a href="#" className="item">
+								Сменить локацию
+							</NavLink>
+							<NavLink activeclassname={'active'} to={"/more/home"} className={"item flex-fill"}>
                                 <span className="before">
-                                    <i className="icon-low_priority" />
+                                    <i className="icon-phonelink_setup" />
                                 </span>
-								История перемещений
-							</a>
-							<a href="#" className="item">
-                                <span className="before">
-                                    <i className="icon-assignment" />
-                                </span>
-								Заявки по автомобилям
-								<span className="badge badge-primary">8</span>
-							</a>
-							<NavLink activeclassname={'active'} to={"/settings"} className={"item flex-fill"}>
+								Главный экран
+							</NavLink>
+							<NavLink activeclassname={'active'} to={"/more/settings"} className={"item flex-fill"}>
                                 <span className="before">
                                     <i className="icon-settings" />
                                 </span>
 								Настройки
 							</NavLink>
-							<NavLink activeclassname={'active'} to={"/pages/about"} className={"item flex-fill"}>
+							<NavLink activeclassname={'active'} to={"/more/pages/about"} className={"item flex-fill"}>
                                 <span className="before">
                                     <i className="icon-error_outline" />
                                 </span>

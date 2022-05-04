@@ -11,12 +11,10 @@ export class Forbidden extends React.Component {
             <Root
                 viewId={"FORBIDDEN"}
             >
-                <Header>
-                    <div className="d-flex" onClick={() => this.props.history.push(`/`)}>
-                        <i className="icon icon-chevron_left d-inline-block" />
-                        <h1 className="d-inline-block d-inline-block">Нет доступа</h1>
-                    </div>
-                </Header>
+	            <Header
+		            history={this.props.history}
+		            title={`Нет доступа`}
+	            />
 
                 <main>
                     <div className="content-wrapper">

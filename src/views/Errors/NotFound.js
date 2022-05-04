@@ -11,12 +11,10 @@ export class NotFound extends React.Component {
             <Root
                 viewId={"NOT-FOUND"}
             >
-                <Header>
-                    <div className="d-flex" onClick={() => this.props.history.push(`/`)}>
-                        <i className="icon icon-chevron_left d-inline-block" />
-                        <h1 className="d-inline-block d-inline-block">Ресурс не найден</h1>
-                    </div>
-                </Header>
+	            <Header
+		            history={this.props.history}
+		            title={`Ресурс не найден`}
+	            />
 
                 <main>
                     <div className="content-wrapper">

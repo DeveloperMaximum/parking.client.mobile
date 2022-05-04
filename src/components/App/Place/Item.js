@@ -37,7 +37,7 @@ export class Item extends React.Component {
 				parking: {
 					text: 'Да',
 					callback: async () => {
-						return await Place.parking({
+						return await Place.Parking({
 							ID: this.props.ID,
 							CAR_ID: car.ID
 						}).then(async (result) => {
@@ -109,7 +109,7 @@ export class Item extends React.Component {
 																		this.context.camera(0);
 																		window.QRScanner.destroy();
 																		if(result.success === true){
-																			Place.parking({
+																			Place.Parking({
 																				ID: this.props.id,
 																				CAR_ID: result.data[0].ID
 																			}).then(async () => {

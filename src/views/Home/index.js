@@ -1,5 +1,5 @@
-import { Home } from './Home'
+import { Parking } from './Parking'
 import { Filter } from './Filter'
 import { Default } from './Default'
 
-export { Home, Filter, Default }
+export { Parking, Filter, Default }

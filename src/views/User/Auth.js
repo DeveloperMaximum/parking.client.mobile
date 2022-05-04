@@ -3,7 +3,7 @@ import { Redirect } from "react-router-dom";
 
 import { Context } from "../../components/App/Context";
 import { Form, Input, InputPassword } from "../../components/ui";
-import { Token } from "../../components/App/Api";
+import { Token as Login } from "../../components/App/Api/User";
 
 export class Auth extends React.Component {
 
@@ -46,8 +46,8 @@ export class Auth extends React.Component {
 
     handleSubmit = async (validate) => {
         if(validate === false) return false;
-        return await Token.get({body: this.state.data}).then(result => {
-            if(result?.UF_TOKEN){
+        return await Login(this.state.data).then(result => {
+            if(result !== false && result?.UF_TOKEN){
                 this.context.login(result);
                 return true;
             }
@@ -71,7 +71,7 @@ export class Auth extends React.Component {
             return(
                 <div id="AUTH" className="root-component">
                     <div className="container d-inline-block mb-4 text-center">
-                        <img src="img/auth-logo.png" className="d-block m-auto"/>
+                        <img src={"img/auth-logo.png"} className="d-block m-auto"/>
                     </div>
                     <Form method={"POST"} action="token" id={"AUTH-FORM"} className={"container"} onSubmit={this.handleSubmit} textSubmit={"Войдите в систему"}>
                         <Input autoComplete={"off"} min={1} placeholder="Введите логин" type={"text"} name={"LOGIN"} value={this.state.data.LOGIN || ''} onChange={this.handleChangeInput} />

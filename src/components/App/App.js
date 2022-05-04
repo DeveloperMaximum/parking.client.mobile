@@ -6,7 +6,6 @@ import { Route } from "./Route";
 import * as View from "../../views";
 
 import "./App.css";
-import {Footer} from "../ui/Footer";
 
 
 export class App extends Component {
@@ -22,28 +21,27 @@ export class App extends Component {
 
                     <Switch>
                         <Route exact path="/" component={View.Default} />
-                        <Route exact path="/home" component={View.Home} />
-                        <Route exact path="/filter" component={View.Filter} />
+                        <Route exact path="/home" component={View.Default} />
                         <Route exact path="/profile" component={View.Profile} />
 
-	                    <Route exact path="/home/parking" component={View.Home} />
+	                    <Route exact path="/home/filter" component={View.Filter} />
+	                    <Route exact path="/home/parking" component={View.Parking} />
 	                    <Route exact path="/home/sector/:id" component={View.Sector} />
-	                    <Route exact path="/home/sector/:sector/place/:place" component={View.Place} />
 	                    <Route exact path="/home/car/:id" component={View.Car} />
 
-                        <Route exact path="/settings" component={View.Settings} />
-                        <Route exact path="/settings/location" component={View.Location} />
-                        <Route exact path="/settings/manager" component={View.Manager} />
-                        <Route exact path="/settings/manager/tech" component={View.Tech} />
+	                    <Route exact path="/more/about" component={View.About} />
 
-                        <Route exact path="/pages/about" component={View.About} />
+	                    <Route exact path="/more/home" component={View.DefaultHome} />
+	                    <Route exact path="/more/location" component={View.Location} />
+                        <Route exact path="/more/settings" component={View.Settings} />
+                        <Route exact path="/more/settings/manager" component={View.Manager} />
+                        <Route exact path="/more/settings/tech" component={View.Tech} />
 
-                        <ReactRoute exact path="/auth" component={View.Auth} />
-                        <ReactRoute exact path="/forbidden" component={View.Forbidden} />
+	                    <Route exact path="/more/car/tdrive" component={View.Tdrive} />
+	                    <Route exact path="/more/car/demo" component={View.Demo} />
 
-	                    <Route exact path="/map" component={View.Map} />
-	                    <Route exact path="/catalog/tdrive" component={View.Tdrive} />
-	                    <Route exact path="/catalog/Demo" component={View.Demo} />
+	                    <ReactRoute exact path="/auth" component={View.Auth} />
+	                    <ReactRoute exact path="/forbidden" component={View.Forbidden} />
 
                         <ReactRoute exact path="*" component={View.NotFound} />
                     </Switch>

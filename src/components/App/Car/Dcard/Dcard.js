@@ -15,7 +15,7 @@ export class Dcard extends React.Component {
 	}
 
 	componentDidMount(){
-		Car.dcard({ CAR_ID: this.props.car.ID }).then(dcard => {
+		Car.Dcard({ CAR_ID: this.props.car.ID }).then(dcard => {
 			this.setState((prevState) => ({
 				...prevState,
 				dcard
@@ -32,12 +32,10 @@ export class Dcard extends React.Component {
 
 		return (
 			<>
-				<Header>
-					<div className="d-flex" onClick={this.back}>
-						<i className="icon icon-chevron_left d-inline-block" />
-						<h1 className="d-inline-block d-inline-block">Диагностическая карта</h1>
-					</div>
-				</Header>
+				<Header
+					title={`Диагностическая карта`}
+					back={this.back}
+				/>
 
 				<header className="d-flex align-items-center" onClick={this.back}>
 					<div className="thumb">

@@ -41,7 +41,7 @@ export class Search extends React.Component {
 				cars: null,
 				query: e.target.value,
 				controller: controller
-			}), () => ApiCar.search(e.target.value, controller).then(cars => {
+			}), () => ApiCar.Search(e.target.value, controller).then(cars => {
 				this.setState((prevState) => ({
 					...prevState,
 					cars: cars,
@@ -60,7 +60,7 @@ export class Search extends React.Component {
 		this.setState((prevState) => ({
 			...prevState,
 			controller: controller
-		}), () => ApiCar.search(this.state.query, controller, page).then(cars => {
+		}), () => ApiCar.Search(this.state.query, controller, page).then(cars => {
 			this.setState((prevState) => ({
 				...prevState,
 				page: page,
@@ -73,7 +73,6 @@ export class Search extends React.Component {
 
 	    return (
 		    <>
-			    {this.props.beforeForm}
 			    <Form onChange={this.handleSearch} />
 			    <>
 				    {this.state.cars !== false ? (

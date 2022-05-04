@@ -42,7 +42,7 @@ export async function Request (props) {
 
     const response = async (result) => {
         if(result.status === 426){
-            await DB.get().then((result) => {
+            await DB.Get().then((result) => {
                 if(result !== false){
                     Object.keys(result).forEach((key) => {
                         Storage.save(key, result[key]);

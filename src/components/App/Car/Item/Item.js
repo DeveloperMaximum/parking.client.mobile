@@ -8,6 +8,7 @@ import { Parking } from "../../Car/Parking";
 import { Seller } from "../../Car/Necessitate/Seller";
 import { Status } from "./Status";
 import { Props } from "./Props";
+import { Header } from "../../../ui/Header";
 
 
 export class Item extends React.Component {
@@ -36,7 +37,7 @@ export class Item extends React.Component {
 			    loading: null
 		    }));
 	    }
-        return Car.getById(this.props.id).then((result) => {
+        return Car.Get(this.props.id).then((result) => {
             this.setState((prevState) => ({
                 ...prevState,
                 car: {
@@ -175,7 +176,7 @@ export class Item extends React.Component {
 								    demo: {
 									    text: 'Да',
 									    callback: async () => {
-										    return await Car.toParking({ID: this.state.id, PLACE_ID: this.state.car.PLACE_ID}).then((result) => {
+										    return await Car.Parking({ID: this.state.id, PLACE_ID: this.state.car.PLACE_ID}).then((result) => {
 											    if(result.success === true){
 												    this.componentDidMount();
 												    return `Демонстрация автомобиля успешно завершена`;
@@ -241,7 +242,7 @@ export class Item extends React.Component {
 						                            moved: {
 							                            text: 'Да',
 							                            callback: async () => {
-								                            return await Car.toMoved({ID: this.state.car.ID}).then((result) => {
+								                            return await Car.Moved({ID: this.state.car.ID}).then((result) => {
 									                            if(result.success === true){
 										                            if(this.context.data.widget.children !== false && this.props?.history){
 											                            this.props.history.push(`/home/car/${this.state.id}`);
@@ -263,11 +264,33 @@ export class Item extends React.Component {
 					                            template: false,
 					                            child: () => {
 						                            return (
-							                            <Seller
-								                            car={this.state.car}
-								                            onSuccess={this.componentDidMount}
-								                            back={async () => this.context.sider()}
-							                            />
+						                            	<>
+								                            <Header
+									                            title={`Потребности`}
+									                            back={() => this.context.sider()}
+								                            />
+
+								                            <header className="d-flex align-items-center" onClick={() => this.context.sider()}>
+									                            <div className="thumb">
+										                            <img src={"tiles/car.png"} />
+									                            </div>
+									                            <div>
+										                            <div>
+											                            <b>{this.state.car?.BRAND_NAME} {this.state.car?.MODEL_NAME}</b>
+										                            </div>
+										                            <div>{(this.state.car?.INNER_ID) ? `${this.state.car.SECTOR_NAME}, место ${this.state.car.INNER_ID}` : '-'}</div>
+									                            </div>
+								                            </header>
+								                            <main>
+									                            <div className={`content-wrapper`}>
+										                            <Seller
+											                            car={this.state.car}
+											                            back={() => this.context.sider()}
+											                            onSuccess={this.componentDidMount}
+										                            />
+								                                </div>
+								                            </main>
+							                            </>
 						                            )
 					                            }
 				                            });
@@ -281,7 +304,7 @@ export class Item extends React.Component {
 						                            tDrive: {
 							                            text: 'Да',
 							                            callback: async () => {
-								                            return await Car.toTDrive({ID: this.state.id}).then((result) => {
+								                            return await Car.TDrive({ID: this.state.id}).then((result) => {
 									                            if(result.success !== true){
 										                            return result.message;
 									                            }
@@ -307,7 +330,7 @@ export class Item extends React.Component {
 						                            demo: {
 							                            text: 'Да',
 							                            callback: async () => {
-								                            return await Car.toDemo({ID: this.state.id}).then((result) => {
+								                            return await Car.Demo({ID: this.state.id}).then((result) => {
 									                            if(result.success === true){
 										                            if(this.context.data.widget.children !== false && this.props?.history){
 											                            this.props.history.push(`/home/car/${this.state.id}`);
@@ -348,7 +371,7 @@ export class Item extends React.Component {
 					                                    demo: {
 				                                            text: 'Демонстрация',
 						                                    callback: async () => {
-							                                    return await Car.toDemo({ID: this.state.id}).then((result) => {
+							                                    return await Car.Demo({ID: this.state.id}).then((result) => {
 								                                    if(result.success === true){
 									                                    this.componentDidMount();
 									                                    this.context.sider({
@@ -371,7 +394,7 @@ export class Item extends React.Component {
 					                                    tDrive: {
 				                                            text: 'Тест-драйв',
 						                                    callback: async () => {
-							                                    return await Car.toTDrive({ID: this.state.id}).then((result) => {
+							                                    return await Car.TDrive({ID: this.state.id}).then((result) => {
 								                                    if(result.success === true){
 									                                    this.componentDidMount();
 									                                    this.context.sider({

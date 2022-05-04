@@ -1,14 +1,13 @@
 import React from "react";
 
 import { Widget, Sider, Wmenu } from "../ui/Widget";
+import { Footer } from "./Footer";
 import { Dialog } from "../ui/Dialog";
-import { DB, User} from "./Api";
-import {Car, Storage} from "./../App";
+import { DB, User } from "./Api";
+import { Storage } from "./../App";
 import { Camera } from "./Camera";
 import { Request } from "../utils/Request";
 import { Stick } from "../App/Stick";
-import {Footer} from "../ui/Footer";
-import {Root} from "../ui/Root";
 
 export const Context = React.createContext({});
 
@@ -74,6 +73,7 @@ export class Provider extends React.Component {
                 USER_ID: Storage.get('USER_ID'),
                 UF_TOKEN: Storage.get('UF_TOKEN'),
                 UF_LOCATION: Storage.get('UF_LOCATION'),
+                DEFAULT_HOME: Storage.get('DEFAULT_HOME'),
             },
         };
     }
@@ -91,7 +91,7 @@ export class Provider extends React.Component {
 	}
 
     appUpdate = async () => {
-        return DB.get().then((result) => {
+        return DB.Get().then((result) => {
             if(result !== false){
                 Object.keys(result).forEach((key) => {
                     Storage.save(key, result[key]);
@@ -156,7 +156,10 @@ export class Provider extends React.Component {
 						    });
 					    }
 				    }else{
-					    return resolve(search(content.result));
+					    if(err && err.name === 'SCAN_CANCELED') {
+						    return resolve(false);
+					    }
+					    return resolve(search(content));
 				    }
 			    });
 		    });
@@ -254,7 +257,7 @@ export class Provider extends React.Component {
     login = async (user = {}) => {
 	    Storage.save('UF_TOKEN', user.UF_TOKEN);
 
-	    return DB.get().then((result) => {
+	    return DB.Get().then((result) => {
 		    if(result !== false){
 			    Object.keys(result).forEach((key) => {
 				    Storage.save(key, result[key]);
@@ -265,7 +268,7 @@ export class Provider extends React.Component {
 		    Storage.save('USER_ID', user.ID);
 		    Storage.save('UF_LOCATION', user.UF_LOCATION);
 
-		    this.setState((prevState) => ({
+		    return this.setState((prevState) => ({
 			    ...prevState,
 			    user: {
 				    ...prevState.user,
@@ -273,8 +276,7 @@ export class Provider extends React.Component {
 				    UF_TOKEN: Storage.get('UF_TOKEN'),
 				    UF_LOCATION: Storage.get('UF_LOCATION')
 			    }
-		    }));
-		    return result;
+		    }), () => result);
 	    });
     };
 
@@ -294,16 +296,30 @@ export class Provider extends React.Component {
     isAuth = () => ((typeof this.state.user.UF_TOKEN === "string") && (typeof this.state.user.USER_ID === "string") && (typeof this.state.user.UF_LOCATION === "string"));
 
 	location = async (id) => {
-		return await User.location({ID: id}).then(async result => {
-			Storage.save('UF_LOCATION', result.UF_LOCATION);
-			await this.setState((prevState) => ({
-				...prevState,
-				user: {
-					...prevState.user,
-					UF_LOCATION: Storage.get('UF_LOCATION')
-				}
-			}));
+		return await User.Location(id).then(result => {
+			if(result === true){
+				Storage.save('UF_LOCATION', id);
+				return this.setState((prevState) => ({
+					...prevState,
+					user: {
+						...prevState.user,
+						UF_LOCATION: id
+					}
+				}), () => true);
+			}
+			return result;
 		});
+    };
+
+	home = async (screenName) => {
+		Storage.save('DEFAULT_HOME', screenName);
+		return this.setState((prevState) => ({
+			...prevState,
+			user: {
+				...prevState.user,
+				DEFAULT_HOME: screenName
+			}
+		}), () => true);
     };
 
 	wmenu = async () => {
@@ -312,6 +328,9 @@ export class Provider extends React.Component {
 			await this.toggleFooterLink(true);
 		}else{
 			await this.toggleFooterLink(this.state.wmenu.display);
+		}
+		if(this.state.widget.display === true && this.state.wmenu.display === true){
+			await this.widget();
 		}
 
 	    await this.setState((prevState) => ({
@@ -373,18 +392,21 @@ export class Provider extends React.Component {
 				child: false,
 				template: true,
 				display: false,
-				callback: () => this.setState((prevState) => ({
-					...prevState,
-					sider: {
-						...prevState.sider,
-						title: false,
-						child: false,
-						template: true,
-						display: false,
-					}
-				})),
+				callback: () => {
+					this.setState((prevState) => ({
+						...prevState,
+						sider: {
+							...prevState.sider,
+							title: false,
+							child: false,
+							template: true,
+							display: false,
+						}
+					}))
+				},
 			};
 		}
+
         await this.setState((prevState) => ({
             ...prevState,
 	        sider: {
@@ -452,6 +474,7 @@ export class Provider extends React.Component {
 	            widget: this.widget,
 	            dialog: this.dialog,
 	            stick: this.stick,
+	            home: this.home,
                 accessStatus: this.accessStatus,
             }}>
 

@@ -26,7 +26,7 @@ export class Demo extends React.Component {
 	}
 
 	loadCars() {
-		return ApiCar.get({
+		return ApiCar.Get({
 			STATUS_ID: 8,
 			NECESSITATE_TOTAL: 'Y',
 			LAST_EVENT_HISTORY: 'Y'
@@ -41,12 +41,11 @@ export class Demo extends React.Component {
     render() {
         return (
             <Root viewId={"CAR"}>
-                <Header>
-                    <div className="d-flex">
-	                    <i className="icon icon-chevron_left d-inline-block" onClick={() => this.props.history.push(`/`)} />
-                        <h1 className="d-inline-block">Авто на демонстарции</h1>
-                    </div>
-                </Header>
+                <Header
+	                history={this.props.history}
+	                title={`Авто на демонстарции`}
+	                back={() => this.props.history.push(`/more/settings`)}
+                 />
 
                 <main>
 	                <div className={"content-wrapper"}>

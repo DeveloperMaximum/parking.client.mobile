@@ -16,12 +16,10 @@ export class Profile extends React.Component {
 
         return (
             <Root viewId={"PROFILE"}>
-                <Header>
-                    <div className="d-flex" onClick={() => this.props.history.push(`/`)}>
-                        <i className="icon icon-chevron_left d-inline-block" />
-                        <h1 className="d-inline-block d-inline-block">Профиль</h1>
-                    </div>
-                </Header>
+                <Header
+	                title={`Профиль`}
+                    back={() => this.props.history.push(`/`)}
+                 />
 
                 <main>
                     <div className="profile-info d-flex bg-info">

@@ -1,6 +1,5 @@
 import * as DB  from './DB';
 import * as User  from './User';
-import * as Token  from './Token';
 import * as Sector  from './Sector';
 import * as Place  from './Place';
 import * as Car  from './Car';
@@ -10,5 +9,5 @@ import * as Body  from './Body';
 import * as Transmission  from './Transmission';
 
 export {
-    DB, User, Token, Sector, Place, Car, Brand, Model, Body, Transmission
+    DB, User, Sector, Place, Car, Brand, Model, Body, Transmission
 }

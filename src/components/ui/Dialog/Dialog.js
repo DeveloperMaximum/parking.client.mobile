@@ -103,7 +103,7 @@ export class Dialog extends React.Component {
                                         {this.props.child && this.props.child()}
                                     </div>
 	                                <>
-		                                {buttons !== false ? (
+		                                {buttons === false ? (<></>) : (
 			                                <div className={"modal-footer border-white"}>
 				                                {buttons.length > 0 ? (
 					                                <>
@@ -118,7 +118,7 @@ export class Dialog extends React.Component {
 					                                <button className={cancelBtn.className} onClick={this.props.close}>{cancelBtn.text}</button>
 				                                )}
 			                                </div>
-		                                ) : <></>}
+		                                )}
 	                                </>
                                 </>
                             )}

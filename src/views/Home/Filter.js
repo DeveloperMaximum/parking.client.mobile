@@ -68,7 +68,7 @@ export class Filter extends React.Component {
 		filter.MAX_PRICE = this.state.filter.MAX_PRICE;
 		filter.MIN_YEAR = this.state.filter.MIN_YEAR;
 		filter.MAX_YEAR = this.state.filter.MAX_YEAR;
-		ApiCar.filter(filter).then((result) => {
+		ApiCar.Filter(filter).then((result) => {
 			Storage.save('FILTER_ITEMS', result);
 			Storage.save('FILTER_PARAM', this.state.filter);
 			this.setState((prevState) => ({...prevState, items: result }));
@@ -78,12 +78,10 @@ export class Filter extends React.Component {
 	render(){
 		return (
 			<Root viewId={"FILTER"}>
-				<Header>
-					<div className="d-flex" onClick={() => this.props.history.push(`/profile`)}>
-						<h1 className="d-inline-block">{Storage.get('USER').NAME}</h1>
-						<i className="icon-chevron_right d-inline-block" />
-					</div>
-				</Header>
+				<Header
+					history={this.props.history}
+					profile={true}
+				/>
 
 				<main>
 					<div className="search-filter">
@@ -98,7 +96,7 @@ export class Filter extends React.Component {
 									onClick={() => this.context.widget({
 										child: () => (
 											<LifeSearch
-												onSearch={Brand.search}
+												onSearch={Brand.Search}
 												searchParams={{
 													BODY_ID: this.state.filter.body.data,
 													TRANSMISSION_ID: this.state.filter.transmission.data,
@@ -149,7 +147,7 @@ export class Filter extends React.Component {
 									onClick={() => this.context.widget({
 										child: () => (
 											<LifeSearch
-												onSearch={Model.search}
+												onSearch={Model.Search}
 												searchParams={{
 													BRAND_ID: this.state.filter.brand.data[0],
 													TRANSMISSION_ID: this.state.filter.transmission.data,
@@ -262,7 +260,7 @@ export class Filter extends React.Component {
 										child: () => (
 											<LifeSearch
 												picked={this.state.filter.body}
-												onSearch={Body.search}
+												onSearch={Body.Search}
 												searchParams={{
 													BRAND_ID: this.state.filter.brand.data,
 													MODEL_ID: this.state.filter.model.data,
@@ -298,7 +296,7 @@ export class Filter extends React.Component {
 										child: () => (
 											<LifeSearch
 												picked={this.state.filter.transmission}
-												onSearch={Transmission.search}
+												onSearch={Transmission.Search}
 												searchParams={{
 													BRAND_ID: this.state.filter.brand.data,
 													MODEL_ID: this.state.filter.model.data,

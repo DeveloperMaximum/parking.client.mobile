@@ -1,15 +1,34 @@
 import React from 'react';
-import {Redirect, Route} from "react-router";
+import { Redirect } from "react-router";
+import { Context } from "../../components/App/Context";
+import {Storage} from "../../components/App";
 
 
 export class Default extends React.Component {
 
+	static contextType = Context;
+
+
     render(){
-        return (<Route render={props => (
-            <Redirect to={{
-                pathname: '/home',
-                state: { from: props.location }
-            }} />
-        )}/>)
+
+	    let activeScreen = Storage.get('DEFAULT_HOME');
+	    if(activeScreen === false){
+		    activeScreen = 'SECTORS';
+		    this.context.home(activeScreen).then(r => r);
+	    }
+
+	    if(activeScreen === 'SECTORS'){
+		    return (
+			    <Redirect to={{
+				    pathname: '/home/parking'
+			    }} />
+		    )
+	    }else{
+		    return (
+			    <Redirect to={{
+				    pathname: '/home/filter'
+			    }} />
+		    )
+	    }
     }
 }
