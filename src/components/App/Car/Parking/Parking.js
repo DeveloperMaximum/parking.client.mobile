@@ -2,8 +2,9 @@ import React from "react";
 
 import { Header } from "../../../ui/Header";
 import { Request } from "../../../utils/Request";
-import { Context, Sector } from "../../../App";
-import { Sector as ApiSector } from "../../Api";
+import { Context, Sector, Service } from "../../../App";
+import { Sector as ApiSector, Service as ApiService, User} from "../../Api";
+import * as Storage from "../../Storage";
 
 
 export class Parking extends React.Component {
@@ -14,6 +15,8 @@ export class Parking extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			services: null,
+			service_id: false,
 			sectors: null,
 			sector_id: false,
 			place_id: false
@@ -25,10 +28,21 @@ export class Parking extends React.Component {
 	}
 
 	loadSectors() {
-		return ApiSector.Get({DETAILED: 'Y'}).then(result => {
+		return ApiSector.List({DETAILED: 'Y'}).then(result => {
 			this.setState((prevState) => ({
 				...prevState,
-				sectors: result
+				sectors: result,
+				services: null
+			}));
+		});
+	}
+
+	loadServices() {
+		return ApiService.List({DETAILED: 'Y'}).then(result => {
+			this.setState((prevState) => ({
+				...prevState,
+				services: result,
+				sectors: null
 			}));
 		});
 	}
@@ -45,7 +59,7 @@ export class Parking extends React.Component {
 		}
 	};
 
-	parking = async (cell) => {
+	handleToParking = async (cell) => {
 		if(cell?.place?.CAR_ID){
 			await this.context.dialog({
 				buttons: [],
@@ -82,19 +96,62 @@ export class Parking extends React.Component {
 		}
 	};
 
+	handleToService = async (service) => {
+		await this.context.dialog({
+			header: "Парковка",
+			content: `Вы уверены, что хотите припарковать автомобиль в сервисном центре "${service.NAME}"?`,
+			buttons: {
+				parking: {
+					text: 'Да',
+					callback: async () => {
+						return await Request({
+							URL: `car/${this.props.car.ID}/status`,
+							METHOD: `PUT`,
+							BODY: {
+								STATUS_ID: Storage.get('STATUS').SERVICE.ID,
+								SERVICE_ID: service.ID,
+							}
+						}).then((result) => {
+							if(result.success !== true){
+								return result.message
+							}else{
+								this.props.callback();
+								return `Автомобиль успешно припаркован в сервисном центре "${service.NAME}"`;
+							}
+						})
+					},
+				}
+			}
+		});
+	};
+
+	handleTabServices = (e) => {
+		this.setState((prevState) => ({ ...prevState, services: null, sectors: null }));
+		let tabs = document.querySelectorAll('.tabs .tab');
+		for (let tab of tabs) tab.classList.remove('active');
+		e.target.classList.add('active');
+		this.loadServices().then(r => r);
+	};
+
+	handleTabParking = (e) => {
+		this.setState((prevState) => ({ ...prevState, services: null, sectors: null }));
+		let tabs = document.querySelectorAll('.tabs .tab');
+		for (let tab of tabs) tab.classList.remove('active');
+		e.target.classList.add('active');
+		this.loadSectors().then(r => r);
+	};
+
 	render() {
 		return (
 			<>
-				<Header>
-					<div className="d-flex" onClick={this.back}>
-						<i className="icon icon-chevron_left d-inline-block" />
-						<h1 className="d-inline-block d-inline-block">Парковка</h1>
-					</div>
-				</Header>
+				<Header
+					title={"Парковка"}
+					back={this.back}
+				/>
 
 				<header className="d-flex align-items-center" onClick={this.back}>
 					<div className="thumb">
-						<img src="tiles/car.png"/>
+						<img src={"tiles/car.png"}/>
 					</div>
 					<div>
 						<div>
@@ -105,22 +162,44 @@ export class Parking extends React.Component {
 				</header>
 
 				<main>
-					<div className={"content-wrapper"}>
-						{this.state.sector_id !== false ? (
-							<Sector.Item.Table
-								id={this.state.sector_id}
-								onClick={this.parking}
-							/>
-						) : (
-							<Sector.List
-								items={this.state.sectors}
-								onClick={async (sector) => await this.setState((prevState) => ({
-									...prevState,
-									sector_id: sector.ID
-								}))}
-							/>
-						)}
-					</div>
+					{this.state.sector_id !== false ? (
+						<Sector.Item.Table
+							id={this.state.sector_id}
+							onClick={this.handleToParking}
+						/>
+					) : (
+						<div className="tabs">
+							<div className="tab-list">
+								<div className="tab-wrapper">
+									<div className="tab active" id={"tab-parking"} onClick={this.handleTabParking}>Парковка</div>
+									<div className="tab" id={"tab-service"} onClick={this.handleTabServices}>Сервис</div>
+								</div>
+							</div>
+							<div className="tab-content">
+								<div className={"content-wrapper"}>
+
+									{this.state.sectors !== null ? (
+										<Sector.List
+											items={this.state.sectors}
+											onClick={async (sector) => await this.setState((prevState) => ({
+												...prevState,
+												sector_id: sector.ID
+											}))}
+										/>
+									) : (
+										this.state.services !== null ? (
+											<Service.List
+												items={this.state.services}
+												onClick={this.handleToService}
+											/>
+										) : (
+											<div className="spinner mt-5" />
+										)
+									)}
+								</div>
+							</div>
+						</div>
+					)}
 				</main>
 			</>
 		);

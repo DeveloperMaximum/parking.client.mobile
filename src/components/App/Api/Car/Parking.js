@@ -3,12 +3,11 @@ import { Storage } from "../../";
 
 
 export const Parking = async (props) => {
+
 	return await Request({
 		METHOD: `PUT`,
 		URL: `car/${props.ID}/parking`,
 		UF_TOKEN: Storage.get('UF_TOKEN'),
-		BODY: {
-			PLACE_ID: props.PLACE_ID
-		}
+		BODY: props
 	});
 };

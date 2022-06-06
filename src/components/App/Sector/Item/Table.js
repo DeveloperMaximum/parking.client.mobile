@@ -3,6 +3,7 @@ import React from 'react';
 import { Storage } from "../../../App";
 import { Place } from "../../../App/Api";
 import { Cell } from "./Cell";
+import {Item} from "../index";
 
 
 export class Table extends React.Component {
@@ -111,7 +112,31 @@ export class Table extends React.Component {
 		}));
 	};
 
+	onScroll = (e) => {
+		let cell = Math.floor(e.target.scrollLeft / 58);
+		let tab = Math.floor(cell / 10) + 1;
+		document.querySelector(`.tabs .tab.active`)?.classList.remove('active');
+		document.querySelector(`.tabs .tab.tab-${tab}`).classList.add('active');
+		document.querySelector(`.tabs .tab.active`).scrollIntoView();
+	};
+
+	handleClickTab = (e) => {
+		let tab = e.target.getAttribute(`data-i`);
+		let cell = (tab * 10) - 1;
+		if(cell < 10) cell = 1;
+		document.querySelector(`.sector-table .x_${cell}.y_0`)?.scrollIntoViewIfNeeded();
+		document.querySelector(`.tabs .tab.active`)?.classList.remove('active');
+		e.target.classList.add('active');
+	};
+
 	render() {
+		let tabs = [];
+		let delimiter = 10;
+		for (let i = 0; i < Math.floor(this.sector.SCHEMA.width / delimiter); i++) {
+			tabs.push({
+				name: `${this.sector.NAME} - ${i + 1}`
+			});
+		}
 
 		return (
 			<>
@@ -120,20 +145,33 @@ export class Table extends React.Component {
 				) : (
 					<>
 						<div className="tabs">
+							<div className="tab-list">
+								<div className="tab-wrapper">
+									{tabs.map((tab, ti) => (
+										ti === 0 ? (
+											<div className={`tab tab-${ti + 1} active`} data-i={ti + 1} key={ti} onClick={this.handleClickTab}>{tab.name}</div>
+										) : (
+											<div className={`tab tab-${ti + 1}`} data-i={ti + 1} key={ti} onClick={this.handleClickTab}>{tab.name}</div>
+										)
+									))}
+								</div>
+							</div>
 							<div className="tab-content">
-								<div className="sector-table">
+								<div className="sector-table" onScroll={this.onScroll}>
 									{this.state.render.map((row, ri) => (
-										<div className="sector-row" key={ri}>
+										<div className={`sector-row row-${ri + 1}`} data-row={ri + 1} key={ri}>
 											{row.map((cell, ci) => (
-												<div key={ci}>
+												<div key={ci} data-cell={(ci % 10 === 0) ? (ci / 10) + 1 : false}>
 													{this.props?.onClick ? (
 														<Cell
+															history={this.props.history}
 															onClick={this.props.onClick}
 															tableDidMount={this.componentDidMount}
 															{...cell}
 														/>
 													) : (
 														<Cell
+															history={this.props.history}
 															tableDidMount={this.componentDidMount}
 															{...cell}
 														/>

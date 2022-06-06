@@ -73,10 +73,18 @@ export class Settings extends React.Component {
                             </div>
                         </div>
 
-                        <div className="card" onClick={() => this.props.history.push(`/more/car/demo`)}>
+                        <div className="card" onClick={() => this.props.history.push(`/more/car/moved`)}>
                             <div className="card-body">
-                                <div className="card-title">Демонстрация</div>
-                                <div className="card-text">Автомобили в статусе демонстрации</div>
+                                <div className="card-title">В движении</div>
+                                <div className="card-text">Автомобили в статусе передвижения</div>
+                                <div className="card-link">Перейти</div>
+                            </div>
+                        </div>
+
+                        <div className="card" onClick={() => this.props.history.push(`/more/car/service`)}>
+                            <div className="card-body">
+                                <div className="card-title">В сервисе</div>
+                                <div className="card-text">Автомобили в сервисе</div>
                                 <div className="card-link">Перейти</div>
                             </div>
                         </div>

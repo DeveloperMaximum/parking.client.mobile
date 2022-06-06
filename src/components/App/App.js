@@ -23,6 +23,7 @@ export class App extends Component {
                         <Route exact path="/" component={View.Default} />
                         <Route exact path="/home" component={View.Default} />
                         <Route exact path="/profile" component={View.Profile} />
+                        <Route exact path="/tickets" component={View.Tickets} />
 
 	                    <Route exact path="/home/filter" component={View.Filter} />
 	                    <Route exact path="/home/parking" component={View.Parking} />
@@ -39,6 +40,8 @@ export class App extends Component {
 
 	                    <Route exact path="/more/car/tdrive" component={View.Tdrive} />
 	                    <Route exact path="/more/car/demo" component={View.Demo} />
+	                    <Route exact path="/more/car/moved" component={View.Moved} />
+	                    <Route exact path="/more/car/service" component={View.Service} />
 
 	                    <ReactRoute exact path="/auth" component={View.Auth} />
 	                    <ReactRoute exact path="/forbidden" component={View.Forbidden} />

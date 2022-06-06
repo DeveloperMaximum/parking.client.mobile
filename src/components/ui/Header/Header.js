@@ -1,6 +1,5 @@
 import React from 'react';
-import {Map, Storage} from "../../App";
-import {Redirect} from "react-router";
+import { Storage } from "../../App";
 
 
 export class Header extends React.Component {

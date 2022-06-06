@@ -15,6 +15,7 @@ export class Search extends React.Component {
 		    controller: false,
 		    cars: false,
 		    query: false,
+		    load: false,
 		    page: 1
 	    };
 
@@ -41,17 +42,20 @@ export class Search extends React.Component {
 				cars: null,
 				query: e.target.value,
 				controller: controller
-			}), () => ApiCar.Search(e.target.value, controller).then(cars => {
+			}), () => ApiCar.Search(e.target.value, controller).then(result => {
 				this.setState((prevState) => ({
 					...prevState,
-					cars: cars,
-					page: 1
+					cars: result['ITEMS'],
+					page: result['NAV']['PAGE'],
+					nav: result['NAV']
 				}));
 			}));
 		}
 	};
 
 	handleMore = async () => {
+		this.setState((prevState) => ({ ...prevState, load: true }));
+
 		const page = this.state.page + 1;
 		if(this.state.controller?.abort){
 			this.state.controller.abort();
@@ -60,11 +64,13 @@ export class Search extends React.Component {
 		this.setState((prevState) => ({
 			...prevState,
 			controller: controller
-		}), () => ApiCar.Search(this.state.query, controller, page).then(cars => {
+		}), () => ApiCar.Search(this.state.query, controller, page).then(result => {
 			this.setState((prevState) => ({
 				...prevState,
-				page: page,
-				cars: this.state.cars.concat(cars),
+				load: false,
+				page: result['NAV']['PAGE'],
+				nav: result['NAV'],
+				cars: this.state.cars.concat(result['ITEMS']),
 			}));
 		}));
 	};

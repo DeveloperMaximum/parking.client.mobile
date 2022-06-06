@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Root, Header } from "../../components/ui";
 import { Car } from "../../components/App";
-import { Car as ApiCar } from "../../components/App/Api";
+import {Car as ApiCar, User} from "../../components/App/Api";
 
 
 export class Tdrive extends React.Component {
@@ -11,12 +11,21 @@ export class Tdrive extends React.Component {
 	constructor(props){
 		super(props);
 		this.state = {
+			loading: true,
 			cars: null,
+			page: 1
 		};
 	}
 
 	componentDidMount() {
-		this.loadCars().then(r => r);
+		return ApiCar.Filter({STATUS_ID: 6}).then((result) => {
+			this.setState((prevState) => ({
+				...prevState,
+				loading: false,
+				cars: result['ITEMS'],
+				page: (this.state.page + 1)
+			}));
+		})
 	}
 
 	componentWillUnmount() {
@@ -25,18 +34,25 @@ export class Tdrive extends React.Component {
 		}
 	}
 
-	loadCars() {
-		return ApiCar.TDrive({
-			STATUS_ID: 6,
-			NECESSITATE_TOTAL: 'Y',
-			LAST_EVENT_HISTORY: 'Y'
-		}).then(result => {
+	handleMore = async () => {
+		this.setState((prevState) => ({ ...prevState, loading: true }));
+		ApiCar.Filter({STATUS_ID: 6}, this.state.page).then((result) => {
 			this.setState((prevState) => ({
 				...prevState,
-				cars: result
+				loading: false,
+				cars: this.state.cars.concat(result),
+				page: (result.length > 0) ? (this.state.page + 1) : false,
 			}));
 		});
-	}
+	};
+
+	onScroll = async (e) => {
+		if(this.state.page !== false && this.state.loading === false){
+			if(e.target.scrollTop > (e.target.scrollHeight / 1.75)){
+				return await this.handleMore();
+			}
+		}
+	};
 
     render() {
         return (

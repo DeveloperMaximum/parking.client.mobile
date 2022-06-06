@@ -1,6 +1,8 @@
 import React from 'react';
 
+
 export class Styled extends React.Component {
+
 
 	constructor(props) {
 		super(props);

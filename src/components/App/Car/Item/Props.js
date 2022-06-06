@@ -57,6 +57,13 @@ export class Props extends React.Component {
 						<div className="w-100 text-right">{(this.props.car?.TRANSMISSION_NAME) ? this.props.car.TRANSMISSION_NAME : '-'}</div>
 					</div>
 				</div>
+
+				{this.props.car.RESPONSIBLE_ID !== 0 ? (
+					<div className="prop d-flex flex-column align-items-start">
+						<span className="d-block w-100 text-left">Ответственный</span>
+						<div className="w-100 text-left">{this.props.car.RESPONSIBLE_LAST_NAME} {this.props.car.RESPONSIBLE_NAME}</div>
+					</div>
+				) : (<></>)}
 			</>
 		);
 	};

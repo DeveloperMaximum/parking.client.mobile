@@ -33,7 +33,11 @@ export class Sector extends React.Component {
 	            />
 
                 <main>
-                    <Item.Table id={this.props.match.params.id} history={this.props.history} />
+                    <Item.Table
+	                    id={this.props.match.params.id}
+	                    history={this.props.history}
+	                    tableDidMount={this.componentDidMount}
+                    />
                 </main>
             </Root>
         );

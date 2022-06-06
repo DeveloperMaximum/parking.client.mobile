@@ -55,12 +55,10 @@ export class Search extends React.Component {
 			return true;
 		}
 		return new Promise((resolve, reject) => {
-			document.querySelector(`#APP`).classList.add('scrolling');
 			document.querySelector(`#SECTOR .inner_id-${search}`).classList.add('active');
 
 			setTimeout(() => {
-				document.querySelector(`#SECTOR main .inner_id-${search}`).scrollIntoView({block: "center", behavior: "smooth"});
-				document.querySelector(`#APP`).classList.remove('scrolling');
+				document.querySelector(`#SECTOR main .inner_id-${search}`).scrollIntoViewIfNeeded();
 
 				setTimeout(() => {
 					document.querySelector(`#SECTOR .inner_id-${search}`).classList.remove('active');
@@ -69,16 +67,18 @@ export class Search extends React.Component {
 					setTimeout(() => {
 						document.querySelector(`#SECTOR .inner_id-${search}`).click();
 						resolve(true);
-					}, 500)
+					}, 100)
 
 					this.setState((prevState) => ({
 						...prevState,
 						message: false,
 						loading: false
-					}), () => this.context.dialog(false));
+					}), () => {
+						this.context.dialog(false)
+					});
 
-				}, 1500);
-			}, 500);
+				}, 300);
+			}, 100);
 		});
 	};
 

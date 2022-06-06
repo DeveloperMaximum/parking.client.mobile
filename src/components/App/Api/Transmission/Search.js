@@ -7,7 +7,7 @@ export const Search = async (props) => {
 	let user = Storage.get('USER');
 
 	let url = `operator/${user.OPERATOR.ID}/transmission/?LOGIC=FILTER`;
-	let keys = ['NAME', 'BRAND_ID', 'MODEL_ID', 'BODY_ID'];
+	let keys = ['NAME', 'BRAND_ID', 'MODEL_ID', 'BODY_ID', 'ALL'];
 	for (let i = 0; i < keys.length; i++) {
 		if(props[keys[i]] && props[keys[i]] !== ''){
 			if(Array.isArray(props[keys[i]]) && props[keys[i]].length === 0){

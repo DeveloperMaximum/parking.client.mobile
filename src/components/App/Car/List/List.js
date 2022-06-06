@@ -7,6 +7,10 @@ import { Item } from "./Item";
 export class List extends React.Component {
 
 
+	constructor(props) {
+		super(props);
+	}
+
     render() {
 		if(this.props.items === null){
 			return (
@@ -31,7 +35,13 @@ export class List extends React.Component {
 							    )}
 						    </div>
 					    ))}
-					    <button className={"btn btn-primary w-100"} onClick={this.props.handleMore}>Еще</button>
+					    {this.props.items?.nav ? (
+					        <>
+							    {Number(this.props.nav['PAGE']) < Number(this.props.nav['PAGE_COUNT']) ? (
+								    <div className="spinner" />
+							    ) : ( <div /> )}
+						    </>
+					    ) : (<div />)}
 				    </>
 			    ) : (
 				    <div className={"alert alert-info bg-info"}>Ничего не найдено</div>

@@ -94,3 +94,90 @@ body.SCANNED #APP .root-component header {
     height: 100%;
     z-index: -10;
 }
+
+#APP .tabs .tab-list .tab-wrapper .tab {
+    white-space: pre;
+}
+
+.sector-table {
+    overflow: auto;
+}
+
+#APP.scrolling .sector-table {
+    overflow: initial;
+}
+
+#APP .tabs .tab-list .tab-wrapper {
+    padding: 20px 0;
+}
+
+#APP #SECTOR .tabs .tab-list .tab-wrapper {
+    padding: 16px 0;
+}
+
+#APP .tabs .tab-list .tab-wrapper .tab {
+    line-height: 13px;
+}
+
+.ticket-item {
+    margin: 12px;
+    padding: 16px 20px;
+    background: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 20px rgb(95 114 147 / 20%);
+    transition: .3s;
+}
+
+.ticket-item .title {
+    color: #000;
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 22px;
+    text-transform: uppercase;
+}
+
+.ticket-item .necessitates {
+
+}
+
+.ticket-item  .necessitates div {
+    color: #000;
+    font-size: 13px;
+    padding-left: 16px;
+    position: relative;
+}
+
+.ticket-item .necessitates div:before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    margin-top: -5px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #FF653C;
+}
+
+
+#APP .tabs .tab-list .tab-wrapper {
+    padding: 20px 4px;
+}
+
+#TICKETS .btn-wrapper button.moved,
+#TICKETS .btn-wrapper button.necessitates {
+    width: 48%;
+}
+
+.tab-content .sectors {
+    margin-top: 50px;
+}
+
+#APP .car .car-props {
+    padding: 16px 16px 16px 100px;
+}
+
+#APP .sectors .item:after {
+    background-color: #9e9eff;
+}

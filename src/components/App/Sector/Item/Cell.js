@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Car, Place } from "../../../App";
 import { Context } from "../../../App/Context";
+import {Item} from "../index";
 
 
 export class Cell extends React.Component {
@@ -20,6 +21,7 @@ export class Cell extends React.Component {
 				child: () => (
 					<>
 						<Car.Item
+							history={this.props.history}
 							id={this.props.place?.CAR_ID}
 							tableDidMount={this.props?.tableDidMount ? this.props.tableDidMount : null}
 						/>
@@ -33,6 +35,7 @@ export class Cell extends React.Component {
 					<>
 						<Place.Item
 							{...this.props.place}
+							history={this.props.history}
 							tableDidMount={this.props?.tableDidMount ? this.props.tableDidMount : null}
 						/>
 					</>

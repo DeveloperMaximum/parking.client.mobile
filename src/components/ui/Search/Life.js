@@ -1,7 +1,11 @@
 import React from 'react';
 
+import { Context } from "../../App/Context";
+
 
 export class Life extends React.Component {
+
+	static contextType = Context;
 
 	onPick;
 	onSearch;
@@ -49,7 +53,6 @@ export class Life extends React.Component {
 	}
 
 	componentWillUnmount() {
-		this.props.onPick(this.state.picked);
 		if(this.state.controller?.abort){
 			this.state.controller.abort();
 		}
@@ -126,11 +129,12 @@ export class Life extends React.Component {
 				text: text.join(', '),
 				data: picked
 			}
-		}));
-
-		if(this.props.onlyOne === true){
-			this.context.widget(false);
-		}
+		}), async () => {
+			await this.props.onPick(this.state.picked);
+			if(this.props.onlyOne === true){
+				this.context.widget(false);
+			}
+		});
 	};
 
 	render() {

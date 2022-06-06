@@ -30,7 +30,10 @@ export class Seller extends React.Component {
 
 			let necessitates = [];
 			Object.keys(result).forEach((key) =>{
-				necessitates[result[key].ID] = result[key];
+				necessitates[result[key].NECESSITATE_ID] = result[key];
+				if(necessitates[result[key].NECESSITATE_ID].DESCRIPTION === '' || necessitates[result[key].NECESSITATE_ID].DESCRIPTION === null){
+					necessitates[result[key].NECESSITATE_ID].DESCRIPTION = 'Описание отсутствует';
+				}
 			});
 
 			this.setState((prevState) => ({
@@ -66,7 +69,10 @@ export class Seller extends React.Component {
 			CAR_ID: this.props.car.ID,
 			NECESSITATES: params
 		}).then(result => {
-			this.props.onSuccess();
+			this.props.handleDidMount();
+			if(this.props?.tableDidMount){
+				this.props.tableDidMount();
+			}
 			this.context.sider(false);
 			this.context.dialog({
 				header: 'Потребности',

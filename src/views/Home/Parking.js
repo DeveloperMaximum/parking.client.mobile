@@ -29,7 +29,7 @@ export class Parking extends React.Component {
     }
 
     loadSectors() {
-        return ApiSector.Get({DETAILED: 'Y'}).then(result => {
+        return ApiSector.List({DETAILED: 'Y'}).then(result => {
             this.setState((prevState) => ({
                 ...prevState,
                 sectors: result

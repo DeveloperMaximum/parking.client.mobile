@@ -25,6 +25,14 @@ export class Search extends BaseSearch {
 		});
 	};
 
+	onScroll = async (e) => {
+		if(this.state.nav['PAGE'] < this.state.nav['PAGE_COUNT'] && this.state.load === false){
+			if(e.target.scrollTop > (e.target.scrollHeight / 1.75)){
+				return await this.handleMore();
+			}
+		}
+	};
+
 
     render() {
 
@@ -38,22 +46,29 @@ export class Search extends BaseSearch {
 				    <div className="pb-3" />
 				    <BaseForm onChange={this.handleSearch} />
 			    </Header>
-			    <main>
-				    <div className={"content-wrapper"}>
-					    <>
-						    {this.state.cars !== false ? (
-							    <Car.List
-								    onHandleMore={this.handleMore}
-								    items={this.state.cars}
-							    />
-						    ) : (
+			    <>
+				    {this.state.cars !== false ? (
+					    <main onScroll={this.onScroll}>
+						    <div className={"content-wrapper"}>
+							    <>
+								    <Car.List
+									    handleMore={this.handleMore}
+									    items={this.state.cars}
+									    nav={this.state.nav}
+								    />
+							    </>
+						    </div>
+					    </main>
+				    ) : (
+					    <main>
+						    <div className={"content-wrapper"}>
 							    <>
 								    {this.props.children}
 							    </>
-						    )}
-					    </>
-				    </div>
-			    </main>
+						    </div>
+					    </main>
+				    )}
+			    </>
 		    </>
 	    );
     }

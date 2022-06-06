@@ -112,7 +112,7 @@ export class Provider extends React.Component {
 	    return false;
     }
 
-    camera = async (e = false) => {
+    camera = async (e = false, callback = false) => {
     	if(e !== false){
 		    e.persist();
 	    }
@@ -137,31 +137,35 @@ export class Provider extends React.Component {
 		    }));
 	    }
 
-    	const scanned = () => {
-		    return new Promise((resolve, reject) => {
-			    window.QRScanner.scan((err, content) => {
-				    this.setState((prevState) => ({
-					    ...prevState,
-					    camera: {
-						    ...prevState.camera,
-						    text: `Сканирование...`
-					    }
-				    }));
-				    window.QRScanner.cancelScan();
-				    if(err && err.name !== 'SCAN_CANCELED'){
-					    if(destroy()){
-						    return this.dialog({
-							    header: "Ошибка сканирования",
-							    content: `${err.name}`,
-						    });
-					    }
-				    }else{
-					    if(err && err.name === 'SCAN_CANCELED') {
-						    return resolve(false);
-					    }
-					    return resolve(search(content));
+    	const scanned = async (scannedCallback) => {
+		    window.QRScanner.scan(async (err, content) => {
+			    this.setState((prevState) => ({
+				    ...prevState,
+				    camera: {
+					    ...prevState.camera,
+					    text: `Сканирование...`
 				    }
-			    });
+			    }));
+			    window.QRScanner.cancelScan();
+			    if(err && err.name !== 'SCAN_CANCELED'){
+				    if(await destroy()){
+					    return this.dialog({
+						    header: "Ошибка сканирования",
+						    content: `${err.name}`,
+					    });
+				    }
+			    }else{
+				    if(err && err.name === 'SCAN_CANCELED') {
+					    return false;
+				    }
+				    await search(content).then((r) => {
+					    if(callback !== false && r !== false){
+						    return scannedCallback(r)
+					    }else{
+					    	return scanned(scannedCallback)
+					    }
+				    });
+			    }
 		    });
 	    };
 
@@ -182,6 +186,8 @@ export class Provider extends React.Component {
 
     	const search = async (content) => {
 		    // todo: refKey это последний элемент URL
+		    if(content?.result) content = content.result;
+
 		    let urlArray = content.split('/');
 		    let refKey = urlArray[urlArray.length - 1];
 
@@ -193,10 +199,10 @@ export class Provider extends React.Component {
 			    }
 		    }));
 
-		    return Request({
+		    return await Request({
 			    URL: `car/?REF_KEY=${refKey}`,
-		    }).then(async (result) => {
-			    if(result.success !== true || result?.data.length !== 1){
+		    }).then((result) => {
+			    if(result.success !== true || result?.data?.ITEMS.length !== 1){
 				    this.setState((prevState) => ({
 					    ...prevState,
 					    camera: {
@@ -209,17 +215,18 @@ export class Provider extends React.Component {
 			    }
 
 			    /* колбэк после успешного скнаирования и поиска автомобиля */
-			    return destroy().then(() => {
+			    destroy().then(() => {
 			    	// todo: здесь нужна условная конструкция, так как после нахождения автомобиля всегда происходит какое то действие
 				    /* закрываем камеру, и подсвечиваем активную ссылку */
 				    this.toggleFooterLink(true);
-				    this.setState((prevState) => ({
-					    ...prevState,
-					    camera: { text: false, active: false, loading: false, scanned: false, result: result.data[0] }
-				    }));
-
-				    return result.data[0];
+				    if(callback === false){
+					    this.setState((prevState) => ({
+						    ...prevState,
+						    camera: { text: false, active: false, loading: false, scanned: false, result: result.data.ITEMS[0] }
+					    }));
+				    }
 			    });
+			    return result.data.ITEMS[0];
 		    });
 	    };
 
@@ -230,21 +237,17 @@ export class Provider extends React.Component {
 			    ...prevState,
 			    camera: { text: 'Готовим камеру', active: true, loading: true, scanned: false, result: false }
 		    }));
-		    return new Promise((resolve, reject) => {
-			    window.QRScanner.prepare(() => {
-				    if(!document.getElementsByTagName('body')[0].classList.contains('SCANNED')){
-					    return destroy();
-				    }
-				    window.QRScanner.show(() => {
-					    this.setState((prevState) => ({
-						    ...prevState,
-						    camera: { text: false, active: true, loading: false, scanned: true, result: false }
-					    }));
-					    let result = scanned().then((r) => r);
-					    if(result === false) scanned().then((r) => r)
+		    window.QRScanner.prepare(async () => {
+			    if(!document.getElementsByTagName('body')[0].classList.contains('SCANNED')){
+				    return destroy();
+			    }
+			    window.QRScanner.show(async () => {
+				    this.setState((prevState) => ({
+					    ...prevState,
+					    camera: { text: false, active: true, loading: false, scanned: true, result: false }
+				    }));
 
-					    return resolve(result);
-				    });
+				    return await scanned(callback);
 			    });
 		    });
 	    }else{
