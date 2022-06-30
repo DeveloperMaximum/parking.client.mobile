@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { Root } from "../../components/ui/Root/Root";
+import * as Storage from "../../components/utils/Storage";
 import { Context } from "../../components/App/Context";
-import { Storage, Sector, Car, Map} from "../../components/App";
-import { Sector as ApiSector } from "../../components/App/Api";
+import { Root, Tabs } from "../../components/ui/";
+import { Map, Sector, Service, Car } from "../../components/App";
 
 
 export class Parking extends React.Component {
@@ -14,61 +14,63 @@ export class Parking extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            sectors: null
-        };
-    }
 
-    componentDidMount() {
-        this.loadSectors().then(r => r);
+        };
+
+	    this.handleRightHeader = this.handleRightHeader.bind(this);
     }
 
     componentWillUnmount() {
-        this.setState = (state, callback) => {
-            return false;
-        }
+	    this.setState = (state, callback) => {
+		    return false;
+	    };
     }
 
-    loadSectors() {
-        return ApiSector.List({DETAILED: 'Y'}).then(result => {
-            this.setState((prevState) => ({
-                ...prevState,
-                sectors: result
-            }));
-        });
+    handleRightHeader(e) {
+	    this.context.sider({
+		    child: () => <Map />,
+		    title: Storage.get('MAP')[Storage.get('UF_LOCATION')].NAME
+	    })
     }
 
     render(){
+
         return (
-            <Root viewId={"HOME"}>
+            <Root viewId={"HOME"} active={true}>
 	            <Car.Search
-		            history={this.props.history}
 		            header={{
+			            profile: true,
+			            history: this.props.history,
 		            	right: (
-				            <div className="d-flex search-inner" onClick={() => {
-					            let title = `Карта локации`;
-					            let maps = Storage.get('MAP');
-					            let map_id = Storage.get('UF_LOCATION');
-					            for (let map in maps){
-						            if(maps[map].ID === map_id){
-							            title = maps[map].NAME;
-							            break;
-						            }
-					            }
-					            this.context.sider({
-						            title: title,
-						            child: () => <Map />
-					            });
-				            }}>
-					            <i className="icon icon-map d-inline-block" />
-				            </div>
+				            <i className="icon icon-map d-inline-block" onClick={this.handleRightHeader} />
 			            )
 		            }}
 	            >
-
-		            <Sector.List
-			            items={this.state.sectors}
-		            />
-
+	                    <Tabs
+		                    tabs={[
+			                    {
+			                    	name: 'Сектора',
+				                    children: (
+					                    <Sector.List />
+				                    )
+			                    },
+			                    {
+			                    	name: 'Сервисы',
+				                    children: (
+					                    <Service.List />
+				                    )
+			                    },
+			                    {
+			                    	name: 'Зоны',
+				                    dataId: 'zones',
+				                    children: (
+					                    <div className="container-fluid mt-3">
+						                    <div className={"alert alert-info"}>В разработке</div>
+					                    </div>
+				                    )
+			                    }
+		                    ]}
+	                    />
 	            </Car.Search>
             </Root>
         );

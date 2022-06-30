@@ -2,25 +2,41 @@ import React from "react";
 
 import { Widget, Sider, Wmenu } from "../ui/Widget";
 import { Footer } from "./Footer";
-import { Dialog } from "../ui/Dialog";
-import { DB, User } from "./Api";
-import { Storage } from "./../App";
+import { DB, User} from "./Api";
+import * as Storage from "./../utils/Storage";
 import { Camera } from "./Camera";
 import { Request } from "../utils/Request";
-import { Stick } from "../App/Stick";
 
 export const Context = React.createContext({});
 
 export class Provider extends React.Component {
 
 
+	file = null;
+
+
     constructor(props) {
         super(props);
 
         this.state = {
-            app: {
-
+	        back: {
+				func: (e) => console.error,
+				history: (e) => console.error
             },
+
+	        themes: {
+		        current: 'light',
+		        light: {
+			        key: 'light',
+			        display: 'Темная тема',
+			        next: 'dark'
+		        },
+		        dark: {
+			        key: 'dark',
+			        display: 'Светлая тема',
+			        next: 'light'
+		        }
+	        },
 
             camera: {
 	            text: false,
@@ -52,54 +68,91 @@ export class Provider extends React.Component {
 		        display: false
             },
 
-	        dialog: {
-		        buttons: [],
-	            header: "Внимание!",
-	            content: "",
-		        child: false,
-	            display: false
-            },
-
-	        stick: {
-		        display: false,
-		        text: false
-	        },
-
 	        footer: {
 		        prev: false,
 	        },
 
             user: {
-                USER_ID: Storage.get('USER_ID'),
+                ID: Storage.get('USER_ID'),
                 UF_TOKEN: Storage.get('UF_TOKEN'),
                 UF_LOCATION: Storage.get('UF_LOCATION'),
-                DEFAULT_HOME: Storage.get('DEFAULT_HOME'),
             },
         };
+
+	    this.state.themes.current = Storage.get('THEME');
+	    if(!this.state.themes.current) this.state.themes.current = 'light';
+	    document.querySelector('#CSS').setAttribute('href',
+		    document.querySelector('#CSS').getAttribute('href').replace(/(light|dark)/gi, this.state.themes.current)
+	    );
     }
 
 	componentDidMount = () => {
+		window.addEventListener('app.theme', this.theme);
+		window.addEventListener('app.login', this.login);
+		window.addEventListener('app.logout', this.logout);
+		window.addEventListener('app.update', this.update);
+
+		if(!this.isAuth()){
+			//window.dispatchEvent(new CustomEvent(`app.logout`));
+		}
+
+		if(window.device.platform.toLowerCase() === 'android') {
+			document.addEventListener("backbutton", this.back, false);
+
+			if (this.props.push === 'TEST') {
+				this.dialog({
+					header: "Запустился через push-уведомления",
+					content: "Это тестовое уведомление. По идее, в зависимости от типа сообщения, должно что то происходить. Надо обсуждать"
+				}).then(r => r);
+			}
+		}
+
 		return this.setState((prevState) => ({
 			...prevState,
 		}));
 	};
 
 	componentWillUnmount() {
+		window.removeEventListener('app.theme', this.theme);
+		window.removeEventListener('app.login', this.login);
+		window.removeEventListener('app.logout', this.logout);
+		window.removeEventListener('app.update', this.update);
+
 		this.setState = (state, callback) => {
 			return false;
 		}
 	}
 
-    appUpdate = async () => {
-        return DB.Get().then((result) => {
-            if(result !== false){
-                Object.keys(result).forEach((key) => {
-                    Storage.save(key, result[key]);
-                });
-            }
-            return result;
-        });
-    };
+	back = async (event) => {
+		if(typeof event !== 'object'){
+			await this.setState((prevState) => ({
+				...prevState,
+				app: {
+					...prevState.app,
+					func: event,
+				}
+			}));
+		}else{
+			event.preventDefault();
+			this.state.app.func(event);
+		}
+	};
+
+	theme = async (e) => {
+		Storage.save('THEME', e.detail.theme);
+
+		document.querySelector('#CSS').setAttribute('href',
+			document.querySelector('#CSS').getAttribute('href').replace(/(light|dark)/gi, e.detail.theme)
+		);
+
+		await this.setState((prevState) => ({
+			...prevState,
+			themes: {
+				...prevState.themes,
+				current: e.detail.theme
+			}
+		}));
+	};
 
     accessStatus(status){
     	let matrix = Storage.get('ACCESS_STATUSES');
@@ -231,6 +284,8 @@ export class Provider extends React.Component {
 	    };
 
     	if(this.state.camera.active === false){
+		    this.back(() => this.camera(false, false));
+
 		    await this.toggleFooterLink();
 		    document.getElementsByTagName('body')[0].classList.add('SCANNED');
 		    await this.setState((prevState) => ({
@@ -251,52 +306,79 @@ export class Provider extends React.Component {
 			    });
 		    });
 	    }else{
+		    this.back(false);
 		    await this.toggleFooterLink(true);
 		    await destroy();
 		    return true;
 	    }
     };
 
-    login = async (user = {}) => {
-	    Storage.save('UF_TOKEN', user.UF_TOKEN);
+	update = async () => {
+		window.dispatchEvent(new CustomEvent(`app.dialog`, { detail: {
+			header: "Внимание",
+			content: "Ваша версия кеша не соответствует серверной и требует обновления.",
+			onClose: async () => {
+				return DB.Get().then(result => {
+					if (result !== false) {
+						Object.keys(result).forEach((key) => {
+							Storage.save(key, result[key]);
+						});
+						window.location.reload(true);
+					}
+				});
+			}
+		}}));
+	};
 
-	    return DB.Get().then((result) => {
-		    if(result !== false){
-			    Object.keys(result).forEach((key) => {
-				    Storage.save(key, result[key]);
-			    });
+    login = async (user) => {
+	    Storage.save('USER', user);
+	    Storage.save('USER_ID', user?.ID);
+	    Storage.save('UF_TOKEN', user?.UF_TOKEN);
+	    Storage.save('UF_LOCATION', user?.UF_LOCATION);
+	    Storage.save('UF_PUSH_TOKEN', user?.UF_PUSH_TOKEN);
+
+	    navigator.splashscreen.show();
+	    const update = await this.update();
+	    navigator.splashscreen.hide();
+
+	    await this.setState((prevState) => ({
+		    ...prevState,
+		    user: {
+			    ...prevState.user,
+			    ID: user.ID,
+			    UF_TOKEN: user.UF_TOKEN,
+			    UF_LOCATION: user.UF_LOCATION
 		    }
-
-		    Storage.save('USER', user);
-		    Storage.save('USER_ID', user.ID);
-		    Storage.save('UF_LOCATION', user.UF_LOCATION);
-
-		    return this.setState((prevState) => ({
-			    ...prevState,
-			    user: {
-				    ...prevState.user,
-				    USER_ID: Storage.get('USER_ID'),
-				    UF_TOKEN: Storage.get('UF_TOKEN'),
-				    UF_LOCATION: Storage.get('UF_LOCATION')
-			    }
-		    }), () => result);
-	    });
+	    }));
     };
 
     logout = () => {
-        Storage.clear();
-        this.setState((prevState) => ({
-            ...prevState,
-            user: {
-                ...prevState.user,
-                USER_ID: Storage.get('USER_ID'),
-                UF_TOKEN: Storage.get('UF_TOKEN'),
-                UF_LOCATION: Storage.get('UF_LOCATION')
-            }
-        }));
+	    return User.Logout().then((result) => {
+		    if(result.success === true){
+			    localStorage.clear();
+			    this.setState((prevState) => ({
+				    ...prevState,
+				    user: {
+					    ...prevState.user,
+					    ID: false,
+					    UF_TOKEN: false,
+					    UF_LOCATION: false
+				    }
+			    }));
+		    }else{
+			    return `Не удалось выйти из приложения`
+		    }
+		    return true;
+	    });
     };
 
-    isAuth = () => ((typeof this.state.user.UF_TOKEN === "string") && (typeof this.state.user.USER_ID === "string") && (typeof this.state.user.UF_LOCATION === "string"));
+    isAuth = () => {
+    	return (
+		    (this.state.user.ID !== "" && this.state.user.ID !== false) ||
+		    (this.state.user.UF_TOKEN !== "" && this.state.user.UF_TOKEN !== false) ||
+		    (this.state.user.UF_LOCATION !== "" && this.state.user.UF_LOCATION !== false)
+	    )
+    };
 
 	location = async (id) => {
 		return await User.Location(id).then(result => {
@@ -314,17 +396,6 @@ export class Provider extends React.Component {
 		});
     };
 
-	home = async (screenName) => {
-		Storage.save('DEFAULT_HOME', screenName);
-		return this.setState((prevState) => ({
-			...prevState,
-			user: {
-				...prevState.user,
-				DEFAULT_HOME: screenName
-			}
-		}), () => true);
-    };
-
 	wmenu = async () => {
 		if(this.state.camera.active === true){
 			await this.camera();
@@ -334,6 +405,15 @@ export class Provider extends React.Component {
 		}
 		if(this.state.widget.display === true && this.state.wmenu.display === true){
 			await this.widget();
+		}
+
+		if(this.state.wmenu.display === false){
+			this.back(async () => {
+				await this.toggleFooterLink(true);
+				this.wmenu()
+			});
+		}else{
+			this.back(false);
 		}
 
 	    await this.setState((prevState) => ({
@@ -356,7 +436,13 @@ export class Provider extends React.Component {
 				    callback: false
 			    }
 		    };
+		    this.back(false);
 	    }
+
+	    if(!this.state.widget.display){
+		    this.back(() => this.widget());
+	    }
+
 	    await this.setState((prevState) => ({
 		    ...prevState,
 		    widget: {
@@ -365,27 +451,6 @@ export class Provider extends React.Component {
 			    ...props
 		    }
 	    }));
-    };
-
-    dialog = async (props = false) => {
-	    if(props === false){
-		    props = {
-			    buttons: {},
-			    header: "Внимание!",
-			    content: "",
-			    child: false,
-			    display: false
-		    };
-	    }
-        await this.setState((prevState) => ({
-            ...prevState,
-	        dialog: {
-                ...prevState.dialog,
-                display: true,
-                ...props
-            }
-        }));
-	    return true;
     };
 
 	sider = async (props = false) => {
@@ -408,6 +473,15 @@ export class Provider extends React.Component {
 					}))
 				},
 			};
+			if(this.state.widget.display === true){
+				this.back(() => this.widget());
+			}else{
+				this.back(false);
+			}
+		}
+
+		if(this.state.sider.display === false){
+			this.back(() => this.sider());
 		}
 
         await this.setState((prevState) => ({
@@ -419,36 +493,6 @@ export class Provider extends React.Component {
             }
         }));
     };
-
-	stick = async (props = false) => {
-		if(props === false){
-			props = {
-				text: false,
-				display: false
-			};
-		}
-		await this.setState((prevState) => ({
-			...prevState,
-			stick: {
-				...prevState.stick,
-				display: true,
-				...props
-			}
-		}), () => {
-			setTimeout(async () => {
-				await this.setState((prevState) => ({
-					...prevState,
-					stick: {
-						...prevState.stick,
-						display: false,
-						...props
-					}
-				}));
-			}, 1500)
-		});
-
-
-	};
 
 	toggleFooterLink = async (restore = false) => {
 		let elem = document.querySelector('footer menu .active');
@@ -466,6 +510,7 @@ export class Provider extends React.Component {
 
         return (
             <Context.Provider value={{
+	            file: this.file,
                 data: this.state,
                 login: this.login,
 	            logout: this.logout,
@@ -475,12 +520,12 @@ export class Provider extends React.Component {
 	            wmenu: this.wmenu,
 	            sider: this.sider,
 	            widget: this.widget,
-	            dialog: this.dialog,
-	            stick: this.stick,
-	            home: this.home,
                 accessStatus: this.accessStatus,
             }}>
 
+	            <div className={`wrapper-root-component root-component vw-100 vh-100 overflow-hidden d-flex flex-column ${this.state.sider.display === false ? 'active' : ''}`}>
+		            {this.props.children}
+	            </div>
 
 	            <Sider
 		            {...this.state.sider}
@@ -495,20 +540,6 @@ export class Provider extends React.Component {
 			            }
 		            }))}
 	            />
-
-                {this.props.children}
-
-                <Stick
-	                {...this.state.stick}
-	                close={async () => await this.setState((prevState) => ({
-		                ...prevState,
-		                stick: {
-			                ...prevState.stick,
-			                display: false,
-			                text: false
-		                }
-	                }))}
-                />
 
 	            <Widget
 		            {...this.state.widget}
@@ -527,24 +558,11 @@ export class Provider extends React.Component {
 		            }))}
 	            />
 
-	            <Dialog
-		            {...this.state.dialog}
-		            dialog={this.dialog}
-		            close={async () => await this.setState((prevState) => ({
-			            ...prevState,
-			            dialog: {
-				            ...prevState.dialog,
-				            buttons: {},
-				            header: "Внимание!",
-				            content: "",
-				            child: false,
-				            display: false
-			            }
-		            }))}
-	            />
-
                 <Wmenu
 	                {...this.state.wmenu}
+	                {...{
+		                data: this.state,
+	                }}
 	                close={() => this.wmenu()}
                 />
 
@@ -578,7 +596,6 @@ export class Provider extends React.Component {
 			            }
 		            }))}
 	            />
-
 
             </Context.Provider>
         );

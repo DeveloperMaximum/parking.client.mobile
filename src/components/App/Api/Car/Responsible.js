@@ -1,5 +1,5 @@
 import { Request } from "../../../utils/Request";
-import { Storage } from "../../";
+import * as Storage from "../../../utils/Storage";
 
 
 export const Responsible = async (props) => {

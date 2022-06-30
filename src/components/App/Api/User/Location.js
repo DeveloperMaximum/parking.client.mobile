@@ -1,19 +1,15 @@
 import { Request } from "../../../utils/Request";
-import { Storage } from "../../../App";
+import * as Storage from "../../../utils/Storage";
 
 
 const Location = async (location_id) => {
 
-	let user = Storage.get('USER');
-	let token = Storage.get('UF_TOKEN');
-
 	return await Request({
-		URL: `user/${user.ID}/location/`,
+		URL: `user/${Storage.get('USER_ID')}/location/`,
 		METHOD: `PUT`,
 		BODY: {
 			ID: location_id
-		},
-		UF_TOKEN: token
+		}
 	}).then((result) => {
 		if (result.success === true) {
 			return true;

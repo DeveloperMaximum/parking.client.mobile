@@ -1,10 +1,17 @@
 import { Default, Parking, Filter } from './Home'
 import { Auth, Profile } from './User'
-import { About } from './More/About'
-import { NotFound, Forbidden } from './Errors'
-import { Car, Tdrive, Demo, Moved, Service } from './Car'
 import { Tickets } from './Tickets'
-import { Sector } from './Sector'
-import { Settings, Location, Manager, Tech, DefaultHome } from './More/Settings'
+import { About } from './More/Help'
+import { Sector, Service, Car } from './Parking'
+import { Settings, DefaultHome, Location, Tech } from './More/Settings'
+import { NotFound, Forbidden } from './Errors'
 
-export { Default, Parking, DefaultHome, Filter, Auth, Profile, About, Sector, Car, Tdrive, Demo, Moved, Service, Tickets, Settings, Location, Manager, Tech, Forbidden, NotFound }
+export {
+	Default, Parking, Filter,
+	Auth, Profile,
+	Tickets,
+	About,
+	Sector, Service, Car,
+	Settings,  DefaultHome, Location, Tech,
+	Forbidden, NotFound
+}

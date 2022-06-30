@@ -1,183 +1,92 @@
-#APP .tabs .tab-content {
-    margin-top: 0;
+#APP #FILTER main {
+    padding-bottom: 45px;
 }
 
-.search-inner {
-    font-size: 28px;
+#APP #FILTER .content-wrapper {
+    padding-bottom: 75px;
 }
 
-#APP {
+#APP.is-scrolling .profile-info .thumb {
+    width: 39px;
+    height: 39px;
+}
+
+#APP.is-scrolling .profile-info .appeal {
     display: flex;
 }
 
-#APP .stick {
-    z-index: 50;
+#APP.is-scrolling .profile-info .exit {
+    display: none !important;
 }
 
-#APP .stick.top {
-    top: 100px;
-    width: 250px;
-    margin-left: -125px;
-    font-size: 12px;
-    padding-bottom: 22px;
+#APP {
+    flex-wrap: wrap;
 }
 
-#APP .camera.active.scanned .opacity:after {
-    width: 250px;
-}
-
-#APP footer menu a *,
-#APP footer menu span * {
-    position: relative;
-    z-index: -1;
-}
-
-#APP footer {
-    transition: .3s;
-}
-
-#APP footer.disabled {
-    bottom: -19vh;
+#APP #SIDER  {
+    position: relative !important;
+    padding: 0 !important;
+    right: initial !important;
+    z-index: 45 !important;
 }
 
 #APP .root-component {
-    position: relative;
-    transition: .3s;
+    flex: 0;
 }
 
-/* скрытый сайдер */
-#APP #SIDER {
-    position: absolute;
-    right: -100vw;
+#APP .root-component.active {
+    flex: 1;
 }
 
-/* активный сайдер */
-#APP #SIDER.active {
-    position: relative;
-    right: 0;
-    left: initial;
-    z-index: 45!important;
+#APP .nav.nav-tabs {
+    z-index: 5;
 }
 
-/* основной экран при активном сайдере */
-#APP .root-component.active + .root-component {
-    position: absolute;
+#APP .tab-content .tab-pane {
+    flex: 1 1 100vw;
+    transition: flex .3s ease-in-out;;
+    display: block !important;
 }
 
-body #APP .root-component header,
-body #APP .root-component main {
-    margin-top: 0;
-    transition: .9s;
+#APP .tab-content .tab-pane.active {
+    flex: 0 0 100vw;
 }
 
-body.SCANNED #APP .root-component main {
-    margin-top: -150vh !important;
+#APP .stick {
+    bottom: 75px;
 }
 
-body.SCANNED #APP .root-component header {
-    margin-top: -100vh !important;
+#APP .stick i.icon {
+    font-size: 26px;
 }
 
-#APP footer menu a.active, #APP footer menu span.active i {
-    color: #000;
+.modal.fade{
+    z-index: -1;
+    display: initial;
 }
 
-#APP footer menu span {
-    position: relative;
+.modal.fade.show {
+    z-index: 999999;
+    display: initial;
 }
 
-#APP footer menu span > a {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -10;
+.modal.fade.show .modal-dialog {
+    z-index: 1050;
 }
 
-#APP .tabs .tab-list .tab-wrapper .tab {
-    white-space: pre;
+.modal.fade.show .btn {
+    margin: 8px;
 }
 
-.sector-table {
-    overflow: auto;
+.modal .overflow-y-scroll.vw-100.h-100,
+.widget-content .overflow-y-scroll.vw-100.h-100 {
+    width: 100% !important;
 }
 
-#APP.scrolling .sector-table {
-    overflow: initial;
+#APP .stick {
+    z-index: -1;
 }
 
-#APP .tabs .tab-list .tab-wrapper {
-    padding: 20px 0;
-}
-
-#APP #SECTOR .tabs .tab-list .tab-wrapper {
-    padding: 16px 0;
-}
-
-#APP .tabs .tab-list .tab-wrapper .tab {
-    line-height: 13px;
-}
-
-.ticket-item {
-    margin: 12px;
-    padding: 16px 20px;
-    background: #fff;
-    border-radius: 5px;
-    box-shadow: 0 0 20px rgb(95 114 147 / 20%);
-    transition: .3s;
-}
-
-.ticket-item .title {
-    color: #000;
-    font-size: 17px;
-    font-weight: 700;
-    line-height: 22px;
-    text-transform: uppercase;
-}
-
-.ticket-item .necessitates {
-
-}
-
-.ticket-item  .necessitates div {
-    color: #000;
-    font-size: 13px;
-    padding-left: 16px;
-    position: relative;
-}
-
-.ticket-item .necessitates div:before {
-    content: "";
-    display: block;
-    position: absolute;
-    top: 50%;
-    left: 0;
-    margin-top: -5px;
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background-color: #FF653C;
-}
-
-
-#APP .tabs .tab-list .tab-wrapper {
-    padding: 20px 4px;
-}
-
-#TICKETS .btn-wrapper button.moved,
-#TICKETS .btn-wrapper button.necessitates {
-    width: 48%;
-}
-
-.tab-content .sectors {
-    margin-top: 50px;
-}
-
-#APP .car .car-props {
-    padding: 16px 16px 16px 100px;
-}
-
-#APP .sectors .item:after {
-    background-color: #9e9eff;
+#APP #FILTER .overflow-y-scroll .items {
+    margin-bottom: 7rem !important;
 }

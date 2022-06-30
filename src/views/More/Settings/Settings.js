@@ -1,8 +1,10 @@
 import React from 'react';
 
-import { Root, Header } from "../../../components/ui";
+import * as Storage from "../../../components/utils/Storage";
 import { Context } from "../../../components/App/Context";
-import {NavLink} from "react-router-dom";
+import { User, DB } from "../../../components/App/Api";
+import { Root, Header } from "../../../components/ui";
+import { Scroller } from "../../../components/ui/Scroller";
 
 
 export class Settings extends React.Component {
@@ -14,25 +16,38 @@ export class Settings extends React.Component {
         super(props);
     }
 
-    clearCache = () => {
-        this.context.confirm.show({
-            header: "Сбросить кеш?",
-            content: "Вы действительно хотите очистить кеш приложения?",
-            success: "Сбросить",
-            cancel: "Нет",
-            callback: async () => {
-                return new Promise((resolve, reject) => {
-                    this.context.user.logout();
-                    resolve(true);
-                });
-            }
-        });
+	handleClearCache = () => {
+		window.dispatchEvent(new CustomEvent(`app.dialog`, { detail: {
+			header: "Очистка кеша",
+			content: `Вы действительно хотите обновить кеш приложения ?`,
+			buttons: [{
+				text: 'Да',
+				onClick: async () => {
+					return DB.Get().then((result) => {
+						if(result !== false){
+							Object.keys(result).forEach((key) => {
+								Storage.save(key, result[key]);
+							});
+						}
+						return `Кеш приложения успешно обновлен`;
+					});
+				}
+			}]
+		}}));
+    };
+
+    handlePush = async (e) => {
+	    await User.Push({
+		    payload: `TEST`,
+		    title: `Заголовок push-уведомления`,
+		    body: 'Съешь еще этих мягких, французских булок, да выпей чаю',
+	    }).then(navigator.app.exitApp);
     };
 
     render() {
 
         return (
-            <Root viewId={"SETTINGS"}>
+            <Root active={true}>
 	            <Header
 		            history={this.props.history}
 		            title={`Настройки`}
@@ -40,56 +55,37 @@ export class Settings extends React.Component {
 	            />
 
                 <main>
-                    <div className="content-wrapper">
+                    <Scroller>
+	                    <div className={'p-3 h-100'}>
 
-                        <div className="card" onClick={this.clearCache}>
-                            <div className="card-body">
-                                <div className="card-title">Сбросить кеш</div>
-                                <div className="card-text">Очистка приложения от кешируемых данных. После очистки необходимо заново пройти авторизацию</div>
-                                <div className="card-link">Очистить кеш</div>
-                            </div>
-                        </div>
+	                        <div className="card shadow rounded border-0 mb-3" onClick={this.handleClearCache}>
+	                            <div className="card-body">
+	                                <h4 className="card-title mb-2">Сбросить кеш</h4>
+	                                <div className="card-text text-muted">Очистка приложения от кешируемых данных. После очистки необходимо заново пройти авторизацию</div>
+	                                <div className="card-link mt-3">Очистить</div>
+	                            </div>
+	                        </div>
 
-                        <div className="card" onClick={() => this.props.history.push(`/more/settings/manager`)}>
-                            <div className="card-body">
-                                <div className="card-title">Для разработчиков</div>
-                                <div className="card-text">Подробная информация об устройсвте</div>
-                                <div className="card-link">Перейти</div>
-                            </div>
-                        </div>
+		                    {window.device.platform.toLowerCase() !== 'android' ? (null) : (
+			                    <div className="card shadow rounded border-0 mb-3" onClick={this.handlePush}>
+				                    <div className="card-body">
+					                    <h4 className="card-title mb-2">Тест push-уведомления</h4>
+					                    <div className="card-text text-muted">Работает только при свернутом приложении, по этой причине приложение будет незамедлительно закрыто</div>
+					                    <div className="card-link mt-3">Запустить</div>
+				                    </div>
+			                    </div>
+		                    )}
 
-	                    <br />
-	                    <div className="d-flex border-bottom border-gray mb-3">
-		                    <h4 className="pb-0 mb-2">
-			                    Выборка автомобилей
-		                    </h4>
+		                    <div className="card shadow rounded border-0 mb-3" onClick={() => this.props.history.push(`/more/settings/tech`)}>
+			                    <div className="card-body">
+				                    <h4 className="card-title mb-2">Об устройстве</h4>
+				                    <div className="card-text text-muted">Подробная информация об устройстве</div>
+				                    <div className="card-link mt-3">Запустить</div>
+			                    </div>
+		                    </div>
+
 	                    </div>
-
-                        <div className="card" onClick={() => this.props.history.push(`/more/car/tdrive`)}>
-                            <div className="card-body">
-                                <div className="card-title">Тест-драйв</div>
-                                <div className="card-text">Автомобили в статусе тест-драйв</div>
-                                <div className="card-link">Перейти</div>
-                            </div>
-                        </div>
-
-                        <div className="card" onClick={() => this.props.history.push(`/more/car/moved`)}>
-                            <div className="card-body">
-                                <div className="card-title">В движении</div>
-                                <div className="card-text">Автомобили в статусе передвижения</div>
-                                <div className="card-link">Перейти</div>
-                            </div>
-                        </div>
-
-                        <div className="card" onClick={() => this.props.history.push(`/more/car/service`)}>
-                            <div className="card-body">
-                                <div className="card-title">В сервисе</div>
-                                <div className="card-text">Автомобили в сервисе</div>
-                                <div className="card-link">Перейти</div>
-                            </div>
-                        </div>
-
-                    </div>
+                    </Scroller>
                 </main>
             </Root>
         );

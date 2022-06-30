@@ -1,11 +1,10 @@
 import { Request } from "../../../utils/Request";
-import { Storage } from "../../index";
 
 
-export const TDrive = async (props) => {
+export const TDrive = async (id) => {
+
 	return await Request({
 		METHOD: `PUT`,
-		URL: `car/${props.ID}/tdrive`,
-		UF_TOKEN: Storage.get('UF_TOKEN')
+		URL: `car/${id}/tdrive`
 	});
 };

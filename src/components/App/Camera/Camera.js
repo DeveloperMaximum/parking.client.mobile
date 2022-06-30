@@ -1,5 +1,5 @@
 import React from 'react';
-import {Redirect} from "react-router";
+import { Redirect } from "react-router";
 
 
 export class Camera extends React.Component {
@@ -14,23 +14,6 @@ export class Camera extends React.Component {
 			this.canEnableLight = status.canEnableLight;
 			this.canChangeCamera = status.canChangeCamera;
 		});
-
-		this.state = {
-			car_id: null,
-			ref_key: null,
-		};
-	}
-
-	componentDidMount = () => {
-		return this.setState((prevState) => ({
-			...prevState,
-		}));
-	};
-
-	componentWillUnmount() {
-		this.setState = (state, callback) => {
-			return false;
-		}
 	}
 
 	lightHandle = async (e) => {
@@ -93,12 +76,12 @@ export class Camera extends React.Component {
 									            </div>
 								            </div>
 								            <div className="tools">
-									            { this.canChangeCamera !== true ? (<></>) : (
+									            { this.canChangeCamera !== true ? (null) : (
 										            <span className={"front"} id={"front"} onClick={this.changeCameraHandle}>
 				                                    <i className={"icon icon-party_mode"} />
 			                                    </span>
 									            ) }
-									            { this.canEnableLight !== true ? (<></>) : (
+									            { this.canEnableLight !== true ? (null) : (
 										            <span className={"light"} id={"light"} onClick={this.lightHandle}>
 			                                        <i className={"icon icon-emoji_objects"} />
 			                                    </span>

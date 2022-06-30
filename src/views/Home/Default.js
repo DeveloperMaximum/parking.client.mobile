@@ -1,7 +1,8 @@
 import React from 'react';
 import { Redirect } from "react-router";
+
+import * as Storage from "../../components/utils/Storage";
 import { Context } from "../../components/App/Context";
-import {Storage} from "../../components/App";
 
 
 export class Default extends React.Component {
@@ -14,7 +15,9 @@ export class Default extends React.Component {
 	    let activeScreen = Storage.get('DEFAULT_HOME');
 	    if(activeScreen === false){
 		    activeScreen = 'SECTORS';
-		    this.context.home(activeScreen).then(r => r);
+		    window.dispatchEvent(new CustomEvent(`app.home`, { detail: {
+			    home: activeScreen
+		    }}));
 	    }
 
 	    if(activeScreen === 'SECTORS'){

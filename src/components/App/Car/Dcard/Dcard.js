@@ -1,8 +1,7 @@
 import React from 'react';
 
-import { Header } from "../../../ui/Header";
-import { Item as Card } from "../../../ui/Card";
 import { Car } from "../../Api";
+import { Header, Card } from "../../../ui";
 
 export class Dcard extends React.Component {
 
@@ -37,7 +36,7 @@ export class Dcard extends React.Component {
 					back={this.back}
 				/>
 
-				<header className="d-flex align-items-center" onClick={this.back}>
+				<header className="d-flex align-items-center shadow" onClick={this.back}>
 					<div className="thumb">
 						<img src="tiles/car.png"/>
 					</div>
@@ -50,7 +49,7 @@ export class Dcard extends React.Component {
 				</header>
 
 				<main>
-					<div className={'content-wrapper'}>
+					<div className={'overflow-y-scroll h-100 p-3'}>
 						{this.state.dcard !== null ? (
 							<>
 								{this.state.dcard.map((card, index) =>

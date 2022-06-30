@@ -1,5 +1,6 @@
 import React from 'react';
-import { Storage } from "../../App";
+
+import * as Storage from "../../utils/Storage";
 
 
 export class Header extends React.Component {
@@ -26,30 +27,27 @@ export class Header extends React.Component {
     render() {
 
         return (
-            <>
-                <header>
+            <header className={`p-3 shadow w-100 ${this.props?.className}`}>
 
-	                <div className={this.props.className}>
-		                <div className="d-flex justify-content-between">
-			                {!this.props?.profile || this.props?.profile === false ? (
-				                <div className="d-flex" onClick={this.handleTitle}>
-					                {!this.props?.back ? (<></>) : (<i className="icon icon-chevron_left d-inline-block" />)}
-					                <h1 className="d-inline-block d-inline-block">{this.props?.title ? this.props.title : 'Назад'}</h1>
-				                </div>
-			                ) : (
-				                <div className="d-flex" onClick={this.handleProfile}>
-					                <h1 className="d-inline-block">{Storage.get('USER').NAME}</h1>
-					                <i className="icon-chevron_right d-inline-block" />
-				                </div>
-			                )}
-			                {!this.props?.right || this.props?.right === false ? (<></>) : this.props.right}
+                <div className="d-flex justify-content-between">
+	                {!this.props?.profile || this.props?.profile === false ? (
+		                <div className="d-flex" onClick={this.handleTitle}>
+			                {!this.props?.back ? (<></>) : (<i className="icon icon-chevron_left d-inline-block" />)}
+			                <h1 className="d-inline-block mb-0">{this.props?.title ? this.props.title : 'Назад'}</h1>
 		                </div>
-	                </div>
+	                ) : (
+		                <div className="d-flex" onClick={this.handleProfile}>
+			                <h1 className="d-inline-block mb-0">{Storage.get('USER').NAME}</h1>
+			                <i className="icon icon-chevron_right d-inline-block" />
+		                </div>
+	                )}
 
-                    {this.props.children}
+	                {!this.props?.right || this.props?.right === false ? (<></>) : ( <div className={"header-right"}> {this.props.right} </div> )}
+                </div>
 
-                </header>
-            </>
+                {this.props.children}
+
+            </header>
         );
     }
 }

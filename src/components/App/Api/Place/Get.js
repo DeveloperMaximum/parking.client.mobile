@@ -1,5 +1,4 @@
 import { Request } from "../../../utils/Request";
-import { Storage } from "../../index";
 
 
 export const Get = async (props) => {
@@ -10,8 +9,7 @@ export const Get = async (props) => {
 	}
 
 	return await Request({
-		URL: url,
-		UF_TOKEN: Storage.get('UF_TOKEN')
+		URL: url
 	}).then((result) => {
 		if (result.success === true) {
 			return result.data;

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { Route as ReactRoute, Redirect } from 'react-router-dom';
 
-import { Context } from "../App";
+import { Context } from "../App/Context";
 
 
 export const Route = ({ component: Component, ...rest }) => {

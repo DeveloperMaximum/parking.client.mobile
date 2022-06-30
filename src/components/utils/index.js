@@ -1,3 +1,4 @@
 import { Request } from './Request'
+import { Swipe } from './Swipe'
 
-export { Request }
+export { Request, Swipe }

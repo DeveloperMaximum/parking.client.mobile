@@ -1,18 +1,13 @@
 import { Request } from "../../../../utils/Request";
-import { Storage } from "../../../";
 
 
-export const Close = async (props) => {
-	let url = `car/${props.CAR_ID}/necessitate?`;
+export const Close = async (car_id, props) => {
+
+	let url = `car/${car_id}/necessitate?`;
+
 	return await Request({
 		URL: url,
 		METHOD: 'PUT',
-		BODY: props,
-		UF_TOKEN: Storage.get('UF_TOKEN')
-	}).then((result) => {
-		if (result.success === true) {
-			return result.data;
-		}
-		return false;
+		BODY: props
 	});
 };

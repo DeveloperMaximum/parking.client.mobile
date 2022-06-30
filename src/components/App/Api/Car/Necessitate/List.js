@@ -1,12 +1,10 @@
 import { Request } from "../../../../utils/Request";
-import { Storage } from "../../../";
 
 
 export const List = async (props) => {
 	let url = `car/${props.CAR_ID}/necessitate?`;
 	return await Request({
-		URL: url,
-		UF_TOKEN: Storage.get('UF_TOKEN')
+		URL: url
 	}).then((result) => {
 		if (result.success === true) {
 			return result.data;

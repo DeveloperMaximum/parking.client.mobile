@@ -1,8 +1,7 @@
 import React from 'react';
 
-import { Car, Place } from "../../../App";
 import { Context } from "../../../App/Context";
-import {Item} from "../index";
+import { Car, Place } from "../../../App";
 
 
 export class Cell extends React.Component {
@@ -23,20 +22,20 @@ export class Cell extends React.Component {
 						<Car.Item
 							history={this.props.history}
 							id={this.props.place?.CAR_ID}
-							tableDidMount={this.props?.tableDidMount ? this.props.tableDidMount : null}
+							parentDidMount={this.props?.parentDidMount ? this.props.parentDidMount : null}
 						/>
 					</>
 				)
 			})
 		}else if(this.props?.place?.INNER_ID){
 			await this.context.widget({
-				header: `Парковочное место #${this.props.place.INNER_ID}`,
+				header: false,
 				child: () => (
 					<>
 						<Place.Item
 							{...this.props.place}
 							history={this.props.history}
-							tableDidMount={this.props?.tableDidMount ? this.props.tableDidMount : null}
+							parentDidMount={this.props?.parentDidMount ? this.props.parentDidMount : null}
 						/>
 					</>
 				)
@@ -49,7 +48,7 @@ export class Cell extends React.Component {
 			<>
 				<div className={this.props.className} onClick={this.handleCell}>
 					{this.props.icon ? (
-						<div className={"status"}>
+						<div className={`status ${this.props.type}`}>
 							<i className={`icon ${this.props.icon}`} />
 						</div>
 					) : ( <div />)}

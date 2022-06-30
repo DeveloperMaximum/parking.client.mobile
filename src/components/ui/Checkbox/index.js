@@ -1,5 +1,3 @@
-import { Block } from './Block'
-import { Form } from './Form'
-import { Styled } from './Styled'
+import { Checkbox } from './Checkbox'
 
-export { Styled, Block, Form }
+export { Checkbox }

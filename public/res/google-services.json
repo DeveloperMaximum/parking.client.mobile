@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "242779938712",
+    "project_id": "ru-mxmit-parking",
+    "storage_bucket": "ru-mxmit-parking.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:242779938712:android:9680795ca42364628c15ed",
+        "android_client_info": {
+          "package_name": "ru.mxmit.parking"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "242779938712-l7kpaculiqv2gg5gg106e38mupukpgqa.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbuGAhhbSdg_uifwX84xNT1srHhVMbvzQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "242779938712-l7kpaculiqv2gg5gg106e38mupukpgqa.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

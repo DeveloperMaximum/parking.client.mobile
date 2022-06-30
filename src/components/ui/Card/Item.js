@@ -22,8 +22,8 @@ export class Item extends React.Component {
 		return (
 
 			<>
-				<div className="card">
-					<div className="card-header" onClick={() => this.setState((prevState) => ({
+				<div className="card shadow rounded-0 mb-3">
+					<div className="card-header rounded-0" onClick={() => this.setState((prevState) => ({
 						...prevState,
 						open: !this.state.open
 					}))}>
@@ -35,6 +35,7 @@ export class Item extends React.Component {
 					<div className={this.state.open === true ? `collapse show` : `collapse`}>
 						<div className="card-body">
 							{ this.props.child && this.props.child() }
+							{this.props.children}
 						</div>
 					</div>
 				</div>

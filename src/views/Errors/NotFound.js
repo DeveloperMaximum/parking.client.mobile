@@ -1,20 +1,16 @@
 import React from 'react';
 
-import { Root } from "../../components/ui/Root/Root";
-import { Header } from "../../components/ui/Header/Header";
-import { Footer } from "../../components/ui/Footer/Footer";
+import { Root, Header } from "../../components/ui";
+
 
 export class NotFound extends React.Component {
 
+
     render() {
+
         return (
-            <Root
-                viewId={"NOT-FOUND"}
-            >
-	            <Header
-		            history={this.props.history}
-		            title={`Ресурс не найден`}
-	            />
+            <Root viewId={"NOT-FOUND"} active={true}>
+	            <Header title={`Ресурс не найден`} />
 
                 <main>
                     <div className="content-wrapper">
@@ -22,7 +18,6 @@ export class NotFound extends React.Component {
                     </div>
                 </main>
 
-                <Footer history={this.props.history} />
             </Root>
         );
     }

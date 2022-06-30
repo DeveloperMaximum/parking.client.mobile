@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink } from "react-router-dom";
 
 import * as UI from "../../ui/Footer";
+import * as Storage from "../../utils/Storage";
 
 
 export class Footer extends React.Component {
@@ -9,28 +10,33 @@ export class Footer extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {
-            prev: false,
-        };
+	    this.state = {
+		    home: 'SECTORS'
+	    };
     }
 
-    componentDidMount() {
-	    this.setState((prevState) => ({
-		    ...prevState,
-	    }));
-    }
+	componentDidMount() {
+		window.addEventListener('app.home', this.home);
+		this.setState((prevState) => ({
+			...prevState,
+			home: Storage.get('DEFAULT_HOME')
+		}));
+	}
 
-    toggleLinkActive = async (restore = false) => {
-        let elem = document.querySelector('footer menu .active');
-        if(elem && elem.nodeName === 'A'){
-            await this.setState((prevState) => ({...prevState, prev: elem}));
-            this.state.prev.classList?.remove('active');
-        }else if(restore === true && this.state.prev !== false){
-            this.state.prev.classList.add('active');
-            await this.setState((prevState) => ({...prevState, prev: false}));
-        }
-        return elem;
-    };
+	componentWillUnmount() {
+		window.removeEventListener('app.home', this.home);
+		this.setState = (state, callback) => {
+			return false;
+		}
+	}
+
+	home = async (e) => {
+		Storage.save('DEFAULT_HOME', e.detail.home);
+		await this.setState((prevState) => ({
+			...prevState,
+			home: e.detail.theme
+		}), () => this.componentDidMount());
+	};
 
     handleClick = async (e) => {
 	    e.persist();
@@ -58,7 +64,7 @@ export class Footer extends React.Component {
             <>
                 <UI.Footer disabled={(this.props.data.sider.display || this.props.isAuth() === false)}>
                     <menu className="d-flex w-100 text-center">
-	                    {this.props.data.user.DEFAULT_HOME === 'SECTORS' ? (
+	                    {this.state.home === 'SECTORS' ? (
 		                    <NavLink onClick={this.handleClick} data-type="link" activeclassname={'active'} to={"/home"} className={"menu-item flex-fill"}>
 			                    <i className={"icon-directions_car"} />
 			                    <div>Парковка</div>

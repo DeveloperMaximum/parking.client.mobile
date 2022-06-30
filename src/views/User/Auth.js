@@ -5,6 +5,7 @@ import { Context } from "../../components/App/Context";
 import { Form, Input, InputPassword } from "../../components/ui";
 import { Token as Login } from "../../components/App/Api/User";
 
+
 export class Auth extends React.Component {
 
     static contextType = Context;
@@ -13,6 +14,7 @@ export class Auth extends React.Component {
         super(props);
         this.state = {
             data: {
+                UF_PUSH_TOKEN: '',
                 LOGIN: '',
                 PASSWORD: ''
             },
@@ -25,6 +27,15 @@ export class Auth extends React.Component {
     }
 
     componentDidMount() {
+	    window.pushNotification.registration((token) => {
+		    this.setState((prevState) => ({
+			    data: { ...prevState.data, UF_PUSH_TOKEN: token }
+		    }));
+	    }, () => {
+		    this.setState((prevState) => ({
+			    data: { ...prevState.data, UF_PUSH_TOKEN: false }
+		    }));
+	    });
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
@@ -46,17 +57,18 @@ export class Auth extends React.Component {
 
     handleSubmit = async (validate) => {
         if(validate === false) return false;
-        return await Login(this.state.data).then(result => {
-            if(result !== false && result?.UF_TOKEN){
-                this.context.login(result);
-                return true;
-            }
-            this.context.dialog({
-                header: "Не удалось авторизоваться",
-                content: "Логин или пароль не верны. Обратитесь в техническую поддержку"
-            });
-            return false;
-        });
+
+	    return await Login(this.state.data).then(result => {
+		    if (result !== false && result?.UF_TOKEN) {
+			    this.context.login(result);
+			    return true;
+		    }
+		    window.dispatchEvent(new CustomEvent(`app.dialog`, { detail: {
+			    header: "Не удалось авторизоваться",
+			    content: "Логин или пароль не верны. Обратитесь в техническую поддержку"
+		    }}));
+		    return false;
+	    });
     };
 
     render(){
@@ -69,7 +81,7 @@ export class Auth extends React.Component {
             );
         }else{
             return(
-                <div id="AUTH" className="root-component">
+                <div id="AUTH" className="root-component w-100 vh-100 vw-100 active">
                     <div className="container d-inline-block mb-4 text-center">
                         <img src={"img/auth-logo.png"} className="d-block m-auto"/>
                     </div>

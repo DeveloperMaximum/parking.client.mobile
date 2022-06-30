@@ -1,7 +1,7 @@
 import React from 'react';
 
-import * as Storage from "../../Storage";
-import { Context } from "../../../App";
+import * as Storage from "../../../utils/Storage";
+import { Context } from "../../../App/Context";
 import { Car } from "../../Api";
 import { Status } from "./Status";
 import { Props } from "./Props";
@@ -55,10 +55,7 @@ export class Item extends React.Component {
 	                SECTOR_ID: Number(result.SECTOR_ID),
 	                SECTOR_NAME: result?.SECTOR_ID && result.SECTOR_ID > 0 ? Storage.get('SECTOR')[result.SECTOR_ID].NAME : null,
 	                NECESSITATE_TOTAL: Number(result.NECESSITATE_TOTAL),
-	                HISTORY_DATE_CREATE: result.HISTORY_DATE_CREATE,
-	                HISTORY_RESPONSIBLE_ID: result?.HISTORY_RESPONSIBLE_ID,
-	                HISTORY_RESPONSIBLE_NAME: result?.HISTORY_RESPONSIBLE_NAME,
-	                HISTORY_RESPONSIBLE_LAST_NAME: result?.HISTORY_RESPONSIBLE_LAST_NAME,
+	                HISTORY_STATUS_DATE_CREATE: result.HISTORY_STATUS_DATE_CREATE,
                 },
 	            loading: false
             }));
@@ -66,6 +63,9 @@ export class Item extends React.Component {
     };
 
 	componentWillUnmount() {
+		if(this.props?.parentDidMount){
+			this.props.parentDidMount();
+		}
 		this.setState = (state, callback) => {
 			return false;
 		}
@@ -74,53 +74,46 @@ export class Item extends React.Component {
     render(){
 
         return (
+            <div className={"car overflow-y-scroll h-100"}>
+                {this.state.loading === true ? (
+                    <div className={"spinner"} />
+                ) : (
+                    <>
+                        <div className={"car-props shadow"}>
 
-            <>
-                <div className={"car w-100 overflow-hidden"}>
-                    {this.state.loading === true ? (
-                        <div className={"spinner"} />
-                    ) : (
-                        <>
-                            <div className={"car-props"}>
+                            <Status
+	                            car={this.state.car}
+                            />
 
-	                            <Status
-		                            car={this.state.car}
-	                            />
+                            <>
+	                            <h2 className="d-inline-block">{this.state.car.BRAND_NAME} {this.state.car.MODEL_NAME} {(this.state.car?.YEAR) ? '(' + this.state.car.YEAR + ')' : ''}</h2>
 
-	                            <>
-		                            <h2 className="d-inline-block">{this.state.car.BRAND_NAME} {this.state.car.MODEL_NAME} {(this.state.car?.YEAR) ? '(' + this.state.car.YEAR + ')' : ''}</h2>
-
-		                            <Props
-			                            car={this.state.car}
-			                            history={this.props.history}
-			                            tableDidMount={this.props.tableDidMount}
-			                            componentDidMount={this.componentDidMount}
-		                            />
-	                            </>
-                            </div>
-
-                            <div className="content-wrapper">
-
-	                            <Endbtn
+	                            <Props
 		                            car={this.state.car}
 		                            history={this.props.history}
-		                            tableDidMount={this.props.tableDidMount}
-		                            componentDidMount={this.componentDidMount}
+		                            parentDidMount={this.componentDidMount}
 	                            />
+                            </>
+                        </div>
 
-	                            <Actions
-		                            car={this.state.car}
-		                            history={this.props.history}
-		                            tableDidMount={this.props.tableDidMount}
-		                            componentDidMount={this.componentDidMount}
-	                            />
+                        <div className="p-3">
 
-                            </div>
-                        </>
-                    )}
+                            <Endbtn
+	                            car={this.state.car}
+	                            history={this.props.history}
+	                            parentDidMount={this.componentDidMount}
+                            />
 
-                </div>
-            </>
+                            <Actions
+	                            car={this.state.car}
+	                            history={this.props.history}
+	                            parentDidMount={this.componentDidMount}
+                            />
+
+                        </div>
+                    </>
+                )}
+            </div>
         );
     }
 };

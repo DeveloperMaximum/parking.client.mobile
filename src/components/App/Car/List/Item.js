@@ -23,9 +23,9 @@ export class Item extends React.Component {
 		this.description = this.getDescription();
 		this.status_id = Number(this.props.STATUS_ID);
 		this.responsible = {
-			name: `${this.props?.HISTORY_RESPONSIBLE_NAME}`,
-			lastName: `${this.props?.HISTORY_RESPONSIBLE_LAST_NAME}`,
-			time: `${this.props?.HISTORY_DATE_CREATE?.split(" ")[1]}`
+			name: `${this.props?.RESPONSIBLE_NAME}`,
+			lastName: `${this.props?.RESPONSIBLE_LAST_NAME}`,
+			time: `${this.props?.HISTORY_STATUS_DATE_CREATE?.split(" ")[1]}`
 		};
 	}
 
@@ -72,17 +72,14 @@ export class Item extends React.Component {
 
 	render() {
 		return (
-			<div data-id={this.props.ID} className={`d-block item ${this.notice.type}`}>
-				<div className={`position-absolute`}/>
+			<div data-id={this.props.ID} className={`d-block item col position-relative rounded p-3 shadow mb-3`}>
+				<div className={`notice text-body mb-0 small position-relative pl-3 ${this.notice.type}`}>{this.notice.title}</div>
 				<div className="d-flex">
-					<div className="notice">{this.notice.title}</div>
+					<h4 className="text-body mb-0">{this.props.BRAND_NAME} {this.props.MODEL_NAME} {this.props.CATEGORY}-класс</h4>
 				</div>
-				<div className="d-flex">
-					<div className="name">{this.props.BRAND_NAME} {this.props.MODEL_NAME} {this.props.CATEGORY}-класс</div>
-				</div>
-				<div className="description">{this.description}</div>
-				{(this.status_id === 6) ? (
-					<div className={"bg-info p-2 pl-3 pr-3 mt-3 d-flex justify-content-between"}>
+				<div className="text-muted small mt-1">{this.description}</div>
+				{(this.props?.HISTORY_STATUS_DATE_CREATE && this.props.STATUS_ID !== '2') ? (
+					<div className={"alert alert-info mb-0 mt-2 d-flex justify-content-between text-muted small"}>
 	                    <span>
 	                        <i className={"icon icon-alarm"} /> {this.responsible.time}
 	                    </span>

@@ -74,7 +74,7 @@ export class Search extends React.Component {
 						message: false,
 						loading: false
 					}), () => {
-						this.context.dialog(false)
+						window.dispatchEvent(new CustomEvent(`app.dialog.close`));
 					});
 
 				}, 300);
@@ -97,9 +97,9 @@ export class Search extends React.Component {
 						<div className={'input-group'}>
 							<input className={"form-control mt-3 border-primary"} id={"SEARCH_INNER_ID"} autoComplete={`off`} type={`number`}/>
 						</div>
-						<div className={"mt-3 d-flex justify-content-around"}>
-							<div className={`d-block w-100 btn btn-primary mr-2`} onClick={async () => await this.handleSearch()}>Искать</div>
-							<div className={`d-block w-100 btn btn-secondary ml-2`} onClick={() => this.context.dialog(false)}>Отмена</div>
+						<div className={"mt-2 d-flex justify-content-around"}>
+							<div className={`d-block w-100 btn btn-primary ml-0 mb-0 mr-2`} onClick={async () => await this.handleSearch()}>Искать</div>
+							<div className={`d-block w-100 btn btn-secondary mr-0 mb-0 ml-2`} onClick={() => window.dispatchEvent(new CustomEvent(`app.dialog.close`))}>Отмена</div>
 						</div>
 					</>
 				)}

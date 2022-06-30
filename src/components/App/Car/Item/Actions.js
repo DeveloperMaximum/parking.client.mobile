@@ -1,12 +1,11 @@
 import React from 'react';
 
-import { Context } from "../../Context";
+import * as Storage from "./../../../utils/Storage";
+import { Context } from "./../../Context";
+import { Car as Api, Car} from "../../Api";
 import { Header } from "../../../ui/Header";
-import { Car } from "../../Api";
-import { Tech } from "../Necessitate/Tech";
-import { Seller } from "../Necessitate/Seller";
+import { Necessitates } from "../Necessitates";
 import { Dcard } from "../Dcard";
-import {Storage} from "../../index";
 
 
 export class Actions extends React.Component {
@@ -19,29 +18,59 @@ export class Actions extends React.Component {
 	}
 
 	handleMoved = async (e) => {
-		await this.context.dialog({
+		window.dispatchEvent(new CustomEvent(`app.dialog`, { detail: {
 			header: "Перемещение",
 			content: "Вы действительно хотите освободить парковочное место и переместить автомобиль?",
-			buttons: {
-				moved: {
-					text: 'Да',
-					callback: async () => {
-						return await Car.Moved({ID: this.props.car.ID}).then((result) => {
-							if(result.success === true){
-								if(this.context.data.widget.children !== false && this.props?.history){
-									this.props.history.push(`/home/car/${this.props.car.ID}`);
-									this.context.widget();
-									return `Автомобиль приобрел статус "В движении"`;
-								}
-								this.props.componentDidMount();
-								return `Автомобиль приобрел статус "В движении"`;
+			buttons: [{
+				text: 'Да',
+				onClick: async () => {
+					return await Car.Moving(this.props.car.ID).then((result) => {
+						if(result.success === true){
+							if(this.context.data.widget.children !== false && this.props?.history){
+								this.props.history.push(`/home/car/${this.props.car.ID}`);
+								this.context.widget();
+							}else{
+								this.props.parentDidMount();
 							}
-							return result.message;
-						});
-					},
+						}else{
+							if(result?.message){
+								return result.message;
+							}
+							return 'Не удалось сменить статус у автомобиля'
+						}
+						return true;
+					});
 				}
-			}
-		});
+			}]
+		}}));
+	};
+
+	handleTDrive = async (e) => {
+		window.dispatchEvent(new CustomEvent(`app.dialog`, { detail: {
+			header: "Тест-драйв",
+			content: "Вы действительно хотите начать тест-драйв авто?",
+			buttons: [{
+				text: 'Да',
+				onClick: async () => {
+					return await Car.TDrive({ID: this.props.car.ID}).then((result) => {
+						if(result.success === true){
+							if(this.context.data.widget.children !== false && this.props?.history){
+								this.props.history.push(`/home/car/${this.props.car.ID}`);
+								this.context.widget();
+							}else{
+								this.props.parentDidMount();
+							}
+						}else{
+							if(result?.message){
+								return result.message;
+							}
+							return 'Взять автомобиль в тест-драйв не удалось'
+						}
+						return true;
+					});
+				}
+			}]
+		}}));
 	};
 
 	handleNecessitates = async (e) => {
@@ -50,14 +79,10 @@ export class Actions extends React.Component {
 			child: () => {
 				return (
 					<>
-						<Header
-							title={`Потребности`}
-							back={() => this.context.sider()}
-						/>
-
-						<header className="d-flex align-items-center" onClick={() => this.context.sider()}>
+						<Header title={`Потребности`} back={() => this.context.sider()} />
+						<header className="d-flex align-items-center shadow" onClick={() => this.context.sider()}>
 							<div className="thumb">
-								<img src={"tiles/car.png"} />
+								<img src={"tiles/car.png"} alt={""} />
 							</div>
 							<div>
 								<div>
@@ -67,53 +92,14 @@ export class Actions extends React.Component {
 							</div>
 						</header>
 						<main>
-							{!this.context.accessStatus('MOVING') ? (
-								<div className={"content-wrapper"}>
-									<Seller
-										car={this.props.car}
-										back={async () => this.context.sider()}
-										tableDidMount={this.props.tableDidMount}
-										handleDidMount={this.props.componentDidMount}
-									/>
-								</div>
-							) : (
-								<Tech
-									car={this.props.car}
-									back={() => this.context.sider()}
-									tableDidMount={this.props.tableDidMount}
-								/>
-							)}
+							<Necessitates
+								car={this.props.car}
+								back={() => this.context.sider()}
+								parentDidMount={this.props.parentDidMount}
+							/>
 						</main>
 					</>
 				)
-			}
-		});
-	};
-
-	handleTDrive = async (e) => {
-		this.context.dialog({
-			header: "Тест-драйв",
-			content: "Вы действительно хотите начать тест-драйв авто?",
-			buttons: {
-				tDrive: {
-					text: 'Да',
-					callback: async () => {
-						return await Car.TDrive({ID: this.props.car.ID}).then((result) => {
-							if(result.success !== true){
-								return result.message;
-							}
-							if(result.success === true){
-								if(this.context.data.widget.children !== false && this.props?.history){
-									this.props.history.push(`/home/car/${this.props.car.ID}`);
-									this.context.widget();
-									return true;
-								}
-								this.props.componentDidMount();
-								return true;
-							}
-						});
-					}
-				}
 			}
 		});
 	};
@@ -135,7 +121,7 @@ export class Actions extends React.Component {
 	render(){
 		const user = Storage.get('USER');
 
-		if(user.ROLES?.ADMIN){
+		if(user.ROLES?.ADMIN || user.ROLES?.MANAGER){
 			return (
 				<div className="btn-wrapper d-flex flex-wrap justify-content-between">
 					<button className="btn btn-primary" onClick={this.handleMoved}><i className="icon icon-sync_alt" /> Перемещение</button>
@@ -147,20 +133,7 @@ export class Actions extends React.Component {
 					<div className="btn btn-secondary w-100" onClick={this.handleDCard}>Диагностическая карта</div>
 				</div>
 			);
-		}
-
-		if(user.ROLES?.MASTER_SMC || user.ROLES?.MASTER_MKC || user.ROLES?.TECH){
-			return (
-				<div className="btn-wrapper d-flex flex-wrap justify-content-between">
-					<button className="btn btn-primary" onClick={this.handleMoved}><i className="icon icon-sync_alt" /> Перемещение</button>
-
-					<div className="btn btn-primary" onClick={this.handleNecessitates}> <i className="icon icon-build" /> Потребности </div>
-					<div className="btn btn-secondary w-100" onClick={this.handleDCard}>Диагностическая карта</div>
-				</div>
-			);
-		}
-
-		if(user.ROLES?.SELLER){
+		}else if(user.ROLES?.SELLER){
 			return (
 				<div className="btn-wrapper d-flex flex-wrap justify-content-between">
 					<button className={`btn btn-primary`} onClick={this.handleTDrive}><i className="icon icon-multiple_stop" /> Тест-драйв</button>
@@ -168,6 +141,15 @@ export class Actions extends React.Component {
 					<button className={`btn btn-primary w-100`}>
 						<span>Выдача</span>
 					</button>
+					<div className="btn btn-secondary w-100" onClick={this.handleDCard}>Диагностическая карта</div>
+				</div>
+			);
+		}else{
+			return (
+				<div className="btn-wrapper d-flex flex-wrap justify-content-between">
+					<button className="btn btn-primary" onClick={this.handleMoved}><i className="icon icon-sync_alt" /> Перемещение</button>
+
+					<div className="btn btn-primary" onClick={this.handleNecessitates}> <i className="icon icon-build" /> Потребности </div>
 					<div className="btn btn-secondary w-100" onClick={this.handleDCard}>Диагностическая карта</div>
 				</div>
 			);

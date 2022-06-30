@@ -20,10 +20,10 @@ export class Form extends React.Component {
         }
     }
 
-    handleSubmit = (e) => {
+    handleSubmit = async (e) => {
         this.setState({ loading: true });
         let validate = this.validate(e);
-        this.props.onSubmit(validate).then(r => {
+        await this.props.onSubmit(validate).then( async r => {
             this.setState({ loading: false });
         });
     };

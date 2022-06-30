@@ -1,74 +1,62 @@
 import React from 'react';
 
-import { Header } from "../../../ui/Header";
-import { Search as BaseSearch, Form as BaseForm } from "../../../base/Car/Search";
-import {Car, Context, Map, Storage} from "../../../App";
+import { Context } from "../../../App/Context";
+import { Header } from "../../../ui";
+import { Form } from "./Form";
+import { Car } from "../../../App";
 
 
-export class Search extends BaseSearch {
+export class Search extends React.Component {
 
 	static contextType = Context;
 
-	handleRight = async () => {
-		let title = `Карта локации`;
-		let maps = Storage.get('MAP');
-		let map_id = Storage.get('UF_LOCATION');
-		for (let map in maps){
-			if(maps[map].ID === map_id){
-				title = maps[map].NAME;
-				break;
-			}
-		}
-		await this.context.sider({
-			title: title,
-			child: () => <Map />
+
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			query: ''
+		};
+	}
+
+	componentDidMount = () => {
+		this.setState((prevState) => ({
+			...prevState,
+		}));
+	};
+
+	handleChange = async (e) => {
+		e.persist();
+		this.setState({
+			query: e.target.value,
 		});
 	};
-
-	onScroll = async (e) => {
-		if(this.state.nav['PAGE'] < this.state.nav['PAGE_COUNT'] && this.state.load === false){
-			if(e.target.scrollTop > (e.target.scrollHeight / 1.75)){
-				return await this.handleMore();
-			}
-		}
-	};
-
 
     render() {
 
 	    return (
 		    <>
-			    <Header
-				    history={this.props.history}
-				    right={this.props?.header?.right}
-				    profile={true}
-			    >
-				    <div className="pb-3" />
-				    <BaseForm onChange={this.handleSearch} />
+			    <Header {...{...this.props.header}} className={'with-search'}>
+				    <Form value={this.state.query} onChange={this.handleChange} />
 			    </Header>
-			    <>
-				    {this.state.cars !== false ? (
-					    <main onScroll={this.onScroll}>
-						    <div className={"content-wrapper"}>
-							    <>
-								    <Car.List
-									    handleMore={this.handleMore}
-									    items={this.state.cars}
-									    nav={this.state.nav}
-								    />
-							    </>
-						    </div>
-					    </main>
-				    ) : (
-					    <main>
-						    <div className={"content-wrapper"}>
-							    <>
-								    {this.props.children}
-							    </>
-						    </div>
-					    </main>
+
+			    <main className={this.state.query === '' ? '' : 'd-none'}>
+				    {this.props.children}
+			    </main>
+
+			    <main className={this.state.query !== '' ? '' : 'd-none'}>
+				    {this.state.query === '' ? (null) : (
+					    <Car.List
+						    onClick={this.props.onClick}
+						    filter={{
+							    REF_KEY: this.state.query,
+							    VIN: this.state.query,
+							    VIN2: this.state.query,
+							    G_NUMBER: this.state.query
+						    }}
+					    />
 				    )}
-			    </>
+			    </main>
 		    </>
 	    );
     }
